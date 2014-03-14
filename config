@@ -1,0 +1,11 @@
+local version = 0.01
+local showUpdateStatus = true
+local shouldAutoUpdate = true
+
+function returnVars()
+  return {
+    version = version,
+    showUpdateStatus = showUpdateStatus,
+    shouldAutoUpdate = shouldAutoUpdate
+    }
+end
