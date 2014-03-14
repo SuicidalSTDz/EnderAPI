@@ -1,0 +1,137 @@
+--# Files to grab when updating/installing
+local tFiles = {
+  "/EnderAPI/master/apis/color",
+  "/EnderAPI/master/apis/colour",
+  "/EnderAPI/master/apis/number",
+  "/EnderAPI/master/apis/pastebin",
+  "/EnderAPI/master/apis/text",
+  "/EnderAPI/master/apis/messageBox",
+  "/EnderAPI/master/config"
+  }
+ 
+--# Create directories if they are not present
+if not fs.exists( "/EnderAPI" ) then
+  fs.makeDir( "/EnderAPI" )
+end
+if not fs.exists( "/EnderAPI/master" ) then
+        fs.makeDir( "/EnderAPI/master" )
+end
+if not fs.exists( "/EnderAPI/master/apis" ) then
+        fs.makeDir( "/EnderAPI/master/apis" )
+end
+if not fs.exists( "/EnderAPI/master/temp" ) then
+        fs.makeDir( "/EnderAPI/master/temp" )
+end
+ 
+local function downloadFiles( bShow )
+        for i = 1, #tFiles do
+                local response = http.get( "https://raw.github.com/SuicidalSTDz" .. tFiles[ i ] )
+                if response then
+                        local sResponse = response.readAll()
+                        response.close()
+                       
+                        local handle = fs.open( tFiles[ i ], "w" )
+                        handle.write( sResponse )
+                        handle.close()
+      --# Successfully downloaded file
+      if bShow then
+        print( "Downloaded " .. tFiles[ i ] )
+      end
+                else
+      --# Error downloading file
+                        if bShow then
+        print( "Failed to download " .. tFiles[ i ] )
+      end
+                end
+        end
+end
+ 
+local function loadAPIs( bShow )
+  if bShow then
+    print( "Loading APIs.." )
+  end
+  local tAPIs = {
+  TextAPI = { success = os.loadAPI( "/EnderAPI/master/apis/text" ) },
+  NumberAPI = { success = os.loadAPI( "/EnderAPI/master/apis/number" ) },
+  ColorAPI = { success = os.loadAPI( "/EnderAPI/master/apis/color" ) },
+  ColourAPI = { success = os.loadAPI( "/EnderAPI/master/apis/colour" ) },
+  PastebinAPI = { success = os.loadAPI( "/EnderAPI/master/apis/pastebin" ) },
+  MessageBoxAPI = { success = os.loadAPI( "/EnderAPI/master/apis/messageBox" ) }
+  }
+  for k, v in pairs( tAPIs ) do
+    if not v.success then
+      if bShow then
+        printError( "Failed to load " .. tostring( k ) )
+      end
+    else
+      if bShow then
+        term.setTextColour( colours.lime )
+        print( "Loaded " .. tostring( k ) )
+      end
+    end
+  end
+  if bShow then
+    term.setTextColour( colours.white )
+  end
+end
+ 
+--# Main Update Script
+if fs.exists( "/EnderAPI/master/config" ) then
+ 
+        --# EnderAPI is installed (at least enough to download core files and load APIs)
+  --# Load the EnderAPI config file
+  os.loadAPI( "/EnderAPI/master/config" )
+  local bShow = config.returnVars().showUpdateStatus
+  if bShow then
+    if config.returnVars().shouldAutoUpdate then
+      write( "EnderAPI is installed\nChecking for updates\n" )
+    end
+  end
+ 
+  --# Check for any available updates, if showAutoUpdate is true
+  if config.returnVars().shouldAutoUpdate then
+    local response = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/master/config" )
+    if response then
+      local sResponse = response.readAll()
+      response.close()
+     
+      local handle = io.open( "/EnderAPI/master/temp/config", "w" )
+      handle:write( sResponse )
+      handle:close()
+      local oldVersion = config.returnVars().version
+      os.loadAPI( "/EnderAPI/master/temp/config" )
+      if config.returnVars().version ~= oldVersion then
+        --# An update is available, ask user to update ( not yet implemented )
+        write( "An update is available!\nDownload Update? Y/N?\n" )
+        local sInput = read():lower()
+        if sInput == ( "yes" or "y" ) then
+          if bShow then
+            print( "Updating.." )
+          end
+          downloadFiles( bShow )
+        else
+          if bShow then
+            print( "Skipping update" )
+          end
+        end
+      else
+        --# No update is available
+        if bShow then
+          print( "No updates avavilable" )
+        end
+      end
+    else
+      --# Error updating
+      if bShow then
+        print( "Error updating" )
+      end
+    end
+  end
+else
+        --# EnderAPI is not installed, download necessary files
+        error("Installation error!")
+end
+ 
+--# Load EnderAPI
+os.loadAPI( "/EnderAPI/master/config" )
+loadAPIs( config.returnVars().showUpdateStatus )
