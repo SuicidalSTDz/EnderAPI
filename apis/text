@@ -1,0 +1,40 @@
+center = function( sText, nx, ny )
+	if type( sText ) ~= "string" then
+		error( "string expected, got " .. type( sText ), 2 )
+	elseif type( nx ) ~= "number" then
+    error( "number expected, got " .. type( nx ), 2 )
+  elseif type( ny ) ~= "number" then
+    error( "number expected, got " .. type( ny ), 2 )
+  end
+  
+  term.setCursorPos( ( ( nx - #sText ) / 2) - 1, ny )
+  term.write( sText )
+end
+
+bracket = function( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
+  if type( sText ) ~= "string" then
+		error( "string expected, got " .. type( sText ), 2 )
+	elseif type( nx ) ~= "number" then
+    error( "number expected, got " .. type( nx ), 2 )
+  elseif type( ny ) ~= "number" then
+    error( "number expected, got " .. type( ny ), 2 )
+  elseif type( nTextColour ) ~= "number" then
+    error( "number expected, got " .. type( nTextColour ), 2 )
+  elseif type( nBracketColour ) ~= "number" then
+    error( "number expected, got " .. type( nBracketColour ), 2 )
+  elseif type( nBackgroundColour ) ~= nil then
+    if type( nBackgroundColour ) ~= "number" then
+      error( "number expected, got " .. type( nBackgroundColour ), 2 )
+    end
+  end
+
+  local xPos, yPos = term.getCursorPos()
+  term.setBackgroundColour( nBackgroundColour or curBackgroundColour )
+  term.setCursorPos( nx or xPos, ny or yPos)
+  term.setTextColour( nBracketColour or colours.white )
+  term.write( "[" )
+  term.setTextColour( nTextColour or colours.white )
+  term.write( sText )
+  term.setTextColour( nBracketColour or colours.white )
+  term.write( "]" )
+end
