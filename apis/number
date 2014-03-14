@@ -1,15 +1,9 @@
 generate = function( nChars, nMin, nMax )
-  if type( nChars ) ~= "number" then
-    error( "number expected, got " .. type( nChars ), 2 )
-  elseif type( nMin ) ~= "number" then
-    error( "number expected, got " .. type( nMin ), 2 )
-  elseif type( nMax ) ~= "number" then
-    error( "number expected, got " .. type( nMax ), 2 )
-  end
-  
-  if nMin > nMax then
-    error( "min value must be greater than max value", 2 )
-  end
+  assert(type(nChars=="number"),"number expected, got "..type(nChars))
+  assert(type(nMins=="number"),"number expected, got "..type(nMin))
+  assert(type(nMax=="number"),"number expected, got "..type(nMax))
+  assert(nMin<nMax,"minimum must be less than maximum")
+
   local n = math.random( nMin, nMax )
   for i = 1, nChars do
     n = n .. math.random( nMin, nMax )
@@ -18,17 +12,11 @@ generate = function( nChars, nMin, nMax )
 end
 
 isOdd = function( n )
-  if type( n ) ~= "number" then
-    error( "number expected, got " .. type( n ), 2 )
-  end
-  
+  assert(type(n)=="number","number expected, got "..type(n))
   return n % 2 ~= 0
 end
 
 isEven = function( n )
-  if type( n ) ~= "number" then
-    error( "number expected, got " .. type( n ), 2 )
-  end
-  
+  assert(type(n)=="number","number expected, got "..type(n))
   return n % 2 == 0
 end
