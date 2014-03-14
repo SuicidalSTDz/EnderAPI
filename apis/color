@@ -1,0 +1,12 @@
+isValid = function( nColor )
+  if type( nColor ) ~= "number" then
+    error( "number expected, got " .. type( nColor ), 2 )
+  end
+  
+  for _, v in pairs( colors ) do
+    if nColor == v then
+      return true
+    end
+  end
+  return false
+end
