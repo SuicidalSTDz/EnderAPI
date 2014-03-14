@@ -1,5 +1,3 @@
---# A placeholder for the moment
-
 create = function( sText, fYes, fNo )
 	local nw, nh = term.getSize()
 	local startX = math.floor( ( ( nw - #sText ) / 2 ) - 5 )
