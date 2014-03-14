@@ -1,0 +1,27 @@
+-- Adds HTTP and fs functions
+
+-- TODO add error checking here
+function download(url, path)
+	assert(type(url)=="string","string expected, got "..type(url))
+	assert(type(path)=="string","string expected, got "..type(path))
+	if fs.exists(path) then
+		error("path already exists")
+	end
+	local f = fs.open(path, "w")
+	f.write(http.get(url).readAll())
+	f.close()
+end
+
+function save(path, data)
+	assert(type(path)=="string","string expected, got "..type(path))
+	assert(type(data)=="string","string expected, got "..type(data))
+	local f = fs.open(path, "w")
+	f.write(data)
+	f.close()
+end
+
+function read(path)
+	assert(type(path)=="string","string expected, got "..type(path))
+	if not fs.exists(path) then return nil end
+	return fs.open(path,"r").readAll()
+end
