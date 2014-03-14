@@ -1,0 +1,58 @@
+put = function( sFile )
+  if type( sFile ) ~= "string" then
+    error( "string expected, got " .. type( sFile ), 2 )
+  end
+  
+  local sPath = shell.resolve( sFile )
+  if fs.isDir( sPath ) then
+    error( "cannot upload directories", 2 )
+  elseif not fs.exists( sPath ) then
+    error( "no such file", 2 )
+  end
+  
+  local sName = fs.getName( sPath )
+  local handle = fs.open( sPath, "r" )
+  local sText = handle.readAll()
+  handle.close()
+  local key = "0ec2eb25b6166c0c27a394ae118ad829"
+  local response = http.post(
+    "http://pastebin.com/api/api_post.php", 
+    "api_option=paste&" ..
+    "api_dev_key=" .. key .. "&" ..
+    "api_paste_format=lua&" ..
+    "api_paste_name=" .. textutils.urlEncode( sPath ) .. "&" ..
+    "api_paste_code=" .. textutils.urlEncode( sText )
+  )
+
+  if response then
+    local sResponse = response.readAll()
+    local sCode = string.match( sResponse, "[^/]+$" )
+    response.close()
+    return sCode
+  end
+  return false
+end
+
+get = function( sCode, sFile )
+  if type( sCode ) ~= "string" then
+    error( "string expected, got " .. type( sCode ), 2 )
+  elseif type( sFile ) ~= "string" then
+    error( "string expected, got " .. type( sFile ), 2 )
+  end
+  
+  local sPath = shell.resolve( sFile )
+  if fs.exists( sPath ) then
+    error( "file exists", 2 )
+  end
+
+  local response = http.get( "http://pastebin.com/raw.php?i=" .. textutils.urlEncode( sCode ) )
+  if response then
+    local sResponse = response.readAll()
+    response.close()
+    local handle = fs.open( sPath, "w" )
+    handle.write( sResponse )
+    handle.close()
+    return true
+  end
+  return false
+end
