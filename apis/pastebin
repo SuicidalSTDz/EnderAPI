@@ -1,7 +1,5 @@
 put = function( sFile )
-  if type( sFile ) ~= "string" then
-    error( "string expected, got " .. type( sFile ), 2 )
-  end
+  assert(type(sFile)=="string","string expected, got "..type(sFile))
   
   local sPath = shell.resolve( sFile )
   if fs.isDir( sPath ) then
@@ -34,12 +32,8 @@ put = function( sFile )
 end
 
 get = function( sCode, sFile )
-  if type( sCode ) ~= "string" then
-    error( "string expected, got " .. type( sCode ), 2 )
-  elseif type( sFile ) ~= "string" then
-    error( "string expected, got " .. type( sFile ), 2 )
-  end
-  
+  assert(type(sCode)=="string","number expected, got "..type(ny))
+  assert(type(sFile)=="string","string expected, got "..type(sFile))
   local sPath = shell.resolve( sFile )
   if fs.exists( sPath ) then
     error( "file exists", 2 )

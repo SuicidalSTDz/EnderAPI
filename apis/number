@@ -1,7 +1,7 @@
 generate = function( nChars, nMin, nMax )
-  assert(type(nChars=="number"),"number expected, got "..type(nChars))
-  assert(type(nMins=="number"),"number expected, got "..type(nMin))
-  assert(type(nMax=="number"),"number expected, got "..type(nMax))
+  assert(type(nChars)=="number","number expected, got "..type(nChars))
+  assert(type(nMins)=="number","number expected, got "..type(nMin))
+  assert(type(nMax)=="number","number expected, got "..type(nMax))
   assert(nMin<nMax,"minimum must be less than maximum")
 
   local n = math.random( nMin, nMax )
