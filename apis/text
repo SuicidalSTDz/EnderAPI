@@ -12,7 +12,7 @@ bracket = function( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColou
 	assert(type(ny)=="number","number expected, got "..type(ny))
 	assert(type(nTextColour)=="number","number expected, got "..type(nTextColour))
 	assert(type(nBracketColour)=="number","number expected, got "..type(nBracketColour))
-	if type(nBackgroundColour) =~ "number" and nBackgroundColour ~= nil then
+	if (type(nBackgroundColour) ~= "number" and nBackgroundColour ~= nil) then
 		error("number/nil expected, got "..type(nBackgroundColour),2)
 	end
 	local xPos, yPos = term.getCursorPos()
