@@ -1,0 +1,20 @@
+local tFiles = {
+  "/EnderAPI/master/apis/color",
+  "/EnderAPI/master/apis/colour",
+  "/EnderAPI/master/apis/number",
+  "/EnderAPI/master/apis/pastebin",
+  "/EnderAPI/master/apis/text",
+  "/EnderAPI/master/apis/messageBox",
+  "/EnderAPI/master/apis/file",
+  "/EnderAPI/master/config"
+  }
+
+local tAPIs = {
+  TextAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/text" ) },
+  NumberAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/number" ) },
+  ColorAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/color" ) },
+  ColourAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/colour" ) },
+  PastebinAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/pastebin" ) },
+  MessageBoxAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/messageBox" ) },
+  FileAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/file" ) },
+  }
