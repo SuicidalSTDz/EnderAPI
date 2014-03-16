@@ -1,7 +1,21 @@
+local function assert(bBool, sMessage, iLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type(sMessage), 2)
+	elseif type(iLevel) ~= "number" then
+		error("Number expected, got " .. type(iLevel), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
 create = function( sText, fYes, fNo )
-	assert(type(sText)=="string","string expected, got "..type(sText))
-	assert(type(fYes)=="function","function expected, got "..type(fYes))
-	assert(type(fNo)=="function","function expected, got "..type(fNo))
+	assert(type(sText)=="string","string expected, got "..type(sText), 2)
+	assert(type(fYes)=="function","function expected, got "..type(fYes), 2)
+	assert(type(fNo)=="function","function expected, got "..type(fNo), 2)
 	local nw, nh = term.getSize()
 	local startX = math.floor( ( ( nw - #sText ) / 2 ) - 5 )
 	local startY = math.floor( nh / 2 - 3 )

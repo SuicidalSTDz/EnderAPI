@@ -1,5 +1,19 @@
+local function assert(bBool, sMessage, iLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type(sMessage), 2)
+	elseif type(iLevel) ~= "number" then
+		error("Number expected, got " .. type(iLevel), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
 colors.isValid = function( nColor )
-  assert(type(nColor)=="number","number expected, got "..type(nColor))
+  assert(type(nColor)=="number","number expected, got "..type(nColor), 2)
   
   for _, v in pairs( colors ) do
     if nColor == v then
