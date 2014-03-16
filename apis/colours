@@ -1,4 +1,4 @@
-colour.isValid = function( nColour )
+colours.isValid = function( nColour )
   assert(type(nColour)=="number","number expected, got "..type(nColour))
   
   for _, v in pairs( colours ) do
