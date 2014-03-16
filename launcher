@@ -1,0 +1,143 @@
+--# USER VARIABLE(S)
+local shouldAutoUpdate = true
+
+--# Files to grab when updating/installing
+local tFiles = {
+  "/EnderAPI/master/apis/color",
+  "/EnderAPI/master/apis/colour",
+  "/EnderAPI/master/apis/number",
+  "/EnderAPI/master/apis/pastebin",
+  "/EnderAPI/master/apis/text",
+  "/EnderAPI/master/apis/messageBox",
+  "/EnderAPI/master/apis/file",
+  "/EnderAPI/master/config",
+  "/EnderAPI/master/launcher"
+  }
+
+--# Create directories if they are not present
+if not fs.exists( "/.EnderAPI" ) then
+  fs.makeDir( "/.EnderAPI" )
+end
+if not fs.exists( "/.EnderAPI/master" ) then
+	fs.makeDir( "/.EnderAPI/master" )
+end
+if not fs.exists( "/.EnderAPI/master/apis" ) then
+	fs.makeDir( "/.EnderAPI/master/apis" )
+end
+if not fs.exists( "/.EnderAPI/master/temp" ) then
+	fs.makeDir( "/.EnderAPI/master/temp" )
+end
+
+local function downloadFile( url, sFile )
+  local response = http.get( url )
+  if response then
+    local sResponse = response.readAll()
+    response.close()
+    
+    local handle = io.open( sFile, "w" )
+    handle:write( sResponse )
+    handle:close()
+    return true
+  else
+    return false
+  end
+end
+
+local function loadAPIs()
+  local tAPIs = {
+    TextAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/text" ) },
+    NumberAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/number" ) },
+    ColorAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/color" ) },
+    ColourAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/colour" ) },
+    PastebinAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/pastebin" ) },
+    MessageBoxAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/messageBox" ) },
+    FileAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/file" ) },
+    }
+end
+
+--# Main Update Script
+for i = 1, #tFiles do
+  
+  --# Grab the file and store it's contents in a string to check against later
+  local sResponse
+  local response = http.get( "https://raw.github.com/SuicidalSTDz" .. tFiles[ i ] )
+  if response then
+    sResponse = response.readAll()
+    response.close()
+  end  
+  
+  --# Open the currently installed file to check against the downloaded file
+  local sFile = tFiles[ i ]:sub( 1, 1 ) .. "." .. tFiles[ i ]:sub( 2, #tFiles[ i ] )
+  print(sFile)
+  print(fs.exists( sFile ))
+  local handle = fs.open( sFile, "r" )
+  local sData = handle.readAll()
+  handle.close()
+     
+  --# If the file does not exist or doesn't match the downloaded file, then update said file
+  if ( not fs.exists( sFile ) ) or ( sData ~= sResponse and shouldAutoUpdate ) then
+    local handle = io.open( sFile, "w" )
+    handle:write( sResponse, "w" )
+    handle:close()
+  end
+end
+    
+--[[    
+if fs.exists( "/.EnderAPI/master/config" ) then 
+
+	--# EnderAPI is installed (at least enough to download core files and load APIs)
+  --# Load the EnderAPI config file
+  os.loadAPI( "/.EnderAPI/master/config" )
+  local bShow = config.returnVars().showUpdateStatus
+  if config.returnVars().shouldAutoUpdate then
+    if bShow then
+      write( "Checking for updates\n" )
+    end
+  end
+  
+  --# Check for any available updates, if showAutoUpdate is true
+  if config.returnVars().shouldAutoUpdate then
+    local response = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/master/config" )
+    if response then
+      local sResponse = response.readAll()
+      response.close()
+      
+      local handle = io.open( "/.EnderAPI/master/temp/config", "w" )
+      handle:write( sResponse )
+      handle:close()
+      local oldVersion = config.returnVars().version
+      os.loadAPI( "/.EnderAPI/master/temp/config" )
+      if config.returnVars().version ~= oldVersion then
+        --# An update is available, ask user to update ( not yet implemented )
+        write( "An update is available!\nDownload Update? Y/N?\n" )
+        local sInput = read():lower()
+        if sInput == ( "yes" or "y" ) then
+          if bShow then
+            print( "Updating.." )
+          end
+          downloadFiles( bShow )
+        else
+          if bShow then
+            print( "Skipping update" )
+          end
+        end
+      else
+        --# No update is available
+        if bShow then
+          print( "No updates avavilable" )
+        end
+      end
+    else
+      --# Error updating
+      if bShow then
+        print( "Error updating" )
+      end
+    end
+  end
+else
+	--# EnderAPI is not installed, download necessary files
+	downloadFiles( true )
+end]]
+
+--# Load EnderAPI
+loadAPIs()
