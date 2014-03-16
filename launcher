@@ -1,12 +1,6 @@
 --# USER VARIABLE(S)
 local shouldAutoUpdate = true
 
---# Don't worry about this, just stuffs
-local oldPrintError = printError
-printError = function()
-  return nil
-end
-
 --# Files to grab when updating/installing
 local tFiles = {
   "/EnderAPI/master/apis/color",
