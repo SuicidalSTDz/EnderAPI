@@ -13,10 +13,10 @@ local function assert(bBool, sMessage, iLevel)
 end
 
 generate = function( nChars, nMin, nMax )
-  assert(type(nChars)=="number","number expected, got "..type(nChars), 2)
-  assert(type(nMins)=="number","number expected, got "..type(nMin), 2)
-  assert(type(nMax)=="number","number expected, got "..type(nMax), 2)
-  assert(nMin<nMax,"minimum must be less than maximum", 2)
+  assert( type(nChars)=="number", "Number expected, got " .. type(nChars), 2)
+  assert( type(nMins)=="number", "Number expected, got " .. type(nMin), 2)
+  assert( type(nMax)=="number", "Number expected, got " .. type(nMax), 2)
+  assert( nMin < nMax, "minimum must be less than maximum", 2)
 
   local n = math.random( nMin, nMax )
   for i = 1, nChars do
@@ -26,11 +26,11 @@ generate = function( nChars, nMin, nMax )
 end
 
 isOdd = function( n )
-  assert(type(n)=="number","number expected, got "..type(n), 2)
+  assert( type(n)=="number", "Number expected, got " .. type(n), 2)
   return n % 2 ~= 0
 end
 
 isEven = function( n )
-  assert(type(n)=="number","number expected, got "..type(n), 2)
+  assert( type(n)=="number", "Number expected, got " .. type(n), 2)
   return n % 2 == 0
 end

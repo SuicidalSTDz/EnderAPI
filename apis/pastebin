@@ -46,21 +46,50 @@ put = function( sFile )
 end
 
 get = function( sCode, sFile )
-  assert(type(sCode)=="string","number expected, got "..type(ny), 2)
-  assert(type(sFile)=="string","string expected, got "..type(sFile), 2)
+  assert( type(sCode)=="string", "number expected, got " .. type(ny), 2)
+  assert( type(sFile)=="string", "string expected, got " .. type(sFile), 2)
+  
   local sPath = shell.resolve( sFile )
-  if fs.exists( sPath ) then
-    error( "file exists", 2 )
-  end
+  assert( not fs.exists( sPath ), "File exists", 2 )
 
   local response = http.get( "http://pastebin.com/raw.php?i=" .. textutils.urlEncode( sCode ) )
   if response then
     local sResponse = response.readAll()
     response.close()
+    
     local handle = fs.open( sPath, "w" )
     handle.write( sResponse )
     handle.close()
+    
     return true
   end
   return false
 end
+
+updateFile = function( sCode, sFile )
+  assert( type( sCode ) == "string", "String expected, got " .. type( sCode ), 2 )
+  assert( type( sFile ) == "string", "String expected, got " .. type( sFile ), 2 )
+  
+  local sPath = shell.resolve( sFile )
+  assert( fs.exists( sPath ), "Existing file expected", 2)
+  
+  local httpHandle = http.get( "http://pastebin.com/raw.php?i=" .. textutils.urlEncode( sCode ) )
+  if httpHandle then
+    local httpContent = httpHandle.readAll()
+    httpHandle.close()
+  
+    local fileHandle = fs.open( sPath, "r" )
+    local fileContent = fileHandle.readAll()
+    fileHandle.close()
+    
+    if fileContent ~= httpContent then
+      fs.delete( sPath )
+      fileHandle = fs.open( sPath, "w" )
+      fileHandle.write( httpContent )
+      fileHandle.close()
+      return true
+    end
+  end
+  return false
+ end
+ 
