@@ -9,7 +9,7 @@ local tFiles = {
   "/EnderAPI/master/apis/pastebin",
   "/EnderAPI/master/apis/text",
   "/EnderAPI/master/apis/messageBox",
-  "/EnderAPI/master/apis/file",
+  "/EnderAPI/master/apis/http",
   "/EnderAPI/master/config"
   }
 
@@ -45,6 +45,7 @@ end
 local function loadAPIs()
   local oldLoad = os.loadAPI
   local tAPIsLoading = {}
+  
   function os.loadAPI( _sPath )
     local sName = fs.getName( _sPath )
     if tAPIsLoading[sName] == true then
@@ -73,15 +74,15 @@ local function loadAPIs()
     return true
   end
   
-  local tAPIs = {
-    TextAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/text" ) },
-    NumberAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/number" ) },
-    ColorAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/color" ) },
-    ColourAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/colour" ) },
-    PastebinAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/pastebin" ) },
-    MessageBoxAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/messageBox" ) },
-    FileAPI = { success = os.loadAPI( "/.EnderAPI/master/apis/file" ) },
-    }
+  os.loadAPI( "/.EnderAPI/master/apis/text" )
+  os.loadAPI( "/.EnderAPI/master/apis/number" )
+  shell.run( "/.EnderAPI/master/apis/color" )
+  shell.run( "/.EnderAPI/master/apis/colour" )
+  os.loadAPI( "/.EnderAPI/master/apis/pastebin" )
+  os.loadAPI( "/.EnderAPI/masster/apis/messageBox" )
+  shell.run( "/.EnderAPI/master/apis/http" )
+  --# Still have to test the fs additions
+  --shell.run( "/.EnderAPI/master/apis/fs" )
   
   os.loadAPI = oldLoad
 end
