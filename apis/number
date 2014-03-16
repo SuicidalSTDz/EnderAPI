@@ -1,8 +1,22 @@
+local function assert(bBool, sMessage, iLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type(sMessage), 2)
+	elseif type(iLevel) ~= "number" then
+		error("Number expected, got " .. type(iLevel), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
 generate = function( nChars, nMin, nMax )
-  assert(type(nChars)=="number","number expected, got "..type(nChars))
-  assert(type(nMins)=="number","number expected, got "..type(nMin))
-  assert(type(nMax)=="number","number expected, got "..type(nMax))
-  assert(nMin<nMax,"minimum must be less than maximum")
+  assert(type(nChars)=="number","number expected, got "..type(nChars), 2)
+  assert(type(nMins)=="number","number expected, got "..type(nMin), 2)
+  assert(type(nMax)=="number","number expected, got "..type(nMax), 2)
+  assert(nMin<nMax,"minimum must be less than maximum", 2)
 
   local n = math.random( nMin, nMax )
   for i = 1, nChars do
@@ -12,11 +26,11 @@ generate = function( nChars, nMin, nMax )
 end
 
 isOdd = function( n )
-  assert(type(n)=="number","number expected, got "..type(n))
+  assert(type(n)=="number","number expected, got "..type(n), 2)
   return n % 2 ~= 0
 end
 
 isEven = function( n )
-  assert(type(n)=="number","number expected, got "..type(n))
+  assert(type(n)=="number","number expected, got "..type(n), 2)
   return n % 2 == 0
 end

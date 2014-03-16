@@ -1,5 +1,19 @@
+local function assert(bBool, sMessage, iLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type(sMessage), 2)
+	elseif type(iLevel) ~= "number" then
+		error("Number expected, got " .. type(iLevel), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
 put = function( sFile )
-  assert(type(sFile)=="string","string expected, got "..type(sFile))
+  assert(type(sFile)=="string","string expected, got "..type(sFile), 2)
   
   local sPath = shell.resolve( sFile )
   if fs.isDir( sPath ) then
@@ -32,8 +46,8 @@ put = function( sFile )
 end
 
 get = function( sCode, sFile )
-  assert(type(sCode)=="string","number expected, got "..type(ny))
-  assert(type(sFile)=="string","string expected, got "..type(sFile))
+  assert(type(sCode)=="string","number expected, got "..type(ny), 2)
+  assert(type(sFile)=="string","string expected, got "..type(sFile), 2)
   local sPath = shell.resolve( sFile )
   if fs.exists( sPath ) then
     error( "file exists", 2 )

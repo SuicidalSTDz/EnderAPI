@@ -1,6 +1,20 @@
+local function assert(bBool, sMessage, iLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type(sMessage), 2)
+	elseif type(iLevel) ~= "number" then
+		error("Number expected, got " .. type(iLevel), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
 function http.download( sUrl, sPath )
-	assert( type( sUrl ) == "string", "string expected, got " .. type( sUrl ) )
-	assert( type( sPath ) == "string", "string expected, got " .. type( sPath ) )
+	assert( type( sUrl ) == "string", "string expected, got " .. type( sUrl ), 2 )
+	assert( type( sPath ) == "string", "string expected, got " .. type( sPath ), 2 )
 	if fs.exists( sPath ) then
 		error( "path already exists", 2 )
 	end
