@@ -9,6 +9,8 @@ local tFiles = {
   "/EnderAPI/master/apis/text",
   "/EnderAPI/master/apis/messageBox",
   "/EnderAPI/master/apis/http",
+  "/EnderAPI/master/apis/term",
+  "/EnderAPI/master/apis/string",
   "/EnderAPI/master/config"
   }
 
@@ -79,6 +81,8 @@ local function loadAPIs()
   os.loadAPI( "/.EnderAPI/master/apis/pastebin" )
   os.loadAPI( "/.EnderAPI/masster/apis/messageBox" )
   shell.run( "/.EnderAPI/master/apis/http" )
+  shell.run( "/.EnderAPI/master/apis/term" )
+  shell.run( "/.EnderAPI/master/apis/string" )
   --# Still have to test the fs additions
   --shell.run( "/.EnderAPI/master/apis/fs" )
   
