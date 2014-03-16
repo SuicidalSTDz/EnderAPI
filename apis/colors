@@ -8,3 +8,4 @@ colors.isValid = function( nColor )
   end
   return false
 end
+colours.isValid = colors.isValid
