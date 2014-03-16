@@ -4,7 +4,7 @@ local shouldAutoUpdate = true
 --# Files to grab when updating/installing
 local tFiles = {
   "/EnderAPI/master/apis/color",
-  "/EnderAPI/master/apis/colour",
+  "/EnderAPI/master/apis/colours",
   "/EnderAPI/master/apis/number",
   "/EnderAPI/master/apis/pastebin",
   "/EnderAPI/master/apis/text",
@@ -76,8 +76,8 @@ local function loadAPIs()
   
   os.loadAPI( "/.EnderAPI/master/apis/text" )
   os.loadAPI( "/.EnderAPI/master/apis/number" )
-  shell.run( "/.EnderAPI/master/apis/color" )
-  shell.run( "/.EnderAPI/master/apis/colour" )
+  shell.run( "/.EnderAPI/master/apis/colors" )
+  shell.run( "/.EnderAPI/master/apis/colours" )
   os.loadAPI( "/.EnderAPI/master/apis/pastebin" )
   os.loadAPI( "/.EnderAPI/masster/apis/messageBox" )
   shell.run( "/.EnderAPI/master/apis/http" )
