@@ -6,7 +6,9 @@ function http.download( sUrl, sPath )
 	end
 	local f = fs.open( sPath, "w" )
 	local response = http.get( sUrl )
-	f.write( response.readAll() )
+	if response then
+		f.write( response.readAll() )
+	end
 	f.close()
 	response.close()
 end
