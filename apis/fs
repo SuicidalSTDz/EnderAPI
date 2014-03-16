@@ -1,0 +1,16 @@
+function save( sPath, sData )
+  assert( type( sPath ) == "string", "string expected, got " .. type( sPath ) )
+  assert( type( sData ) == "string", "string expected, got " .. type( sData ) )
+  local f = fs.open( sPath, "w" )
+  f.write( sData )
+  f.close()
+end
+
+function read( path )
+  assert( type( sPath ) == "string", "string expected, got " .. type( sPath ) )
+  if not fs.exists( sPath ) then return nil end
+  local handle = fs.open( sPath, "r" )
+  local sData = handle.readAll()
+  handle.close()
+  return sData
+end
