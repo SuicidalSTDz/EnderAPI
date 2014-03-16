@@ -1,0 +1,19 @@
+function string.generate( nLength, nCharSet)
+  assert( type( nLength ) == "number", "number expected, got " .. type( nLength ) )
+  assert( type( nCharSet ) == "number", "number expected, got " .. type( nCharSet ) )
+	local nCharSet = nCharSet or 128
+	local str = ""
+	for i = 1, nLength do
+		str = str .. math.random( 1, nCharSet ):char()
+	end
+	return str
+end
+
+function string.splitAtWhite( str )
+	assert( type( str ) == "string", "string expected, got " .. type( str ) )
+	local tData = {}
+	for sArg in str:gmatch( "[^%s]+" ) do
+		table.insert( tData, sArg )
+	end
+	return tData
+end
