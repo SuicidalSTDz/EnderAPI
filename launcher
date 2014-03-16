@@ -3,7 +3,7 @@ local shouldAutoUpdate = true
 
 --# Files to grab when updating/installing
 local tFiles = {
-  "/EnderAPI/master/apis/color",
+  "/EnderAPI/master/apis/colors",
   "/EnderAPI/master/apis/colours",
   "/EnderAPI/master/apis/number",
   "/EnderAPI/master/apis/pastebin",
