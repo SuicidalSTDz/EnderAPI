@@ -68,7 +68,7 @@ end
 function term.getPixelData( nx, ny )
   assert( type( nx ) == "number", "number expected, got " .. type( nx ) )
   assert( type( ny ) == "number", "number expected, got " .. type( ny ) )
-	return tPixels[ nx ][ ny ]
+  return tPixels[ nx .. " " .. ny ]
 end
 
 function term.getTextColour()
