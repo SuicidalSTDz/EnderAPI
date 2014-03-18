@@ -1,12 +1,23 @@
-put = function( sFile )
-  assert(type(sFile)=="string","string expected, got "..type(sFile))
+local function assert(bBool, sMessage, nLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type( sMessage ), 2)
+	elseif type(nLevel) ~= "number" then
+		error("Number expected, got " .. type( nLevel ), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
+function put( sFile )
+  assert( type( sFile ) == "string", "String expected, got " .. type( sFile ), 2)
   
   local sPath = shell.resolve( sFile )
-  if fs.isDir( sPath ) then
-    error( "cannot upload directories", 2 )
-  elseif not fs.exists( sPath ) then
-    error( "no such file", 2 )
-  end
+  assert( not fs.isDir( sPath ), "Cannot upload directories", 2 )
+  assert( not fs.exists( sPath ), "File doesn't exist", 2 )
   
   local sName = fs.getName( sPath )
   local handle = fs.open( sPath, "r" )
@@ -26,27 +37,56 @@ put = function( sFile )
     local sResponse = response.readAll()
     local sCode = string.match( sResponse, "[^/]+$" )
     response.close()
-    return sCode
+    return sCode, true
   end
-  return false
+  return nil, false
 end
 
-get = function( sCode, sFile )
-  assert(type(sCode)=="string","number expected, got "..type(ny))
-  assert(type(sFile)=="string","string expected, got "..type(sFile))
+function get( sCode, sFile )
+  assert( type( sCode ) == "string", "Number expected, got " .. type( sCode ), 2)
+  assert( type( sFile ) == "string", "String expected, got " .. type( sFile ), 2)
   local sPath = shell.resolve( sFile )
-  if fs.exists( sPath ) then
-    error( "file exists", 2 )
-  end
+  assert( not fs.exists( sPath ), "File exists", 2)
 
-  local response = http.get( "http://pastebin.com/raw.php?i=" .. textutils.urlEncode( sCode ) )
-  if response then
-    local sResponse = response.readAll()
-    response.close()
+  local tResponse = http.get( "http://pastebin.com/raw.php?i=" .. textutils.urlEncode( sCode ) )
+  if tResponse then
+    local sResponse = tResponse.readAll()
+    tResponse.close()
+    
     local handle = fs.open( sPath, "w" )
     handle.write( sResponse )
     handle.close()
     return true
   end
   return false
+end
+
+function updateFile( sCode, sFile )
+  assert( type( sCode ) == "string", "Number expected, got " .. type( sCode ), 2)
+  assert( type( sFile ) == "string", "String expected, got " .. type( sFile ), 2)
+  
+  local sPath = shell.resolve( sFile )
+  assert( not fs.isDirectory( sPath ), "Cannot update directory", 2)
+  
+  local httpHandle = http.get( "http://pastebin.com/raw.php?i=" .. textutils.urlEncode( sCode ) )
+  if httpHandle then
+    local sResponse = httpHandle.readAll()
+    httpHandle.close()
+    
+    if sResponse and sResponse ~= "" then
+      local fileContent = "[none&set]"
+      if fs.exists( sPath ) then
+        local fileHandle = fs.open( sPath, "r" )
+        fileContent = fileHandle.readAll()
+        fileHandle.close()
+      end
+        
+      if fileContent ~= sResponse then
+        fileHandle = fs.open( sPath, "w" )
+        fileHandle.write( sResponse )
+        fileHandle.close()
+        return true
+      end
+    end
+    return false
 end

@@ -1,27 +1,113 @@
-center = function( sText, nx, ny )
-	assert(type(sText)=="string","string expected, got "..type(sText))
-	assert(type(nx)=="number","number expected, got "..type(nx))
-	assert(type(ny)=="number","number expected, got "..type(ny))
-	term.setCursorPos( ( ( nx - #sText ) / 2) - 1, ny )
+local function assert(bBool, sMessage, nLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type( sMessage ), 2)
+	elseif type(nLevel) ~= "number" then
+		error("Number expected, got " .. type( nLevel ), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
+function center( sText, nx, ny )
+	assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
+	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
+	assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
+	term.setCursorPos( (( nx - #sText ) / 2) - 1, ny )
 	term.write( sText )
 end
 
-bracket = function( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
-	assert(type(sText)=="string","string expected, got "..type(sText))
-	assert(type(nx)=="number","number expected, got "..type(nx))
-	assert(type(ny)=="number","number expected, got "..type(ny))
-	assert(type(nTextColour)=="number","number expected, got "..type(nTextColour))
-	assert(type(nBracketColour)=="number","number expected, got "..type(nBracketColour))
-	if (type(nBackgroundColour) ~= "number" and nBackgroundColour ~= nil) then
-		error("number/nil expected, got "..type(nBackgroundColour),2)
+function bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
+	assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
+	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
+	assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
+	
+  if nTextColour ~= nil then
+    assert( type( nTextColour ) == "number", "Number expected, got " .. type( nTextColour ), 2)
+  end
+  if nBracketColour ~= nil then
+    assert( type( nBracketColour ) == "number", "Number expected, got " .. type( nBracketColour ), 2)
+  end
+  if nBackgroundColour ~= nil then
+		assert( type( nBackgroundColour ) == "number", "Number/nil expected, got " .. type( nBackgroundColour ), 2)
+    term.setBackgroundColour( nBackgroundColour )
 	end
+  
 	local xPos, yPos = term.getCursorPos()
-	term.setBackgroundColour( nBackgroundColour or curBackgroundColour )
-	term.setCursorPos( nx or xPos, ny or yPos)
+	term.setCursorPos( nx, ny )
 	term.setTextColour( nBracketColour or colours.white )
-	term.write( "[" )
+	term.write( "[" .. string.rep(" ", #sText) .. "]" )
+  
 	term.setTextColour( nTextColour or colours.white )
+  term.setCursorPos( nx + 1, ny )
 	term.write( sText )
-	term.setTextColour( nBracketColour or colours.white )
-	term.write( "]" )
+end
+
+--[[
+  This function looks for the following:
+  [t=16;b=16] or [b=0; t=0] or [b=0] or [t=0]
+  b = background color
+  t = text colour
+  
+  0 can be replaced with the following numbers:
+  0: white       8: light gray
+  1: orange      9: cyan
+  2: magenta    10: purple
+  3: light Blue 11: blue
+  4: yellow     12: brown
+  5: lime       13: green
+  6: pink       14: red
+  7: gray       15: black
+  
+  Note that this does not parse with the colors API!
+  Works more or less, still some bugs to kink out
+  
+  @author EngineerCoding
+]]
+function printColourFormat( sText )
+  assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
+  
+  local storage = {}
+  local function matchLong( sMode1, sColour1, sMode2, sColour2 )
+    if (sMode1 == "t" and sMode2 == "b") or (sMode1 == "b" and sMode2 == "t") then
+      table.insert( storage, { 
+        t = ( sMode1 == "t" and tonumber( sColour1 ) or tonumber( sColour2 ) ),
+        b = ( sMode1 == "b" and tonumber( sColour1 ) or tonumber( sColour2 ) )
+      } )
+      return "<%&*()>"
+    end
+    
+    if sMode1 == "b" and sMode2 == "b" then
+      table.insert( storage, { b = tonumber( sColour2 ) } )
+    else
+      table.insert( storage, { t = tonumber( sColour2 ) } )
+    end
+    return "<%&*()>"
+  end
+  
+  local function matchShort( sMode, sColour ) 
+    return matchLong( sMode, sColour, sMode, sColour )
+  end
+  
+  -- Parse the text
+  local parsed = sText:gsub( "%[([bt])%s*=%s*(%d-);%s*([bt])%s*=%s*(%d-)%]", matchLong )
+  parsed = parsed:gsub( "%[([bt])%s*=%s*(%d-)%]", matchShort )
+  
+  -- Print it out on the terminal
+  local index = 1
+  for str in parsed:gmatch( "[^<%%&%*%(%)>]+" ) do
+    if storage[index] then
+      if storage[index].t then
+        term.setTextColour( 2 ^ storage[index].t )
+      end
+      if storage[index].b then
+        term.setBackgroundColour( 2 ^ storage[index].b )
+      end
+      index = index + 1
+    end
+    write( str )
+  end
 end

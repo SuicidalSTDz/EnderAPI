@@ -1,6 +1,20 @@
-function string.generate( nLength, nCharSet)
-  assert( type( nLength ) == "number", "number expected, got " .. type( nLength ) )
-  assert( type( nCharSet ) == "number", "number expected, got " .. type( nCharSet ) )
+local function assert(bBool, sMessage, nLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type( sMessage ), 2)
+	elseif type(nLevel) ~= "number" then
+		error("Number expected, got " .. type( nLevel ), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
+function string.generate( nLength, nCharSet )
+  assert( type( nLength ) == "number", "Number expected, got " .. type( nLength ), 2)
+  assert( type( nCharSet ) == "number", "Number expected, got " .. type( nCharSet ), 2)
 	local nCharSet = nCharSet or 128
 	local str = ""
 	for i = 1, nLength do
@@ -9,11 +23,12 @@ function string.generate( nLength, nCharSet)
 	return str
 end
 
-function string.splitAtWhite( str )
-	assert( type( str ) == "string", "string expected, got " .. type( str ) )
+function string:splitAtWhite()
 	local tData = {}
-	for sArg in str:gmatch( "[^%s]+" ) do
+	for sArg in self:gmatch( "[^%s]+" ) do
 		table.insert( tData, sArg )
 	end
 	return tData
 end
+
+

@@ -1,3 +1,17 @@
+local function assert(bBool, sMessage, nLevel)
+	local iLevel = iLevel or -1
+	if type(sMessage) ~= "string" then
+		error("String expected, got " .. type( sMessage ), 2)
+	elseif type(nLevel) ~= "number" then
+		error("Number expected, got " .. type( nLevel ), 2)
+	end
+	
+	if not bBool then
+		error( sMessage, iLevel + 1 )
+	end
+	return bBool
+end
+
 local currentTextColour = colours.white
 local currentBackgroundColour = colours.black
 local currentX = 0
@@ -10,28 +24,29 @@ for k, v in pairs( term ) do
 end
 
 function term.setTextColour( nColour )
-	assert( type( nColour ) == "number", "number expected, got " .. type( nColour ) )
+	assert( type( nColour ) == "number", "Number expected, got " .. type( nColour ), 2)
 	oldTerm.setTextColour( nColour )
 end
 term.setTextColor = term.setTextColour
 
 function term.setBackgroundColour( nColour )
-  assert( type( nColour ) == "number", "number expected, got " .. type( nColour ) )
+  assert( type( nColour ) == "number", "Number expected, got " .. type( nColour ), 2)
 	oldTerm.setBackgroundColour( nColour )
 end
 term.setBackgroundColor = term.setBackgroundColour
 
 function term.setCursorPos( nx, ny )
-  assert( type( nx ) == "number", "expected number, got " .. type( nx ) )
-  assert( type( ny ) == "number", "expected number, got " .. type( ny ) )
+  assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
+  assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
   oldTerm.setCursorPos( nx, ny )
   currentX = nx
   currentY = ny
 end
 
 function term.write( sText )
-  assert( type( sText ) == "string", "string expected, got " .. type( sText ) )
-	if #sText > 0 then
+  assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
+	
+  if #sText > 0 then
     for i = 1, #sText do
       local nx, ny = term.getCursorPos()
       tPixels[ ( ( nx + i ) - 1 ) .. " " .. ny ] = {
@@ -48,26 +63,26 @@ end
 
 function term.clear( nx, ny, nTextColour, nBackgroundColour )
   if nTextColour ~= nil then
-    assert( type( nTextColour ) == "number", "number expected, got " .. type( nTextColour ) )
+    assert( type( nTextColour ) == "number", "Number expected, got " .. type( nTextColour ), 2)
     term.setTextColour( nTextColour )
   end
   if nBackgroundColour ~= nil then
-    assert( type( nBackgroundColour ) == "number", "number expected, got " .. type( nBackgroundColour ) )
+    assert( type( nBackgroundColour ) == "number", "Number expected, got " .. type( nBackgroundColour ), 2)
     term.setBackgroundColour( nBackgroundColour )
   end
   if nx ~= nil then
-    assert( type( nx ) == "number", "number expected, got " .. type( nx ) )
+    assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
   end
   if ny ~= nil then
-    assert( type( ny ) == "number", "number expected, got " .. type( nx ) )
+    assert( type( ny ) == "number", "Number expected, got " .. type( nx ), 2)
   end
   term.setCursorPos( nx or currentX, ny or currentY )
   oldTerm.clear()
 end
 
 function term.getPixelData( nx, ny )
-  assert( type( nx ) == "number", "number expected, got " .. type( nx ) )
-  assert( type( ny ) == "number", "number expected, got " .. type( ny ) )
+  assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
+  assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
   return tPixels[ nx .. " " .. ny ]
 end
 
