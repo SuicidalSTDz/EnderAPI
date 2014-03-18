@@ -25,13 +25,13 @@ function bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour 
 	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
 	assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
 	
-  if nTextColour ~= nil then
-    assert( type( nTextColour ) == "number", "Number expected, got " .. type( nTextColour ), 2)
+  if nTextColour then
+    assert( type( nTextColour ) == "number", "Number/nil expected, got " .. type( nTextColour ), 2)
   end
-  if nBracketColour ~= nil then
-    assert( type( nBracketColour ) == "number", "Number expected, got " .. type( nBracketColour ), 2)
+  if nBracketColour then
+    assert( type( nBracketColour ) == "number", "Number/nil expected, got " .. type( nBracketColour ), 2)
   end
-  if nBackgroundColour ~= nil then
+  if nBackgroundColour then
 		assert( type( nBackgroundColour ) == "number", "Number/nil expected, got " .. type( nBackgroundColour ), 2)
     term.setBackgroundColour( nBackgroundColour )
 	end
@@ -69,6 +69,7 @@ end
 ]]
 function printColourFormat( sText )
   assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
+  local char200 = string.char( 200 )
   
   local storage = {}
   local function matchLong( sMode1, sColour1, sMode2, sColour2 )
@@ -77,15 +78,14 @@ function printColourFormat( sText )
         t = ( sMode1 == "t" and tonumber( sColour1 ) or tonumber( sColour2 ) ),
         b = ( sMode1 == "b" and tonumber( sColour1 ) or tonumber( sColour2 ) )
       } )
-      return "<%&*()>"
     end
     
     if sMode1 == "b" and sMode2 == "b" then
       table.insert( storage, { b = tonumber( sColour2 ) } )
-    else
+    elseif sMode1 == "t" and sMode2 == "t" then
       table.insert( storage, { t = tonumber( sColour2 ) } )
     end
-    return "<%&*()>"
+    return char200
   end
   
   local function matchShort( sMode, sColour ) 
@@ -98,8 +98,10 @@ function printColourFormat( sText )
   
   -- Print it out on the terminal
   local index = 1
-  for str in parsed:gmatch( "[^<%%&%*%(%)>]+" ) do
-    if storage[index] then
+  local sMatch = "[^" .. char200 .. "]+"
+  for i = 1, #parsed do
+    local char = parsed:sub( i, i )
+    if storage[index] and char == char200 then
       if storage[index].t then
         term.setTextColour( 2 ^ storage[index].t )
       end
@@ -107,7 +109,8 @@ function printColourFormat( sText )
         term.setBackgroundColour( 2 ^ storage[index].b )
       end
       index = index + 1
+    else
+       write( char )
     end
-    write( str )
   end
 end

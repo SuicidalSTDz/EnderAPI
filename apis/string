@@ -31,4 +31,46 @@ function string:splitAtWhite()
 	return tData
 end
 
+--[[
+  WARNING: str:replaceChar & str:safePattern dont work on CCLite!
+  Though string.replaceChar & string.safePattern do work, its a bug in the emulator
+]]
+
+--[[
+  Replace the character at nPos with given string
+  @author EngineerCoding
+]]
+function string:replaceChar( nPos, sReplace )
+  assert( type( nPos ) == "number", "Number expected, got " .. type( nLength ), 2)
+  assert( type( sReplace ) == "string", "String expected, got " .. type( nCharSet ), 2)
+  return self:sub( 1, nPos - 1 ) .. sReplace .. self:sub( nPos + 1 )
+end
+
+
+local magicChars = {
+  ["("] = true, [")"] = true, ["%"] = true, ["."] = true,
+  ["["] = true, ["]"] = true, ["$"] = true, ["*"] = true,
+  ["+"] = true, ["-"] = true, ["^"] = true, ["?"] = true
+}
+--[[
+  Makes a pattern safe, it makes the string pattern-proof. For instance:
+    local sequence = "$%^hal"
+    sequence = sequence:safePattern()
+    print( sequence ) -> %$%%%^hal
+  This only would be useful for string.find or some other function which uses patterns
+  @author EngineerCoding
+]]
+function string:safePattern()
+  local skip = false
+  local str = self
+  for i = 1, #str do
+    if magicChars[str:sub(i, i)] and not skip then
+      str = str:sub(1, i - 1) .. "%" .. str:sub( i )
+      skip = true
+    elseif skip then
+      skip = false
+    end
+  end
+  return str
+end
 
