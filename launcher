@@ -92,8 +92,8 @@ local function update( tLines, sHeader, sFooter )
 			end
 			redraw()
 		
-		--# 'mouse_click'
-		elseif sEvent == "mouse_click" and param == 1 then
+		--# 'mouse_click' and 'mouse_drag'
+		elseif (sEvent == "mouse_click" or sEvent == "mouse_drag") and param == 1 then
       if ( nx >= w - 6 and nx <= w and ny == h ) then
         break
       end
