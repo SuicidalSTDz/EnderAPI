@@ -1,0 +1,157 @@
+local tFiles = {
+  "/EnderAPI/master/apis/colors",
+  "/EnderAPI/master/apis/number",
+  "/EnderAPI/master/apis/pastebin",
+  "/EnderAPI/master/apis/text",
+  "/EnderAPI/master/apis/messageBox",
+  "/EnderAPI/master/apis/http",
+  "/EnderAPI/master/apis/term",
+  "/EnderAPI/master/apis/string",
+  "/EnderAPI/master/config"
+  }
+local tUpdate = {}
+local tDownloaded = {}
+local tbl = {}
+local shouldAutoUpdate = true
+local w, h = term.getSize()
+
+local function update( tLines, sHeader, sFooter )
+	local nOffset = 0
+  
+	term.setTextColour( colours.black )
+	term.setTextColour( colours.white )
+	term.clear()
+	paintutils.drawLine( 1, 1, w, 1, colours.purple )
+	paintutils.drawLine( 1, h, w, h, colours.purple )
+  term.setTextColour( colours.white )
+  term.setCursorPos( ( w - #sHeader ) / 2 + 1, 1 )
+  term.write( sHeader )
+  term.setCursorPos( 2, h )
+  term.write( sFooter )
+  term.setCursorPos( w - 6, h )
+  term.write( "[Done]" )
+  term.setBackgroundColour( colours.black )
+  
+	local function redraw()
+    for i = 2, h - 1 do
+			if tLines[ ( i - 1 ) + nOffset ] then
+        term.setCursorPos( 1, i )
+        if tbl[ ( i - 1 ) + nOffset ].update then
+          term.setTextColour( colours.lime )
+        else
+          term.setTextColour( colours.red )
+        end
+				term.write( tLines[ ( i - 1 ) + nOffset ] )
+			end
+		end
+	end
+  
+  for i = nOffset + 1, ( h + nOffset ) - 2 do
+		if tLines[ i ] then
+      table.insert( tbl, {
+        endX = #tLines[ i ],
+        y = i + 1 - nOffset,
+        data = tLines[ i ],
+        update = true
+        }
+      )
+    end
+	end
+  
+	redraw()
+  while true do
+		local sEvent, param, nx, ny = os.pullEvent()
+		
+		--# 'mouse_scroll'
+		if sEvent == "mouse_scroll" then
+			if param == 1 and nOffset < math.max( #tLines - ( h - 2 ), 0 ) then
+				nOffset = nOffset + 1
+			elseif param == -1 and nOffset > 0 then
+				nOffset = nOffset - 1
+			end
+			redraw()
+		
+		--# 'mouse_click'
+		elseif sEvent == "mouse_click" and param == 1 then
+      if ( nx >= w - 6 and nx <= w and ny == h ) then
+        break
+      end
+			for _, tData in pairs( tbl ) do
+				if ( nx >= 1 and nx <= tData.endX and ny == tData.y ) then
+          tData.update = not tData.update
+				end
+			end
+      redraw()
+		end
+	end
+end
+
+--# Create directories if they are not present
+if not fs.exists( "/.EnderAPI" ) then
+  fs.makeDir( "/.EnderAPI" )
+end
+if not fs.exists( "/.EnderAPI/master" ) then
+	fs.makeDir( "/.EnderAPI/master" )
+end
+if not fs.exists( "/.EnderAPI/master/apis" ) then
+	fs.makeDir( "/.EnderAPI/master/apis" )
+end
+if not fs.exists( "/.EnderAPI/master/temp" ) then
+	fs.makeDir( "/.EnderAPI/master/temp" )
+end
+
+--# Main Update Script
+if shouldAutoUpdate then
+  for i = 1, #tFiles do
+    
+    local sResponse, sData
+    local response = http.get( "https://raw.github.com/SuicidalSTDz" .. tFiles[ i ] )
+    if response then
+      sResponse = response.readAll()
+      response.close()
+    else
+      sResponse = ""
+    end
+    
+    local sFile = tFiles[ i ]:sub( 1, 1 ) .. "." .. tFiles[ i ]:sub( 2, #tFiles[ i ] )
+    if not fs.exists( sFile ) then
+      local handle = io.open( sFile, "w" )
+      handle:write( "This file was improperly downloaded, please try again later" )
+      handle:close()
+    else
+      local handle = fs.open( sFile, "r" )
+      sData = handle.readAll()
+      handle.close()
+    end
+
+    if ( sResponse ~= "" ) and ( sData ~= sResponse ) then
+      tDownloaded[ sFile ] = sResponse
+      table.insert( tUpdate, sFile )
+    end
+  end
+  
+  if #tUpdate > 0 then
+    update( tUpdate, "EnderAPI would like to update these files", "Click on a file to set its update value" )
+  end
+end
+
+for k, v in pairs( tbl ) do
+  if v.update then
+    print( v.data )
+    sleep( 1 )
+    print( tDownloaded[ v.data ] )
+    sleep( 2 )
+    local handle = io.open( v.data, "w" )
+    handle:write( tDownloaded[ v.data ] )
+    handle:close()
+  end
+end
+
+--[[for i = 1, #tbl do
+  if tbl[ i ].update then
+    local sFile = tbl[ i ].data
+    local handle = io.open( sFile, "w" )
+    handle:write( tDownloaded.sFile )
+    handle:close()
+  end
+end]]
