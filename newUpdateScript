@@ -17,7 +17,7 @@ local tFiles = {
   "/EnderAPI/master/apis/messageBox",
   "/EnderAPI/master/apis/http",
   "/EnderAPI/master/apis/term",
-  "/EnderAPI/master/apis/string"
+  "/EnderAPI/master/apis/string",
   }
 
 --# Create directories if they are not present
@@ -32,6 +32,9 @@ if not fs.exists( "/.EnderAPI/master/apis" ) then
 end
 if not fs.exists( "/.EnderAPI/master/temp" ) then
 	fs.makeDir( "/.EnderAPI/master/temp" )
+end
+if not fs.exists( "/.EnderAPI/master/help" ) then
+  fs.makeDir( "/.EnderAPI/master/help" )
 end
 
 local function update( tLines, sHeader, sFooter )
@@ -239,5 +242,16 @@ if autoUpdate then
     end
   end
 end
+
+--[[# Load in new help topics
+for k, v in pairs( help.topics() ) do
+  if fs.exists( "/.EnderAPI/master/help/" .. v ) then
+    fs.delete( "/.EnderAPI/master/help/" .. v )
+  end
+  fs.copy( help.path() .. "/" .. v, "/.EnderAPI/master/help/" .. v )
+end
+local handle = io.open( "/.EnderAPI/master/help/text", "w" )
+handle:write("Functions in the Text API:\ntext.center( sText, nx, ny )\ntext.bracket( sText, nx, ny, nTextColor, nBracketColor, nBackgroundColor )\ntext.printColourFormat( sText )" )
+handle:close()]]
 
 loadAPIs()
