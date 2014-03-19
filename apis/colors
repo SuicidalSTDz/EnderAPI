@@ -1,18 +1,17 @@
 local function assert(bBool, sMessage, nLevel)
-	local iLevel = iLevel or -1
-	if type(sMessage) ~= "string" then
-		error("String expected, got " .. type( sMessage ), 2)
-	elseif type(nLevel) ~= "number" then
-		error("Number expected, got " .. type( nLevel ), 2)
-	end
+  local iLevel = iLevel or -1
+  if type(sMessage) ~= "string" then
+    error("String expected, got " .. type( sMessage ), 2)
+  elseif type(nLevel) ~= "number" then
+    error("Number expected, got " .. type( nLevel ), 2)
+  end
 	
-	if not bBool then
-		error( sMessage, iLevel + 1 )
-	end
-	return bBool
+  if not bBool then
+    error( sMessage, iLevel + 1 )
+  end
+  return bBool
 end
 
--- Its better to do: function x() because it could cause issues when its local (especially if you are writing a recursion based function)
 function colors.isValid( nColor )
   assert( type( nColor ) == "number","Number expected, got " .. type( nColor ), 2)
   
