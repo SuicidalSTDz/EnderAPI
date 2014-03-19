@@ -12,14 +12,14 @@ local function assert(bBool, sMessage, nLevel)
   return bBool
 end
 
-function generate( nChars, nMin, nMax )
-  assert( type( nChars ) == "number", "Number expected, got " .. type( nChars ), 2)
+function generate( nLength, nMin, nMax )
+  assert( type( nLength ) == "number", "Number expected, got " .. type( nLength ), 2)
   assert( type( nMins ) == "number", "Number expected, got " .. type( nMin ), 2)
   assert( type( nMax ) == "number", "Number expected, got " .. type( nMax ), 2)
   assert( nMin < nMax, "Minimum must be less than maximum", 2)
 
   local n = math.random( nMin, nMax )
-  for i = 1, nChars do
+  for i = 1, nLength do
     n = n .. math.random( nMin, nMax )
   end
   return tonumber( n )
