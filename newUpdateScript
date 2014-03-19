@@ -255,3 +255,10 @@ handle:write("Functions in the Text API:\ntext.center( sText, nx, ny )\ntext.bra
 handle:close()]]
 
 loadAPIs()
+
+if term.enderAPI then
+  term.reset()
+else
+  term.clear()
+  term.setCursorPos(1,1)
+end
