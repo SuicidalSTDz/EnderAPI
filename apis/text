@@ -114,3 +114,4 @@ function printColourFormat( sText )
     end
   end
 end
+printColorFormat = printColourFormat
