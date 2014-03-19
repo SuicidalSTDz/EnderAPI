@@ -17,7 +17,7 @@ local tFiles = {
   "/EnderAPI/master/apis/messageBox",
   "/EnderAPI/master/apis/http",
   "/EnderAPI/master/apis/term",
-  "/EnderAPI/master/apis/string",
+  "/EnderAPI/master/apis/string"
   }
 
 --# Create directories if they are not present
