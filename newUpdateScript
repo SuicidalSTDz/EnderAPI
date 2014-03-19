@@ -137,21 +137,8 @@ end
 
 for k, v in pairs( tbl ) do
   if v.update then
-    print( v.data )
-    sleep( 1 )
-    print( tDownloaded[ v.data ] )
-    sleep( 2 )
     local handle = io.open( v.data, "w" )
     handle:write( tDownloaded[ v.data ] )
     handle:close()
   end
 end
-
---[[for i = 1, #tbl do
-  if tbl[ i ].update then
-    local sFile = tbl[ i ].data
-    local handle = io.open( sFile, "w" )
-    handle:write( tDownloaded.sFile )
-    handle:close()
-  end
-end]]
