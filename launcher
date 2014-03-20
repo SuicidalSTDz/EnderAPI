@@ -1,6 +1,6 @@
 --# Check if the user hs the http module enabled
 if not http then
-	error("HTTP is required to run this!", 2)
+	error("HTTP is required to run this!", 0)
 end
 
 --# USER VARIABLE(S)
@@ -180,7 +180,7 @@ for i = 1, #tFiles do
 	--# Open sFile and store its contents in sData
 	local sFile = (tFiles[ i ]:sub( 1, 1 ) .. "." .. tFiles[ i ]:sub( 2, #tFiles[ i ] )):gsub("%.lua", "")
 	if not fs.exists( sFile ) then
-		local handle = io.open( sFile, "w" )
+    local handle = io.open( sFile, "w" )
 		handle:write( "This file was improperly downloaded, please try again later" )
 		handle:close()
 	else
