@@ -1,36 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="EnderAPI : A free to use, modifiable API by the people, for the people" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>EnderAPI by SuicidalSTDz</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>EnderAPI</title>
   </head>
-
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/SuicidalSTDz/EnderAPI">View on GitHub</a>
+      <header>
+        <h1>EnderAPI</h1>
+        <p>A free to use, modifiable API by the people, for the people</p>
+      </header>
 
-          <h1 id="project_title">EnderAPI</h1>
-          <h2 id="project_tagline">A free to use, modifiable API by the people, for the people</h2>
+      <div id="banner">
+        <span id="logo"></span>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/SuicidalSTDz/EnderAPI/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/SuicidalSTDz/EnderAPI/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+        <a href="https://github.com/SuicidalSTDz/EnderAPI" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/SuicidalSTDz/EnderAPI/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/SuicidalSTDz/EnderAPI/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
         <h2>
 <a name="developement-team" class="anchor" href="#developement-team"><span class="octicon octicon-link"></span></a>Developement Team</h2>
 
@@ -47,140 +55,208 @@
 <h3>
 <a name="fs-api" class="anchor" href="#fs-api"><span class="octicon octicon-link"></span></a>Fs API</h3>
 
-<p><code>fs.append( sPath, sData )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>fs.append( sPath, sData )
+</code></pre>
 
-<p><code>fs.read( sPath )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>fs.save( sPath, sData )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>fs.read( sPath )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>fs.save( sPath, sData )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
 
 <h3>
 <a name="http-api" class="anchor" href="#http-api"><span class="octicon octicon-link"></span></a>HTTP API</h3>
 
-<p><code>http.download( sURL, sFile )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>http.download( sURL, sFile )
+</code></pre>
 
-<h3>
+<ul>
+<li>Downloads the given sURL as sFile <br>
+</li>
+<li>Returns: nil <br>
+</li>
+</ul><h3>
 <a name="messagebox-api" class="anchor" href="#messagebox-api"><span class="octicon octicon-link"></span></a>MessageBox API</h3>
 
-<p>WARNING: Probably very buggy <br><code>messageBox.create( sText, fYes, fNo )</code> <br>
-( Insert description here ) <br></p>
+<p>WARNING: Probably very buggy <br></p>
+
+<pre><code>messageBox.create( sText, fYes, fNo )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
 
 <h3>
 <a name="number-api" class="anchor" href="#number-api"><span class="octicon octicon-link"></span></a>Number API</h3>
 
-<p><code>number.generate( nLength, nMin, nMax )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>number.generate( nLength, nMin, nMax )
+</code></pre>
 
-<p><code>number.isEven( n )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>number.isOdd( n )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>number.isEven( n )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>number.isOdd( n )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
 
 <h3>
 <a name="pastebin-api" class="anchor" href="#pastebin-api"><span class="octicon octicon-link"></span></a>Pastebin API</h3>
 
-<p><code>pastebin.get( sCode, sFile )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>pastebin.get( sCode, sFile )
+</code></pre>
 
-<p><code>pastebin.put( sFile )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>pastebin.updateFile( sCode, sFile )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>pastebin.put( sFile )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>pastebin.updateFile( sCode, sFile )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
 
 <h3>
 <a name="string-api" class="anchor" href="#string-api"><span class="octicon octicon-link"></span></a>String API</h3>
 
-<p><code>string.generate( nLength, nCharSet )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>string.generate( nLength, nCharSet )
+</code></pre>
 
-<p><code>string:replaceChar( nPos, sReplace )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>string:safePattern()</code> <br>
-( Insert description here ) <br></p>
+<pre><code>string:replaceChar( nPos, sReplace )
+</code></pre>
 
-<p><code>string:splitAtWhite()</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
+
+<pre><code>string:safePattern()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>string:splitAtWhite()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
 
 <h3>
 <a name="term-api" class="anchor" href="#term-api"><span class="octicon octicon-link"></span></a>Term API</h3>
 
-<p><code>term.setCursorBlink( bBlink )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.setCursorBlink( bBlink )
+</code></pre>
 
-<p><code>term.getCursorBlink()</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.setTextColor( nColor )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.getCursorBlink()
+</code></pre>
 
-<p><code>term.setTextColour( nColour )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.setBackgroundColor( nColor )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.setTextColor( nColor )
+</code></pre>
 
-<p><code>term.setBackgroundColour( nColour )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.setCursorPos( nx, ny )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.setTextColour( nColour )
+</code></pre>
 
-<p><code>term.write( sText )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.clear( nx, ny, nTextColour, nBackgroundColour )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.setBackgroundColor( nColor )
+</code></pre>
 
-<p><code>term.reset()</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.getPixelData( nx, ny )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.setBackgroundColour( nColour )
+</code></pre>
 
-<p><code>term.getTextColor()</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.getTextColour()</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.setCursorPos( nx, ny )
+</code></pre>
 
-<p><code>term.getBackgroundColor()</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>term.getBackgroundColour()</code> <br>
-( Insert description here ) <br></p>
+<pre><code>term.write( sText )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.clear( nx, ny, nTextColour, nBackgroundColour )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.reset()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.getPixelData( nx, ny )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.getTextColor()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.getTextColour()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.getBackgroundColor()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>term.getBackgroundColour()
+</code></pre>
+
+<p>( Insert description here ) <br></p>
 
 <h3>
 <a name="text-api" class="anchor" href="#text-api"><span class="octicon octicon-link"></span></a>Text API</h3>
 
-<p><code>text.bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>text.bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
+</code></pre>
 
-<p><code>text.center( sText, nx, ny )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
 
-<p><code>text.printColorFormat( sText )</code> <br>
-( Insert description here ) <br></p>
+<pre><code>text.center( sText, nx, ny )
+</code></pre>
 
-<p><code>text.printColourFormat( sText )</code> <br>
-( Insert description here ) <br></p>
+<p>( Insert description here ) <br></p>
+
+<pre><code>text.printColorFormat( sText )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
+
+<pre><code>text.printColourFormat( sText )
+</code></pre>
+
+<p>( Insert description here ) <br></p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">EnderAPI maintained by <a href="https://github.com/SuicidalSTDz">SuicidalSTDz</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/SuicidalSTDz">SuicidalSTDz</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
