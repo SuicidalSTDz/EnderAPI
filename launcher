@@ -3,10 +3,16 @@ local autoUpdate = true
 local askUser = true
 
 --# Other variables, no touchy!
+local tArgs ={...}
 local tUpdate = {}
 local tDownloaded = {}
 local tbl = {}
 local w, h = term.getSize()
+
+--# Allow temporary update disabling
+if args[1] and args[1] == "noupdate" then
+  autoUpdate = false
+end
 
 --# Files to grab when updating/installing
 local tFiles = {
