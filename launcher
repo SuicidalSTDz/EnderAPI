@@ -104,10 +104,9 @@ local function update( tLines, sHeader, sFooter )
     
     --# 'mouse_click' and 'mouse_drag'
     elseif (sEvent == "mouse_click" or sEvent == "mouse_drag") and param == 1 then
-      --# This is where stuff breaks
-      --if oldy and sEvent == "mouse_drag" and oldy == ny then
+      if oldy and sEvent == "mouse_drag" and oldy == ny then
         -- Do nothing, prevent buttons going crazy when dragging along X axis
-      --else
+      else
         oldy = ny
         if ( nx >= w - 6 and nx <= w and ny == h ) then
           break
@@ -118,7 +117,7 @@ local function update( tLines, sHeader, sFooter )
           end
         end
         redraw()
-      --end
+      end
     end
   end
 end
