@@ -1,13 +1,13 @@
-local function assert(bBool, sMessage, nLevel)
-  local iLevel = iLevel or -1
+local function assert(bBool, sMessage, nLevel) -- is bBool equivelent to error()/printError()? Should we print an error rather than just return true/false?
+  local iLevel = iLevel or -1 -- what? shouldn't this be nLevel, and not local (It already is local)
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
   elseif type(nLevel) ~= "number" then
     error("Number expected, got " .. type( nLevel ), 2)
   end
-	
+  
   if not bBool then
-    error( sMessage, iLevel + 1 )
+    error( sMessage, iLevel + 1 ) -- will always be 0 unless we change it to nLevel
   end
   return bBool
 end
@@ -16,7 +16,7 @@ function create( sText, fYes, fNo )
   assert( type( sText ) == "string", "String expected, got ".. type( sText ), 2)
   assert( type( fYes ) == "function", "Function expected, got ".. type( fYes ), 2)
   assert( type( fNo ) == "function", "Function expected, got ".. type( fNo ), 2)
-	
+  
   local nw, nh = term.getSize()
   local startX = math.floor( ( ( nw - #sText ) / 2 ) - 5 )
   local startY = math.floor( nh / 2 - 3 )
@@ -30,31 +30,31 @@ function create( sText, fYes, fNo )
   paintutils.drawLine( startX, endY, endX, endY, colours.purple )
   term.setBackgroundColour( colours.black )
   -- Shouldnt be this an independent API? Considering this uses the text API
-  text.bracket( "Yes", math.floor( ( startX + nMiddle ) / 2 - 3 ), endY - 2, colours.lightGrey, colours.white, colours.black )
+  text.bracket( "Yes", math.floor( ( startX + nMiddle ) / 2 - 3 ), endY - 2, colours.lightGrey, colours.white, colours.black ) -- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality
   text.bracket( "No", math.floor( ( endX + nMiddle ) / 2 ), endY - 2, colours.lightGrey, colours.white, colours.black )
   term.setCursorPos( nMiddle - ( #sText / 2 ), startY + 2 )
   term.write( sText )
-	
+  
   local sEvent, nButton, xPos, yPos
   while true do
     sEvent, nButton, xPos, yPos = os.pullEvent( "mouse_click" )
-	
+    
     if nButton == 1 then
       if yPos == endY - 2 then
         if ( xPos >= math.floor( ( startX + nMiddle ) / 2 - 3 ) and xPos <= math.floor( ( startX + nMiddle ) / 2 - 3 ) + 4 ) then
-	  local ok, err = pcall( fYes )
+          local ok, err = pcall( fYes )
           if not ok then
-            error( "Could not invoke function fYes", 2 )
+            error( "Could not invoke function fYes", 2 ) -- Is there a way to find the function name without it being fed to us?
           end
-	  break
-	elseif ( xPos >= math.floor( ( endX + nMiddle ) / 2 ) and xPos <= math.floor( ( endX + nMiddle ) / 2 ) + 3 ) then
-	  local ok, err = pcall( fNo )
+          break
+        elseif ( xPos >= math.floor( ( endX + nMiddle ) / 2 ) and xPos <= math.floor( ( endX + nMiddle ) / 2 ) + 3 ) then
+          local ok, err = pcall( fNo )
           if not ok then
             error( "Could not invoke function fNo", 2 )
           end
-	  break
-	end
-      end
+          break
+        end
+      end -- Fixed errant tabs; use tabs OR spaces, not both
     end
   end
 end
