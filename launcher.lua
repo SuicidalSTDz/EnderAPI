@@ -53,7 +53,6 @@ if updateLauncher then
           term.setBackgroundColour( colours.black )
           term.clear()
           
-           -- Draw the outline, without paintutils :P
           term.setBackgroundColour( colours.purple )
           local beginBoxW = ( w - 25 ) / 2
           local beginBoxH = math.floor( h / 2 ) - 2
@@ -190,8 +189,10 @@ if updateAPI then
     local w, h = term.getSize()
     local availableFiles = {}
    
-   for k, v in pairs( tFiles ) do
+   local tryUpdate = false
+    for k, v in pairs( tFiles ) do
       if v.update then
+        tryUpdate = true
         table.insert( availableFiles, {
           name = v.fileName,
           colour = 'g'
@@ -199,78 +200,82 @@ if updateAPI then
       end
     end
     
-    term.setBackgroundColour( colours.black )
-    term.clear()
-    
-    term.setBackgroundColour( colours.purple )
-    for i = 1, w do
-      term.setCursorPos( i, 1 )
-      term.write( " " )
-      term.setCursorPos( i, h )
-      term.write( " " )
-    end
-    
-    term.setTextColour( colours.white )
-    term.setCursorPos( 2, 1 )
-    term.write( "EnderAPI would like to update these files" )
-    
-    term.setCursorPos( 2, h )
-    term.write( "Click on a file to set its update value" )
-    
-    term.setCursorPos( w - 9, h )
-    term.write( "[ Done ]" )
-    
-    term.setTextColour( colours.green )
-    
-    local offset = 1
-    local function redraw()
+    if tryUpdate then
       term.setBackgroundColour( colours.black )
+      term.clear()
       
-      local lastColour = 'g'
-      for i = offset, #availableFiles do
-        term.setCursorPos( 2, i - offset + 2 )
-        
-        -- Reduces server -> client packets
-       -- if availableFiles[ i ].colour ~= lastColour then
-          lastColour = availableFiles[ i ].colour
-          if lastColour == 'g' then
-            term.setTextColour( colours.green )
-          elseif lastColour == 'r' then
-            term.setTextColour( colours.red )
-          end
-       -- end
-        term.write( availableFiles[ i ].name )
+      term.setBackgroundColour( colours.purple )
+      for i = 1, w do
+        term.setCursorPos( i, 1 )
+        term.write( " " )
+        term.setCursorPos( i, h )
+        term.write( " " )
       end
-    end
-    
-    redraw()
-    while true do
-      local event = { os.pullEvent() }
-      if event[ 1 ] == "mouse_click" then
-        if event[ 3 ] >= w - 9 and event[ 3 ] <= w - 1 and event[ 4 ] == h then
-          for k, v in pairs( availableFiles ) do
-            if v.colour == 'r' then
-              tFiles[ v.name .. ".lua" ].update = false
-            end
-          end
+      
+      term.setTextColour( colours.white )
+      term.setCursorPos( 2, 1 )
+      term.write( "EnderAPI would like to update these files" )
+      
+      term.setCursorPos( 2, h )
+      term.write( "Click on a file to set its update value" )
+      
+      term.setCursorPos( w - 9, h )
+      term.write( "[ Done ]" )
+      
+      term.setTextColour( colours.green )
+      
+      local offset = 1
+      local function redraw()
+        term.setBackgroundColour( colours.black )
+        
+        local lastColour = 'g'
+        for i = offset, #availableFiles do
+          term.setCursorPos( 2, i - offset + 2 )
           
-          term.setBackgroundColour( colours.black )
-          term.clear()
-          term.setCursorPos( 1, 1 )
-          break
-        elseif event[ 4 ] ~= h and event[ 4 ] ~= 1 then
-          local index = offset + event[ 4 ] - 2
-          if availableFiles[ index ] then
-            if availableFiles[ index ].colour == 'g' then
-              availableFiles[ index ].colour = 'r'
-            else
-              availableFiles[ index ].colour = 'g'
+          -- Reduces server -> client packets
+         -- if availableFiles[ i ].colour ~= lastColour then
+            lastColour = availableFiles[ i ].colour
+            if lastColour == 'g' then
+              term.setTextColour( colours.green )
+            elseif lastColour == 'r' then
+              term.setTextColour( colours.red )
             end
-            redraw()
-          end
+         -- end
+          term.write( availableFiles[ i ].name )
         end
-      elseif event[ 1 ] == "mouse_scroll" then
-        -- Add scrolling
+      end
+      
+      redraw()
+      while true do
+        local event = { os.pullEvent() }
+        if event[ 1 ] == "mouse_click" then
+          if event[ 3 ] >= w - 9 and event[ 3 ] <= w - 1 and event[ 4 ] == h then
+            for k, v in pairs( availableFiles ) do
+              if v.colour == 'r' then
+                tFiles[ v.name .. ".lua" ].update = false
+              end
+            end
+            
+            term.setBackgroundColour( colours.black )
+            term.clear()
+            term.setCursorPos( 1, 1 )
+            break
+          elseif event[ 4 ] ~= h and event[ 4 ] ~= 1 then
+            local index = offset + event[ 4 ] - 2
+            if availableFiles[ index ] then
+              if availableFiles[ index ].colour == 'g' then
+                availableFiles[ index ].colour = 'r'
+              else
+                availableFiles[ index ].colour = 'g'
+              end
+              redraw()
+            end
+          end
+        elseif event[ 1 ] == "mouse_scroll" then
+          -- Add scrolling
+        end
+      else
+        print( "Everything is up to date!" )
       end
     end
   end
