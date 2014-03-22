@@ -42,193 +42,592 @@
 <ul>
 <li>Graph API</li>
 </ul><h2>
-<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+<a name="fs-api" class="anchor" href="#fs-api"><span class="octicon octicon-link"></span></a>Fs API</h2>
 
 <h3>
-<a name="fs-api" class="anchor" href="#fs-api"><span class="octicon octicon-link"></span></a>Fs API</h3>
+<a name="fsappend-spath-sdata-" class="anchor" href="#fsappend-spath-sdata-"><span class="octicon octicon-link"></span></a>fs.append( sPath, sData )</h3>
 
-<pre><code>fs.append( sPath, sData )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">fs</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="n">sData</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sData</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sData</span> <span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">f</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sPath</span><span class="p">)</span> <span class="k">then</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">w"</span> <span class="p">)</span>
+  <span class="k">else</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">a"</span> <span class="p">)</span>
+  <span class="k">end</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sData</span> <span class="p">)</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">end</span>
+</pre></div>
 
 <ul>
-<li>Appends sData to sPath <br>
-</li>
-</ul><pre><code>fs.read( sPath )
-</code></pre>
-
-<p>( Insert description here ) <br></p>
-
-<pre><code>fs.save( sPath, sData )
-</code></pre>
-
-<ul>
-<li>Saves sData to sPath (overwrites current file) <br>
+<li>Appends sData to sPath</li>
+<li>Returns: <em>nil</em>
 </li>
 </ul><h3>
-<a name="http-api" class="anchor" href="#http-api"><span class="octicon octicon-link"></span></a>HTTP API</h3>
+<a name="fsread-spath-" class="anchor" href="#fsread-spath-"><span class="octicon octicon-link"></span></a>fs.read( sPath )</h3>
 
-<pre><code>http.download( sURL, sFile )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">fs</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">string expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="k">if</span> <span class="n">fs</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sPath</span><span class="p">)</span> <span class="k">then</span>
+    <span class="kd">local</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">r"</span> <span class="p">)</span>
+    <span class="kd">local</span> <span class="n">sData</span> <span class="o">=</span> <span class="n">handle</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span>
+    <span class="n">handle</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">sData</span><span class="p">,</span> <span class="kc">true</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">false</span>
+<span class="k">end</span>
+</pre></div>
 
 <ul>
-<li>Downloads the given sURL as sFile <br>
-</li>
-<li>Returns: nil <br>
+<li>Returns sPath's contents</li>
+<li>Returns: contents <em>string</em>, success <em>boolean</em>
 </li>
 </ul><h3>
-<a name="messagebox-api" class="anchor" href="#messagebox-api"><span class="octicon octicon-link"></span></a>MessageBox API</h3>
+<a name="fssave-spath-sdata-" class="anchor" href="#fssave-spath-sdata-"><span class="octicon octicon-link"></span></a>fs.save( sPath, sData )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">fs</span><span class="p">.</span><span class="nf">save</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="n">sData</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sData</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sData</span> <span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">f</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">w"</span> <span class="p">)</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sData</span> <span class="p">)</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>Saves sData to sPath ( overwrites current file )</li>
+<li>Returns: <em>nil</em>
+</li>
+</ul><h2>
+<a name="http-api" class="anchor" href="#http-api"><span class="octicon octicon-link"></span></a>HTTP API</h2>
+
+<h3>
+<a name="httdownload-surl-spath-" class="anchor" href="#httdownload-surl-spath-"><span class="octicon octicon-link"></span></a>htt.download( sUrl, sPath )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">http</span><span class="p">.</span><span class="nf">download</span><span class="p">(</span> <span class="n">sUrl</span><span class="p">,</span> <span class="n">sPath</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sUrl</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sUrl</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="s2">"</span><span class="s">Path already exists"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+  <span class="kd">local</span> <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="p">.</span><span class="n">get</span><span class="p">(</span> <span class="n">sUrl</span> <span class="p">)</span>
+  <span class="k">if</span> <span class="n">response</span> <span class="k">then</span>
+    <span class="kd">local</span> <span class="n">f</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">w"</span> <span class="p">)</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">response</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span> <span class="p">)</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">response</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="kc">false</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>Downloads the given sUrl in sPath</li>
+<li>Returns: success <em>boolean</em>
+</li>
+</ul><h2>
+<a name="messagebox-api" class="anchor" href="#messagebox-api"><span class="octicon octicon-link"></span></a>MessageBox API</h2>
+
+<h3>
+<a name="messageboxcreate-stext-fyes-fno-" class="anchor" href="#messageboxcreate-stext-fyes-fno-"><span class="octicon octicon-link"></span></a>messageBox.create( sText, fYes, fNo )</h3>
 
 <p>WARNING: Probably very buggy <br></p>
 
-<pre><code>messageBox.create( sText, fYes, fNo )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">create</span><span class="p">(</span> <span class="n">sText</span><span class="p">,</span> <span class="n">fYes</span><span class="p">,</span> <span class="n">fNo</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span><span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fYes</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">function"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Function expected, got "</span><span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fYes</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fNo</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">function"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Function expected, got "</span><span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fNo</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 
-<p>( Insert description here ) <br></p>
+  <span class="kd">local</span> <span class="n">nw</span><span class="p">,</span> <span class="n">nh</span> <span class="o">=</span> <span class="n">term</span><span class="p">.</span><span class="n">getSize</span><span class="p">()</span>
+  <span class="kd">local</span> <span class="n">startX</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="n">nw</span> <span class="o">-</span> <span class="o">#</span><span class="n">sText</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">-</span> <span class="mi">5</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">startY</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="n">nh</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">endX</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="n">nw</span> <span class="o">+</span> <span class="o">#</span><span class="n">sText</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">7</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">endY</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="n">nh</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">nMiddle</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">startX</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span>
+
+  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">endX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">purple</span> <span class="p">)</span>
+  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">startX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">purple</span> <span class="p">)</span>
+  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">endX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">endX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">purple</span> <span class="p">)</span>
+  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">endX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">purple</span> <span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setBackgroundColour</span><span class="p">(</span> <span class="n">colours</span><span class="p">.</span><span class="n">black</span> <span class="p">)</span>
+  <span class="c1">-- Shouldnt be this an independent API? Considering this uses the text API</span>
+  <span class="n">text</span><span class="p">.</span><span class="n">bracket</span><span class="p">(</span> <span class="s2">"</span><span class="s">Yes"</span><span class="p">,</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">),</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">lightGrey</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">black</span> <span class="p">)</span> <span class="c1">-- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality</span>
+  <span class="n">text</span><span class="p">.</span><span class="n">bracket</span><span class="p">(</span> <span class="s2">"</span><span class="s">No"</span><span class="p">,</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">),</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">lightGrey</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">black</span> <span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="n">nMiddle</span> <span class="o">-</span> <span class="p">(</span> <span class="o">#</span><span class="n">sText</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">),</span> <span class="n">startY</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span>
+
+  <span class="kd">local</span> <span class="n">sEvent</span><span class="p">,</span> <span class="n">nButton</span><span class="p">,</span> <span class="n">xPos</span><span class="p">,</span> <span class="n">yPos</span>
+  <span class="k">while</span> <span class="kc">true</span> <span class="k">do</span>
+    <span class="n">sEvent</span><span class="p">,</span> <span class="n">nButton</span><span class="p">,</span> <span class="n">xPos</span><span class="p">,</span> <span class="n">yPos</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">pullEvent</span><span class="p">(</span> <span class="s2">"</span><span class="s">mouse_click"</span> <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nButton</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">then</span>
+      <span class="k">if</span> <span class="n">yPos</span> <span class="o">==</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">2</span> <span class="k">then</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">xPos</span> <span class="o">&gt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">xPos</span> <span class="o">&lt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">4</span> <span class="p">)</span> <span class="k">then</span>
+          <span class="kd">local</span> <span class="n">ok</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="nb">pcall</span><span class="p">(</span> <span class="n">fYes</span> <span class="p">)</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="k">then</span>
+            <span class="nb">error</span><span class="p">(</span> <span class="s2">"</span><span class="s">Could not invoke function fYes"</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span> <span class="c1">-- Is there a way to find the function name without it being fed to us?</span>
+          <span class="k">end</span>
+          <span class="k">break</span>
+        <span class="k">elseif</span> <span class="p">(</span> <span class="n">xPos</span> <span class="o">&gt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">xPos</span> <span class="o">&lt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">)</span> <span class="k">then</span>
+          <span class="kd">local</span> <span class="n">ok</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="nb">pcall</span><span class="p">(</span> <span class="n">fNo</span> <span class="p">)</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="k">then</span>
+            <span class="nb">error</span><span class="p">(</span> <span class="s2">"</span><span class="s">Could not invoke function fNo"</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
+          <span class="k">end</span>
+          <span class="k">break</span>
+        <span class="k">end</span>
+      <span class="k">end</span> <span class="c1">-- Fixed errant tabs; use tabs OR spaces, not both</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h2>
+<a name="number-api" class="anchor" href="#number-api"><span class="octicon octicon-link"></span></a>Number API</h2>
 
 <h3>
-<a name="number-api" class="anchor" href="#number-api"><span class="octicon octicon-link"></span></a>Number API</h3>
+<a name="numbergenerate-nlength-nmin-nmax-" class="anchor" href="#numbergenerate-nlength-nmin-nmax-"><span class="octicon octicon-link"></span></a>number.generate( nLength, nMin, nMax )</h3>
 
-<pre><code>number.generate( nLength, nMin, nMax )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">generate</span><span class="p">(</span> <span class="n">nLength</span><span class="p">,</span> <span class="n">nMin</span><span class="p">,</span> <span class="n">nMax</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nLength</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nLength</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nMins</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nMin</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nMax</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nMax</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="n">nMin</span> <span class="o">&lt;</span> <span class="n">nMax</span><span class="p">,</span> <span class="s2">"</span><span class="s">Minimum must be less than maximum"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-<ul>
-<li>Generates a number of nLength with values ranging from nMin to nMax <br>
-</li>
-<li>Returns: number <br>
-</li>
-</ul><pre><code>number.isEven( n )
-</code></pre>
-
-<ul>
-<li>Returns whether or not n is an even number <br>
-</li>
-<li>Returns: boolean <br>
-</li>
-</ul><pre><code>number.isOdd( n )
-</code></pre>
+  <span class="kd">local</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">math.random</span><span class="p">(</span> <span class="n">nMin</span><span class="p">,</span> <span class="n">nMax</span> <span class="p">)</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nLength</span> <span class="k">do</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">..</span> <span class="nb">math.random</span><span class="p">(</span> <span class="n">nMin</span><span class="p">,</span> <span class="n">nMax</span> <span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">n</span> <span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
 
 <ul>
-<li>Returns whether or not n is an odd number <br>
-</li>
-<li>Returns boolean <br>
+<li>Generates a number of nLength with values ranging from nMin to nMax</li>
+<li>Returns: <em>number</em>
 </li>
 </ul><h3>
-<a name="pastebin-api" class="anchor" href="#pastebin-api"><span class="octicon octicon-link"></span></a>Pastebin API</h3>
+<a name="numberisodd-n-" class="anchor" href="#numberisodd-n-"><span class="octicon octicon-link"></span></a>number.isOdd( n )</h3>
 
-<pre><code>pastebin.get( sCode, sFile )
-</code></pre>
-
-<ul>
-<li>Downloads sCode from pastebin as sFile <br>
-</li>
-<li>Returns: boolean success <br>
-</li>
-</ul><pre><code>pastebin.put( sFile )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">isOdd</span><span class="p">(</span> <span class="n">n</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">n</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">n</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">~=</span> <span class="mi">0</span>
+<span class="k">end</span>
+</pre></div>
 
 <ul>
-<li>Uploads sFile to pastebin <br>
-</li>
-<li>Returns: string code, boolean success <br>
-</li>
-</ul><pre><code>pastebin.updateFile( sCode, sFile )
-</code></pre>
-
-<ul>
-<li>Updates sFile using sCode from pastebin, if sFile is not the same as pastebin file <br>
-</li>
-<li>Returns: boolean success <br>
+<li>Returns whether or not n is an even number</li>
+<li>Returns: <em>boolean</em>
 </li>
 </ul><h3>
-<a name="string-api" class="anchor" href="#string-api"><span class="octicon octicon-link"></span></a>String API</h3>
+<a name="numberisevent-n-" class="anchor" href="#numberisevent-n-"><span class="octicon octicon-link"></span></a>number.isEvent( n )</h3>
 
-<pre><code>string.generate( nLength, nCharSet )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">isEven</span><span class="p">(</span> <span class="n">n</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">n</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">n</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="k">end</span>
+</pre></div>
 
 <ul>
-<li>Generates a string of nLength with ASCII characters ranging from 0 to nCharSet <br>
+<li>Returns whether or not n is an odd number</li>
+<li>Returns <em>boolean</em>
 </li>
-<li>Returns: string</li>
-</ul><pre><code>string:replaceChar( nPos, sReplace )
-</code></pre>
-
-<p>( Insert description here ) <br></p>
-
-<pre><code>string:safePattern()
-</code></pre>
-
-<p>( Insert description here ) <br></p>
-
-<pre><code>string:splitAtWhite()
-</code></pre>
-
-<p>( Insert description here ) <br></p>
+</ul><h2>
+<a name="pastebin-api" class="anchor" href="#pastebin-api"><span class="octicon octicon-link"></span></a>Pastebin API</h2>
 
 <h3>
-<a name="term-api" class="anchor" href="#term-api"><span class="octicon octicon-link"></span></a>Term API</h3>
+<a name="pastebinget-scode-sfile-" class="anchor" href="#pastebinget-scode-sfile-"><span class="octicon octicon-link"></span></a>pastebin.get( sCode, sFile )</h3>
 
-<pre><code>term.getCursorBlink()
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">get</span><span class="p">(</span> <span class="n">sCode</span><span class="p">,</span> <span class="n">sFile</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sCode</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sCode</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="kd">local</span> <span class="n">sPath</span> <span class="o">=</span> <span class="n">shell</span><span class="p">.</span><span class="n">resolve</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="s2">"</span><span class="s">File exists"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-<p>( Insert description here ) <br></p>
+  <span class="kd">local</span> <span class="n">tResponse</span> <span class="o">=</span> <span class="n">http</span><span class="p">.</span><span class="n">get</span><span class="p">(</span> <span class="s2">"</span><span class="s">http://pastebin.com/raw.php?i="</span> <span class="o">..</span> <span class="n">textutils</span><span class="p">.</span><span class="n">urlEncode</span><span class="p">(</span> <span class="n">sCode</span> <span class="p">)</span> <span class="p">)</span>
+  <span class="k">if</span> <span class="n">tResponse</span> <span class="k">then</span>
+    <span class="kd">local</span> <span class="n">sResponse</span> <span class="o">=</span> <span class="n">tResponse</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span>
+    <span class="n">tResponse</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
 
-<pre><code>term.clear( nx, ny, nTextColour, nBackgroundColour )
-</code></pre>
+    <span class="kd">local</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">w"</span> <span class="p">)</span>
+    <span class="n">handle</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sResponse</span> <span class="p">)</span>
+    <span class="n">handle</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="kc">false</span>
+<span class="k">end</span>
+</pre></div>
 
-<p>( Insert description here ) <br></p>
+<ul>
+<li>Downloads sCode from pastebin as sFile</li>
+<li>Returns: success <em>boolean</em>
+</li>
+</ul><h3>
+<a name="pastebinput-sfile-" class="anchor" href="#pastebinput-sfile-"><span class="octicon octicon-link"></span></a>pastebin.put( sFile )</h3>
 
-<pre><code>term.reset()
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">put</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 
-<p>( Insert description here ) <br></p>
+  <span class="kd">local</span> <span class="n">sPath</span> <span class="o">=</span> <span class="n">shell</span><span class="p">.</span><span class="n">resolve</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">.</span><span class="n">isDir</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="s2">"</span><span class="s">Cannot upload directories"</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="s2">"</span><span class="s">File doesn't exist"</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
 
-<pre><code>term.getPixelData( nx, ny )
-</code></pre>
+  <span class="kd">local</span> <span class="n">sName</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">getName</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">r"</span> <span class="p">)</span>
+  <span class="kd">local</span> <span class="n">sText</span> <span class="o">=</span> <span class="n">handle</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span>
+  <span class="n">handle</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="kd">local</span> <span class="n">key</span> <span class="o">=</span> <span class="s2">"</span><span class="s">0ec2eb25b6166c0c27a394ae118ad829"</span>
+  <span class="kd">local</span> <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">"</span><span class="s">http://pastebin.com/api/api_post.php"</span><span class="p">,</span> 
+    <span class="s2">"</span><span class="s">api_option=paste&amp;"</span> <span class="o">..</span>
+    <span class="s2">"</span><span class="s">api_dev_key="</span> <span class="o">..</span> <span class="n">key</span> <span class="o">..</span> <span class="s2">"</span><span class="s">&amp;"</span> <span class="o">..</span>
+    <span class="s2">"</span><span class="s">api_paste_format=lua&amp;"</span> <span class="o">..</span>
+    <span class="s2">"</span><span class="s">api_paste_name="</span> <span class="o">..</span> <span class="n">textutils</span><span class="p">.</span><span class="n">urlEncode</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span> <span class="o">..</span> <span class="s2">"</span><span class="s">&amp;"</span> <span class="o">..</span>
+    <span class="s2">"</span><span class="s">api_paste_code="</span> <span class="o">..</span> <span class="n">textutils</span><span class="p">.</span><span class="n">urlEncode</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span>
+  <span class="p">)</span>
 
-<p>( Insert description here ) <br></p>
+  <span class="k">if</span> <span class="n">response</span> <span class="k">then</span>
+    <span class="kd">local</span> <span class="n">sResponse</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">sCode</span> <span class="o">=</span> <span class="nb">string.match</span><span class="p">(</span> <span class="n">sResponse</span><span class="p">,</span> <span class="s2">"</span><span class="s">[^/]+$"</span> <span class="p">)</span>
+    <span class="n">response</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">sCode</span><span class="p">,</span> <span class="kc">true</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">false</span>
+<span class="k">end</span>
+</pre></div>
 
-<pre><code>term.getTextColor()
-</code></pre>
+<ul>
+<li>Uploads sFile to pastebin</li>
+<li>Returns: code <em>string</em>, success <em>boolean</em>
+</li>
+</ul><h3>
+<a name="pastebinupdatefile-scode-sfile-" class="anchor" href="#pastebinupdatefile-scode-sfile-"><span class="octicon octicon-link"></span></a>pastebin.updateFile( sCode, sFile )</h3>
 
-<p>( Insert description here ) <br></p>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">updateFile</span><span class="p">(</span> <span class="n">sCode</span><span class="p">,</span> <span class="n">sFile</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sCode</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sCode</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 
-<pre><code>term.getTextColour()
-</code></pre>
+  <span class="kd">local</span> <span class="n">sPath</span> <span class="o">=</span> <span class="n">shell</span><span class="p">.</span><span class="n">resolve</span><span class="p">(</span> <span class="n">sFile</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">.</span><span class="n">isDirectory</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">),</span> <span class="s2">"</span><span class="s">Cannot update directory"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-<p>( Insert description here ) <br></p>
+  <span class="kd">local</span> <span class="n">httpHandle</span> <span class="o">=</span> <span class="n">http</span><span class="p">.</span><span class="n">get</span><span class="p">(</span> <span class="s2">"</span><span class="s">http://pastebin.com/raw.php?i="</span> <span class="o">..</span> <span class="n">textutils</span><span class="p">.</span><span class="n">urlEncode</span><span class="p">(</span> <span class="n">sCode</span> <span class="p">)</span> <span class="p">)</span>
+  <span class="k">if</span> <span class="n">httpHandle</span> <span class="k">then</span>
+    <span class="kd">local</span> <span class="n">sResponse</span> <span class="o">=</span> <span class="n">httpHandle</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span>
+    <span class="n">httpHandle</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
 
-<pre><code>term.getBackgroundColor()
-</code></pre>
+    <span class="k">if</span> <span class="n">sResponse</span> <span class="ow">and</span> <span class="n">sResponse</span> <span class="o">~=</span> <span class="s2">"</span><span class="s">"</span> <span class="k">then</span>
+      <span class="kd">local</span> <span class="n">fileContent</span> <span class="o">=</span> <span class="s2">"</span><span class="s">[none&amp;set]"</span>
+      <span class="k">if</span> <span class="n">fs</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span> <span class="n">sPath</span> <span class="p">)</span> <span class="k">then</span>
+        <span class="kd">local</span> <span class="n">fileHandle</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">r"</span> <span class="p">)</span>
+        <span class="n">fileContent</span> <span class="o">=</span> <span class="n">fileHandle</span><span class="p">.</span><span class="n">readAll</span><span class="p">()</span>
+        <span class="n">fileHandle</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+      <span class="k">end</span>
 
-<p>( Insert description here ) <br></p>
+      <span class="k">if</span> <span class="n">fileContent</span> <span class="o">~=</span> <span class="n">sResponse</span> <span class="k">then</span>
+        <span class="n">fileHandle</span> <span class="o">=</span> <span class="n">fs</span><span class="p">.</span><span class="n">open</span><span class="p">(</span> <span class="n">sPath</span><span class="p">,</span> <span class="s2">"</span><span class="s">w"</span> <span class="p">)</span>
+        <span class="n">fileHandle</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sResponse</span> <span class="p">)</span>
+        <span class="n">fileHandle</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">true</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="kc">false</span>
+<span class="k">end</span>
+</pre></div>
 
-<pre><code>term.getBackgroundColour()
-</code></pre>
-
-<p>( Insert description here ) <br></p>
+<ul>
+<li>Updates sFile using sCode from pastebin, if sFile is not the same as pastebin file</li>
+<li>Returns: success <em>boolean</em>
+</li>
+</ul><h2>
+<a name="string-api" class="anchor" href="#string-api"><span class="octicon octicon-link"></span></a>String API</h2>
 
 <h3>
-<a name="text-api" class="anchor" href="#text-api"><span class="octicon octicon-link"></span></a>Text API</h3>
+<a name="stringgenerate-nlength-ncharset-" class="anchor" href="#stringgenerate-nlength-ncharset-"><span class="octicon octicon-link"></span></a>string.generate( nLength, nCharSet )</h3>
 
-<pre><code>text.bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">string</span><span class="p">.</span><span class="nf">generate</span><span class="p">(</span> <span class="n">nLength</span><span class="p">,</span> <span class="n">nCharSet</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nLength</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nLength</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nCharSet</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nCharSet</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">nCharSet</span> <span class="o">=</span> <span class="n">nCharSet</span> <span class="ow">or</span> <span class="mi">128</span>
+    <span class="kd">local</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nLength</span> <span class="k">do</span>
+        <span class="n">str</span> <span class="o">=</span> <span class="n">str</span> <span class="o">..</span> <span class="nb">math.random</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nCharSet</span> <span class="p">):</span><span class="n">char</span><span class="p">()</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">str</span>
+<span class="k">end</span>
+</pre></div>
 
-<p>( Insert description here ) <br></p>
+<ul>
+<li>Generates a string of nLength with ASCII characters ranging from 0 to nCharSet</li>
+<li>Returns: <em>string</em>
+</li>
+</ul><h3>
+<a name="stringreplacechar-str-npos-sreplace--or-stringreplacechar-npos-sreplace-" class="anchor" href="#stringreplacechar-str-npos-sreplace--or-stringreplacechar-npos-sreplace-"><span class="octicon octicon-link"></span></a>string.replaceChar( str, nPos, sReplace ) OR string:replaceChar( nPos, sReplace )</h3>
 
-<pre><code>text.center( sText, nx, ny )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">string</span><span class="p">:</span><span class="n">replaceChar</span><span class="p">(</span> <span class="n">nPos</span><span class="p">,</span> <span class="n">sReplace</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nPos</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nLength</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sReplace</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nCharSet</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">self</span><span class="p">:</span><span class="n">sub</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nPos</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">..</span> <span class="n">sReplace</span> <span class="o">..</span> <span class="n">self</span><span class="p">:</span><span class="n">sub</span><span class="p">(</span> <span class="n">nPos</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
 
-<p>( Insert description here ) <br></p>
+<ul>
+<li>Replaces character at nPos in string with sReplace</li>
+<li>Returns: <em>string</em>
+</li>
+</ul><h3>
+<a name="stringsafepattern" class="anchor" href="#stringsafepattern"><span class="octicon octicon-link"></span></a>string.safePattern()</h3>
 
-<pre><code>text.printColorFormat( sText )
-</code></pre>
+<div class="highlight highlight-Lua"><pre><span class="n">To</span> <span class="n">be</span> <span class="n">completed</span>
+</pre></div>
 
-<p>( Insert description here ) <br></p>
+<p>( Insert description here )</p>
 
-<pre><code>text.printColourFormat( sText )
-</code></pre>
+<p>string.splitAtWhite( str )</p>
 
-<p>( Insert description here ) <br></p>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">string</span><span class="p">:</span><span class="n">splitAtWhite</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">tData</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">sArg</span> <span class="k">in</span> <span class="n">self</span><span class="p">:</span><span class="n">gmatch</span><span class="p">(</span> <span class="s2">"</span><span class="s">[^%s]+"</span> <span class="p">)</span> <span class="k">do</span>
+        <span class="nb">table.insert</span><span class="p">(</span> <span class="n">tData</span><span class="p">,</span> <span class="n">sArg</span> <span class="p">)</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">tData</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h2>
+<a name="table-api" class="anchor" href="#table-api"><span class="octicon octicon-link"></span></a>Table API</h2>
+
+<h3>
+<a name="tablesortltog-tbl-" class="anchor" href="#tablesortltog-tbl-"><span class="octicon octicon-link"></span></a>table.sortLToG( tbl )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">table</span><span class="p">.</span><span class="nf">sortLToG</span><span class="p">(</span> <span class="n">tbl</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">tbl</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">table"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Table expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">tbl</span> <span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+  <span class="nb">table.sort</span><span class="p">(</span> <span class="n">tbl</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="p">)</span> <span class="k">return</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span> <span class="k">end</span> <span class="p">)</span>
+  <span class="k">return</span> <span class="n">tbl</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>Sorts tbl's elements from least to greatest( A - Z, 1 - 9, etc )</li>
+<li>Returns: <em>table</em>
+</li>
+</ul><h3>
+<a name="tablesortgtol-tbl-" class="anchor" href="#tablesortgtol-tbl-"><span class="octicon octicon-link"></span></a>table.sortGToL( tbl )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">table</span><span class="p">.</span><span class="nf">sortGToL</span><span class="p">(</span> <span class="n">tbl</span> <span class="p">)</span>
+  <span class="nb">table.sort</span><span class="p">(</span> <span class="n">tbl</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="p">)</span> <span class="k">return</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span> <span class="k">end</span> <span class="p">)</span>
+  <span class="k">return</span> <span class="n">tbl</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>Sorts tbl's elements from greatest to least ( Z - A, 9 - 1, etc )</li>
+<li>Returns: table</li>
+</ul><h2>
+<a name="term-api" class="anchor" href="#term-api"><span class="octicon octicon-link"></span></a>Term API</h2>
+
+<h3>
+<a name="termgetcursorblink" class="anchor" href="#termgetcursorblink"><span class="octicon octicon-link"></span></a>term.getCursorBlink()</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="n">To</span> <span class="n">be</span> <span class="n">completed</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h3>
+<a name="termclear-nx-ny-ntextcolour-nbackgroundcolour-" class="anchor" href="#termclear-nx-ny-ntextcolour-nbackgroundcolour-"><span class="octicon octicon-link"></span></a>term.clear( nx, ny, nTextColour, nBackgroundColour )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">term</span><span class="p">.</span><span class="nf">clear</span><span class="p">(</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nTextColour</span><span class="p">,</span> <span class="n">nBackgroundColour</span> <span class="p">)</span>
+  <span class="k">if</span> <span class="n">nTextColour</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="k">then</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nTextColour</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nTextColour</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">setTextColour</span><span class="p">(</span> <span class="n">nTextColour</span> <span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">if</span> <span class="n">nBackgroundColour</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="k">then</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nBackgroundColour</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nBackgroundColour</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">setBackgroundColour</span><span class="p">(</span> <span class="n">nBackgroundColour</span> <span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">if</span> <span class="n">nx</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="k">then</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">if</span> <span class="n">ny</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="k">then</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="n">nx</span> <span class="ow">or</span> <span class="n">currentX</span><span class="p">,</span> <span class="n">ny</span> <span class="ow">or</span> <span class="n">currentY</span> <span class="p">)</span>
+  <span class="n">oldTerm</span><span class="p">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="kd">local</span> <span class="n">nMaxx</span><span class="p">,</span><span class="n">nMaxy</span> <span class="o">=</span> <span class="n">term</span><span class="p">.</span><span class="n">getSize</span><span class="p">()</span>
+  <span class="c1">-- Clear pixel data</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nMaxx</span> <span class="k">do</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nMaxy</span> <span class="k">do</span>
+      <span class="n">tPixels</span><span class="p">[</span><span class="n">i</span><span class="o">..</span><span class="s2">"</span><span class="s"> "</span><span class="o">..</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">Character</span> <span class="o">=</span> <span class="s2">"</span><span class="s"> "</span><span class="p">,</span>
+        <span class="n">TextColor</span> <span class="o">=</span> <span class="n">nTextColour</span> <span class="ow">or</span> <span class="n">term</span><span class="p">.</span><span class="n">getTextColour</span><span class="p">(),</span>
+        <span class="n">TextColour</span> <span class="o">=</span> <span class="n">nTextColour</span> <span class="ow">or</span> <span class="n">term</span><span class="p">.</span><span class="n">getTextColour</span><span class="p">(),</span>
+        <span class="n">BackgroundColor</span> <span class="o">=</span> <span class="n">nBackgroundColour</span> <span class="ow">or</span> <span class="n">term</span><span class="p">.</span><span class="n">getBackgroundColour</span><span class="p">(),</span>
+        <span class="n">BackgroundColour</span> <span class="o">=</span> <span class="n">nBackgroundColour</span> <span class="ow">or</span> <span class="n">term</span><span class="p">.</span><span class="n">getBackgroundColour</span><span class="p">()</span>
+      <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h3>
+<a name="termreset" class="anchor" href="#termreset"><span class="octicon octicon-link"></span></a>term.reset()</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">term</span><span class="p">.</span><span class="nf">reset</span><span class="p">()</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setTextColour</span><span class="p">(</span><span class="n">colors</span><span class="p">.</span><span class="n">white</span><span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setBackgroundColour</span><span class="p">(</span><span class="n">colors</span><span class="p">.</span><span class="n">black</span><span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setCursorBlink</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h3>
+<a name="termgetpixeldata-nx-ny-" class="anchor" href="#termgetpixeldata-nx-ny-"><span class="octicon octicon-link"></span></a>term.getPixelData( nx, ny )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">term</span><span class="p">.</span><span class="nf">getPixelData</span><span class="p">(</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">tPixels</span><span class="p">[</span> <span class="n">nx</span> <span class="o">..</span> <span class="s2">"</span><span class="s"> "</span> <span class="o">..</span> <span class="n">ny</span> <span class="p">]</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h3>
+<a name="termgettextcolor" class="anchor" href="#termgettextcolor"><span class="octicon octicon-link"></span></a>term.getTextColor()</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">term</span><span class="p">.</span><span class="nf">getTextColor</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">currentTextColour</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>Returns the current terminal's text color</li>
+<li>Returns: color <em>number</em>
+</li>
+</ul><h3>
+<a name="termgetbackgroundcolour" class="anchor" href="#termgetbackgroundcolour"><span class="octicon octicon-link"></span></a>term.getBackgroundColour()</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">term</span><span class="p">.</span><span class="nf">getBackgroundColour</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">currentBackgroundColour</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>Returns the current terminal's background color</li>
+<li>Returns: color <em>number</em>
+</li>
+</ul><h2>
+<a name="text-api" class="anchor" href="#text-api"><span class="octicon octicon-link"></span></a>Text API</h2>
+
+<h3>
+<a name="textbracket-stext-nx-ny-ntextcolour-nbracketcolour-nbackgroundcolour-" class="anchor" href="#textbracket-stext-nx-ny-ntextcolour-nbracketcolour-nbackgroundcolour-"><span class="octicon octicon-link"></span></a>text.bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )</h3>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">bracket</span><span class="p">(</span> <span class="n">sText</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nTextColour</span><span class="p">,</span> <span class="n">nBracketColour</span><span class="p">,</span> <span class="n">nBackgroundColour</span> <span class="p">)</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">nTextColour</span> <span class="k">then</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nTextColour</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number/nil expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nTextColour</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">if</span> <span class="n">nBracketColour</span> <span class="k">then</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nBracketColour</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number/nil expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nBracketColour</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">if</span> <span class="n">nBackgroundColour</span> <span class="k">then</span>
+        <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nBackgroundColour</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number/nil expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nBackgroundColour</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">setBackgroundColour</span><span class="p">(</span> <span class="n">nBackgroundColour</span> <span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="kd">local</span> <span class="n">xPos</span><span class="p">,</span> <span class="n">yPos</span> <span class="o">=</span> <span class="n">term</span><span class="p">.</span><span class="n">getCursorPos</span><span class="p">()</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">setTextColour</span><span class="p">(</span> <span class="n">nBracketColour</span> <span class="ow">or</span> <span class="n">colours</span><span class="p">.</span><span class="n">white</span> <span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="s2">"</span><span class="s">["</span> <span class="o">..</span> <span class="nb">string.rep</span><span class="p">(</span><span class="s2">"</span><span class="s"> "</span><span class="p">,</span> <span class="o">#</span><span class="n">sText</span><span class="p">)</span> <span class="o">..</span> <span class="s2">"</span><span class="s">]"</span> <span class="p">)</span>
+
+    <span class="n">term</span><span class="p">.</span><span class="n">setTextColour</span><span class="p">(</span> <span class="n">nTextColour</span> <span class="ow">or</span> <span class="n">colours</span><span class="p">.</span><span class="n">white</span> <span class="p">)</span>
+  <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h2>
+<a name="textcenter-stext-nx-ny-" class="anchor" href="#textcenter-stext-nx-ny-"><span class="octicon octicon-link"></span></a>text.center( sText, nx, ny )</h2>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">center</span><span class="p">(</span> <span class="n">sText</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nx</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">number"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">ny</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="p">((</span> <span class="n">nx</span> <span class="o">-</span> <span class="o">#</span><span class="n">sText</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
+    <span class="n">term</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
+
+<h2>
+<a name="textprintcolorformat-stext-" class="anchor" href="#textprintcolorformat-stext-"><span class="octicon octicon-link"></span></a>text.printColorFormat( sText )</h2>
+
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nf">printColourFormat</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span>
+  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="kd">local</span> <span class="n">char200</span> <span class="o">=</span> <span class="nb">string.char</span><span class="p">(</span> <span class="mi">200</span> <span class="p">)</span>
+
+  <span class="kd">local</span> <span class="n">storage</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="kd">local</span> <span class="k">function</span> <span class="nf">matchLong</span><span class="p">(</span> <span class="n">sMode1</span><span class="p">,</span> <span class="n">sColour1</span><span class="p">,</span> <span class="n">sMode2</span><span class="p">,</span> <span class="n">sColour2</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">sMode1</span> <span class="o">==</span> <span class="s2">"</span><span class="s">t"</span> <span class="ow">and</span> <span class="n">sMode2</span> <span class="o">==</span> <span class="s2">"</span><span class="s">b"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">sMode1</span> <span class="o">==</span> <span class="s2">"</span><span class="s">b"</span> <span class="ow">and</span> <span class="n">sMode2</span> <span class="o">==</span> <span class="s2">"</span><span class="s">t"</span><span class="p">)</span> <span class="k">then</span>
+      <span class="nb">table.insert</span><span class="p">(</span> <span class="n">storage</span><span class="p">,</span> <span class="p">{</span> 
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span> <span class="n">sMode1</span> <span class="o">==</span> <span class="s2">"</span><span class="s">t"</span> <span class="ow">and</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">sColour1</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">sColour2</span> <span class="p">)</span> <span class="p">),</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">(</span> <span class="n">sMode1</span> <span class="o">==</span> <span class="s2">"</span><span class="s">b"</span> <span class="ow">and</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">sColour1</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">sColour2</span> <span class="p">)</span> <span class="p">)</span>
+      <span class="p">}</span> <span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">sMode1</span> <span class="o">==</span> <span class="s2">"</span><span class="s">b"</span> <span class="ow">and</span> <span class="n">sMode2</span> <span class="o">==</span> <span class="s2">"</span><span class="s">b"</span> <span class="k">then</span>
+      <span class="nb">table.insert</span><span class="p">(</span> <span class="n">storage</span><span class="p">,</span> <span class="p">{</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">sColour2</span> <span class="p">)</span> <span class="p">}</span> <span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">sMode1</span> <span class="o">==</span> <span class="s2">"</span><span class="s">t"</span> <span class="ow">and</span> <span class="n">sMode2</span> <span class="o">==</span> <span class="s2">"</span><span class="s">t"</span> <span class="k">then</span>
+      <span class="nb">table.insert</span><span class="p">(</span> <span class="n">storage</span><span class="p">,</span> <span class="p">{</span> <span class="n">t</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span> <span class="n">sColour2</span> <span class="p">)</span> <span class="p">}</span> <span class="p">)</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">char200</span>
+  <span class="k">end</span>
+
+  <span class="kd">local</span> <span class="k">function</span> <span class="nf">matchShort</span><span class="p">(</span> <span class="n">sMode</span><span class="p">,</span> <span class="n">sColour</span> <span class="p">)</span> 
+    <span class="k">return</span> <span class="n">matchLong</span><span class="p">(</span> <span class="n">sMode</span><span class="p">,</span> <span class="n">sColour</span><span class="p">,</span> <span class="n">sMode</span><span class="p">,</span> <span class="n">sColour</span> <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1">-- Parse the text</span>
+  <span class="kd">local</span> <span class="n">parsed</span> <span class="o">=</span> <span class="n">sText</span><span class="p">:</span><span class="n">gsub</span><span class="p">(</span> <span class="s2">"</span><span class="s">%[([bt])%s*=%s*(%d-);%s*([bt])%s*=%s*(%d-)%]"</span><span class="p">,</span> <span class="n">matchLong</span> <span class="p">)</span>
+  <span class="n">parsed</span> <span class="o">=</span> <span class="n">parsed</span><span class="p">:</span><span class="n">gsub</span><span class="p">(</span> <span class="s2">"</span><span class="s">%[([bt])%s*=%s*(%d-)%]"</span><span class="p">,</span> <span class="n">matchShort</span> <span class="p">)</span>
+
+  <span class="c1">-- Print it out on the terminal</span>
+  <span class="kd">local</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="kd">local</span> <span class="n">sMatch</span> <span class="o">=</span> <span class="s2">"</span><span class="s">[^"</span> <span class="o">..</span> <span class="n">char200</span> <span class="o">..</span> <span class="s2">"</span><span class="s">]+"</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">#</span><span class="n">parsed</span> <span class="k">do</span>
+    <span class="kd">local</span> <span class="n">char</span> <span class="o">=</span> <span class="n">parsed</span><span class="p">:</span><span class="n">sub</span><span class="p">(</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="n">char200</span> <span class="k">then</span>
+      <span class="k">if</span> <span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">t</span> <span class="k">then</span>
+        <span class="n">term</span><span class="p">.</span><span class="n">setTextColour</span><span class="p">(</span> <span class="mi">2</span> <span class="o">^</span> <span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">t</span> <span class="p">)</span>
+      <span class="k">end</span>
+      <span class="k">if</span> <span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">b</span> <span class="k">then</span>
+        <span class="n">term</span><span class="p">.</span><span class="n">setBackgroundColour</span><span class="p">(</span> <span class="mi">2</span> <span class="o">^</span> <span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">b</span> <span class="p">)</span>
+      <span class="k">end</span>
+      <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span>
+       <span class="n">write</span><span class="p">(</span> <span class="n">char</span> <span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>( Insert description here )</p>
       </section>
     </div>
 
