@@ -14,7 +14,7 @@ local tDownloaded = {}
 local tbl = {}
 local w, h = term.getSize()
 
---# Allow temporary update and terminal output disabling
+--# Allow temporary update disabling and temporary override of updating
 if tArgs[ 1 ] == "false" then
   autoUpdate = false
 end
