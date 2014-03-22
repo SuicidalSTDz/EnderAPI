@@ -12,6 +12,8 @@ local function assert(bBool, sMessage, nLevel)
   return bBool
 end
 
+isExtension = true
+
 function http.download( sUrl, sPath )
   assert( type( sUrl ) == "string", "String expected, got " .. type( sUrl ), 2)
   assert( type( sPath ) == "string", "String expected, got " .. type( sPath ), 2)

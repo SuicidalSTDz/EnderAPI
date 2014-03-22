@@ -12,6 +12,8 @@ local function assert(bBool, sMessage, nLevel)
 	return bBool
 end
 
+isExtension = true
+
 function table.sortLToG( tbl )
   assert( type( tbl ) == "table", "Table expected, got " .. type( tbl ), 2 )
   table.sort( tbl, function( a, b ) return a < b end )

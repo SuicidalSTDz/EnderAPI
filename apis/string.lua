@@ -12,6 +12,8 @@ local function assert(bBool, sMessage, nLevel)
 	return bBool
 end
 
+isExtension = true
+
 function string.generate( nLength, nCharSet )
   assert( type( nLength ) == "number", "Number expected, got " .. type( nLength ), 2)
   assert( type( nCharSet ) == "number", "Number expected, got " .. type( nCharSet ), 2)

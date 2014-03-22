@@ -12,6 +12,8 @@ local function assert(bBool, sMessage, nLevel)
 	return bBool
 end
 
+isExtension = true
+
 local currentTextColour = colours.white
 local currentBackgroundColour = colours.black
 local currentX = 0

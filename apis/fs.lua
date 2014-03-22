@@ -12,6 +12,8 @@ local function assert(bBool, sMessage, nLevel)
   return bBool
 end
 
+isExtension = true
+
 function fs.save( sPath, sData )
   assert( type( sPath ) == "string", "String expected, got " .. type( sPath ), 2 )
   assert( type( sData ) == "string", "String expected, got " .. type( sData ), 2 )
