@@ -335,7 +335,7 @@ if fs.exists( folder ) then
   end
 
   for _, file in pairs( fs.list( folder ) ) do
-    loadAPI( fs.list( folder .. file ) )
+    loadAPI( folder .. file )
   end
 else
   error( "Update first!", 0 ) 
