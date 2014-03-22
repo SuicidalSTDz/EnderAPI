@@ -1,4 +1,2 @@
-EnderAPI
-========
-
-A free to use, modifiable API by the people, for the people
+EnderAPI uses semantic versioning: http://semver.org/
+When updating, use the semantic versioning guidelines.
