@@ -39,7 +39,7 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
     paintutils.drawLine( startX + 1, ny, endX - 1, ny, nInnerColour )
   end
   -- Shouldnt be this an independent API? Considering this uses the text API
-  text.bracket( "Yes", math.floor( ( startX + nMiddle ) / 2 - 3 ), endY - 2, colours.red, colours.white, nInnerColour ) -- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality
+  text.bracket( "Yes", math.floor( ( ( startX + nMiddle ) / 2 ) - 2 ), endY - 2, colours.red, colours.white, nInnerColour ) -- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality
   text.bracket( "No", math.floor( ( endX + nMiddle ) / 2 ), endY - 2, colours.red, colours.white, nInnerColour )
   term.setCursorPos( nMiddle - ( #sText / 2 ), startY + 2 )
   term.write( sText )
