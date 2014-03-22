@@ -1,4 +1,4 @@
---# Check if the user hs the http module enabled
+--# Check if the user has the http module enabled
 if not http then
   error("HTTP is required to run this!", 0)
 end
