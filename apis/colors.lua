@@ -7,3 +7,5 @@ function colors.convertToString( nColour )
   return nil
 end
 colours.convertToString = colors.convertToString
+
+isExtension = true

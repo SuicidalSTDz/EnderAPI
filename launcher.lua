@@ -147,7 +147,8 @@ if updateAPI then
     [ "string.lua" ] = {},
     [ "term.lua" ] = {},
     [ "text.lua" ] = {},
-    [ "table.lua" ] = {}
+    [ "table.lua" ] = {},
+    [ "colors.lua" ] = {}
   }
 
   if not fs.exists( folder ) or not fs.isDir( folder ) then
