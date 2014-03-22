@@ -17,6 +17,10 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   assert( type( fYes ) == "function", "Function expected, got ".. type( fYes ), 2)
   assert( type( fNo ) == "function", "Function expected, got ".. type( fNo ), 2)
   
+  if not text then
+    error( "The Text API must be installed to use this function", 2 )
+  end
+  
   local nw, nh = term.getSize()
   local startX = math.floor( ( ( nw - #sText ) / 2 ) - 5 )
   local startY = math.floor( nh / 2 - 3 )
