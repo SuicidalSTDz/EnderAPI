@@ -1,5 +1,5 @@
-local function assert(bBool, sMessage, nLevel) -- is bBool equivelent to error()/printError()? Should we print an error rather than just return true/false?
-  local iLevel = iLevel or -1 -- what? shouldn't this be nLevel, and not local (It already is local)
+local function assert(bBool, sMessage, nLevel) -- is bBool equivelent to error()/printError()? Should we print an error rather than just return true/false? : answer : we want to be like the real assert, only this one supports error levels, the native one doesn't. Assert returns the value which is called bBool, this is not always a bool!
+  local nLevel = nLevel or -1 -- what? shouldn't this be nLevel, and not local (It already is local) : answer : I derped, and making it local again is just to be sure that it gets reassigned, Im not terribly sure how it works with reassigning parameters, I know this works :D
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
   elseif type(nLevel) ~= "number" then
@@ -7,7 +7,7 @@ local function assert(bBool, sMessage, nLevel) -- is bBool equivelent to error()
   end
   
   if not bBool then
-    error( sMessage, iLevel + 1 ) -- will always be 0 unless we change it to nLevel
+    error( sMessage, iLevel + 1 ) -- will always be 0 unless we change it to nLevel: answer : true, but we need to make sure it gets to the level the user specifies. By calling this function the level gets increased by one, thus the level must be increased by one
   end
   return bBool
 end
