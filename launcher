@@ -30,7 +30,8 @@ local tFiles = {
   "/EnderAPI/master/apis/messageBox.lua",
   "/EnderAPI/master/apis/http.lua",
   "/EnderAPI/master/apis/term.lua",
-  "/EnderAPI/master/apis/string.lua"
+  "/EnderAPI/master/apis/string.lua",
+  "/EnderAPI/master/apis/fs.lua"
 }
 
 --# Create directories if they are not present
@@ -164,8 +165,8 @@ local function loadAPIs()
   shell.run( "/.EnderAPI/master/apis/http" )
   shell.run( "/.EnderAPI/master/apis/term" )
   shell.run( "/.EnderAPI/master/apis/string" )
-  --# Still have to test the fs additions
-  --shell.run( "/.EnderAPI/master/apis/fs" )
+  shell.run( "/.EnderAPI/master/apis/fs" )
+  shell.run( "/.EnderAPI/master/apis/table" )
 end
 
 --# Main Update Script
@@ -244,7 +245,6 @@ if autoUpdate then
           handle:close()
         end
       else
-        fs.delete( sRunning )
         local handle = io.open( sRunning, "w" )
         handle:write( sResponse )
         handle:close()
@@ -253,19 +253,7 @@ if autoUpdate then
   end
 end
 
---[[# Load in new help topics
-for k, v in pairs( help.topics() ) do
-  if fs.exists( "/.EnderAPI/master/help/" .. v ) then
-    fs.delete( "/.EnderAPI/master/help/" .. v )
-  end
-  fs.copy( help.path() .. "/" .. v, "/.EnderAPI/master/help/" .. v )
-end
-local handle = io.open( "/.EnderAPI/master/help/text", "w" )
-handle:write("Functions in the Text API:\ntext.center( sText, nx, ny )\ntext.bracket( sText, nx, ny, nTextColor, nBracketColor, nBackgroundColor )\ntext.printColourFormat( sText )" )
-handle:close()]]
-
 loadAPIs()
-
 if term.enderAPI then
   term.reset()
 else
