@@ -31,7 +31,8 @@ local tFiles = {
   "/EnderAPI/master/apis/http.lua",
   "/EnderAPI/master/apis/term.lua",
   "/EnderAPI/master/apis/string.lua",
-  "/EnderAPI/master/apis/fs.lua"
+  "/EnderAPI/master/apis/fs.lua",
+  "/EnderAPI/master/apis/table.lua"
 }
 
 --# Create directories if they are not present
