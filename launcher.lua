@@ -1,3 +1,5 @@
+-- DONT COMPLAIN ABOUT THIS LAUNCHER. IT WORKS AND A NEW LAUNCHER IS ALREADY IN THE WORKS - EngineerCoding
+
 local folder = "/.EnderAPI/"
 -- Make it backwards compatible, remove it after a while though
 if fs.exists( "/.EnderAPI/master/apis" ) and fs.isDir( "/.EnderAPI/master/apis/" ) then
@@ -9,6 +11,7 @@ end
 
 local tArgs = { ... }
 local showGUI = ( term.isColor and term.isColor() )
+local showTextOutput = true
 local updateAPI = true
 local updateLauncher = true
 
@@ -21,6 +24,8 @@ for i, v in ipairs( tArgs ) do
       updateAPI = false
     elseif tArgs[ i + 1 ] == "launcher" then
       updateLauncher = false
+    elseif tArgs[ i + 1 ] == "text" then
+      showTextOutput = false
     end
   end
 end
@@ -29,8 +34,10 @@ if updateLauncher then
   if not http then
     error( "HTTP is required to search for updates!", 0 )
   end
-
-  print( "Checking for launcher update.." )
+  
+  if showTextOutput then
+    print( "Checking for launcher update.." )
+  end
   local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/master/launcher.lua" )
   if httpHandle then
     local httpContent = httpHandle.readAll()
@@ -120,6 +127,10 @@ if updateLauncher then
             table.insert( arguments, "-n" )
             table.insert( arguments, "api" )
           end
+          if not showTextOutput then
+            table.insert( arguments, "-n" )
+            table.insert( arguments, "text" )
+          end
           table.insert( arguments, "-n" )
           table.insert( arguments, "launcher" )
           
@@ -157,7 +168,9 @@ if updateAPI then
   end
 
   -- Let the user know that (s)he has to wait a minute
-  print( "Downloading files, this can take a while.." )
+  if showTextOutput then
+    print( "Downloading files, this can take a while.." )
+  end
 
   -- Download & check files
   for luaFile, tbl in pairs( tFiles ) do
@@ -277,7 +290,9 @@ if updateAPI then
         end
       end
     else
-      print( "Everything is up to date!" )
+      if showTextOutput then
+        print( "Everything is up to date!" )
+      end
     end
   end
 
