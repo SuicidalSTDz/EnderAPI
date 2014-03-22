@@ -274,9 +274,9 @@ if updateAPI then
         elseif event[ 1 ] == "mouse_scroll" then
           -- Add scrolling
         end
-      else
-        print( "Everything is up to date!" )
       end
+    else
+      print( "Everything is up to date!" )
     end
   end
 
