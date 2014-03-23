@@ -61,9 +61,9 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   end
   
   local nw, nh = term.getSize()
-  local startX = math.floor( ( ( nw - #sText ) / 2 ) - 6 )
+  local startX = math.floor( ( ( nw - #sText ) / 2 ) - 5 )
   local startY = math.floor( nh / 2 - 3 )
-  local endX = math.floor( ( ( nw + #sText ) / 2 ) + 6 )
+  local endX = math.floor( ( ( nw + #sText ) / 2 ) + 7 )
   local endY = math.floor( nh / 2 + 4 )
   local nMiddle = math.floor( ( endX + startX ) / 2 )
   local tOverwrite = {}
