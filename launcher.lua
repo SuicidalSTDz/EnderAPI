@@ -152,7 +152,7 @@ if updateAPI then
   local tFiles = { 
     [ "fs.lua" ] = {},
     [ "http.lua" ] = {},
-    --[ "messageBox.lua" ] = {},
+    [ "messageBox.lua" ] = {}, -- It's now stable enough for release
     [ "number.lua" ] = {},
     [ "pastebin.lua" ] = {},
     [ "string.lua" ] = {},

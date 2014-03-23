@@ -178,3 +178,5 @@ function term.getBackgroundColour()
   return currentBackgroundColour
 end
 term.getBackgroundColor = term.getBackgroundColour
+term.reset()  -- populates tPixel so calls to getPixelData don't return nil until this is called manually
+              -- term.clear also works, but it leaves the user with a black screen, so we use reset()

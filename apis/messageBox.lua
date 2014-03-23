@@ -1,4 +1,4 @@
-local function assert(bBool, sMessage, nLevel) -- is bBool equivelent to error()/printError()? Should we print an error rather than just return true/false? : answer : we want to be like the real assert, only this one supports error levels, the native one doesn't. Assert returns the value which is called bBool, this is not always a bool!
+local function assert(bBool, sMessage, nLevel)
   nLevel = nLevel or -1 -- Changing the value of a param doesn't affect its scope, so local isn't necessary. (confirmed by eclipse)
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
@@ -7,7 +7,7 @@ local function assert(bBool, sMessage, nLevel) -- is bBool equivelent to error()
   end
   
   if not bBool then
-    error( sMessage, nLevel + 1 ) -- will always be 0 unless we change it to nLevel: answer : true, but we need to make sure it gets to the level the user specifies. By calling this function the level gets increased by one, thus the level must be increased by one : Response : Yeah, but iLevel is a nil global variable, sooo....
+    error( sMessage, nLevel + 1 ) -- should be nLevel; iLevel was a typo
   end
   return bBool
 end
@@ -45,7 +45,7 @@ local function getContainer( obj, env, tIgnore, bGlobal ) -- a nifty little func
       end
     end
   end
-  return '? (a local '..type( obj )..')' -- Return a value similar in format to those provided for native errors if we can't find it.
+  return '? (a local '..type( obj )..')' -- Return a value similar in format to those provided for native errors if we couldn't find the object's name.
 end
 
 function create( sText, nBorderColour, nInnerColour, fYes, fNo )
@@ -56,17 +56,19 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   if not text then
     error( "The Text API must be installed to use this function", 2 )
   end
+  if not term.enderAPI then -- We're also dependent on our term extensions, although no one noticed
+    error( "The EnderAPI term extension must be enabled to use this function", 2 )
+  end
   
   local nw, nh = term.getSize()
-  local startX = math.floor( ( ( nw - #sText ) / 2 ) - 5 )
+  local startX = math.floor( ( ( nw - #sText ) / 2 ) - 6 )
   local startY = math.floor( nh / 2 - 3 )
-  local endX = math.floor( ( ( nw + #sText ) / 2 ) + 7 )
+  local endX = math.floor( ( ( nw + #sText ) / 2 ) + 6 )
   local endY = math.floor( nh / 2 + 4 )
   local nMiddle = math.floor( ( endX + startX ) / 2 )
   local tOverwrite = {}
-  local tCurX, tCurY = term.getCursorPos() -- Save where the cursor was so we can put it back later
-  local tCursorPos = { tCurX, tCurY }
-  
+  local tCursorPos
+  tCursorPos[1], tCursorPos[2] = term.getCursorPos() -- Save where the cursor was so we can put it back later
   for ny = startY, endY do
     for nx = startX, endX do
       tOverwrite[ nx .. " " .. ny ] = term.getPixelData( nx, ny )
@@ -106,7 +108,7 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   
   for ny = startY, endY do -- Moved this loop to execute before the response functions; prevents odd behavior
     for nx = startX, endX do
-      term.setTextColour( tOverwrite[ nx .. " " .. ny ].TextColour ) -- No idea why, but when run for the first time, this line errors 'attempt to index ? (a nil value)' It works fine after that, though.
+      term.setTextColour( tOverwrite[ nx .. " " .. ny ].TextColour )
       term.setBackgroundColour( tOverwrite[ nx .. " " .. ny ].BackgroundColour )
       term.setCursorPos( nx, ny )
       term.write( tOverwrite[ nx .. " " .. ny ].Character )
@@ -118,5 +120,4 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   if not ok then
     error( "Could not invoke "..getContainer(fSelection, getfenv(2), { 'fNo', 'fYes', 'fSelection' }), 2 )
   end
-  
 end
