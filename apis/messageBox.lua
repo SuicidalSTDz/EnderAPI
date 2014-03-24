@@ -67,8 +67,11 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   local endY = math.floor( nh / 2 + 4 )
   local nMiddle = math.floor( ( endX + startX ) / 2 )
   local tOverwrite = {}
-  local tCursorPos
-  tCursorPos[1], tCursorPos[2] = term.getCursorPos() -- Save where the cursor was so we can put it back later
+  
+  --# The two line below this were compacted. term.getCursorPos returns two values which can be put directly into a table, instead of asigning them manually
+  local tCursorPos = { term.getCursorPos() }
+  --tCursorPos[1], tCursorPos[2] = term.getCursorPos() -- Save where the cursor was so we can put it back later
+  
   for ny = startY, endY do
     for nx = startX, endX do
       tOverwrite[ nx .. " " .. ny ] = term.getPixelData( nx, ny )
@@ -82,7 +85,6 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   for ny = startY + 1, endY - 1 do
     paintutils.drawLine( startX + 1, ny, endX - 1, ny, nInnerColour )
   end
-  -- Shouldnt be this an independent API? Considering this uses the text API : I think we ok'd interdependancy, so I'll leave these for now
   text.bracket( "Yes", math.floor( ( ( startX + nMiddle ) / 2 ) - 2 ), endY - 2, colours.red, colours.white, nInnerColour ) -- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality
   text.bracket( "No", math.floor( ( endX + nMiddle ) / 2 ), endY - 2, colours.red, colours.white, nInnerColour )
   term.setCursorPos( nMiddle - ( #sText / 2 ), startY + 2 )
