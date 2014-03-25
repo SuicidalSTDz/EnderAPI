@@ -51,7 +51,7 @@
 <h3>
 <a name="colorsconverttostring-ncolor-" class="anchor" href="#colorsconverttostring-ncolor-"><span class="octicon octicon-link"></span></a>colors.convertToString( nColor )</h3>
 
-<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">colors</span><span class="p">.</span><span class="nf">convertToString</span><span class="p">(</span> <span class="n">nColour</span> <span class="p">)</span>
+<div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">colors</span><span class="p">.</span><span class="nf">convertToString</span><span class="p">(</span> <span class="n">nColor</span> <span class="p">)</span>
   <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span> <span class="n">colors</span> <span class="p">)</span> <span class="k">do</span>
     <span class="k">if</span> <span class="n">nColour</span> <span class="o">==</span> <span class="n">v</span> <span class="k">then</span>
       <span class="k">return</span> <span class="n">k</span>
@@ -126,7 +126,7 @@
 <a name="http-api" class="anchor" href="#http-api"><span class="octicon octicon-link"></span></a>HTTP API</h2>
 
 <h3>
-<a name="httdownload-surl-spath-" class="anchor" href="#httdownload-surl-spath-"><span class="octicon octicon-link"></span></a>htt.download( sUrl, sPath )</h3>
+<a name="httpdownload-surl-spath-" class="anchor" href="#httpdownload-surl-spath-"><span class="octicon octicon-link"></span></a>http.download( sUrl, sPath )</h3>
 
 <div class="highlight highlight-Lua"><pre><span class="k">function</span> <span class="nc">http</span><span class="p">.</span><span class="nf">download</span><span class="p">(</span> <span class="n">sUrl</span><span class="p">,</span> <span class="n">sPath</span> <span class="p">)</span>
   <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sUrl</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sUrl</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
