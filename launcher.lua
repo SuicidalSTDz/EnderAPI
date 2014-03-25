@@ -135,7 +135,8 @@ if updateLauncher then
           table.insert( arguments, "launcher" )
           
           shell.run( shell.getRunningProgram(), unpack( arguments ) )
-          return
+          error("",0)
+          -- Prevent old code from executing
         end
       end
     end
