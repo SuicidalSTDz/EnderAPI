@@ -7,8 +7,7 @@ function turtle.canExecute( func )
   for k, v in pairs( turtle ) do
     turtle[ k ] = function() end
   end
-  local nTraveled = 0
-  local nTotal = 0
+  local nTraveled, nTotal = 0, 0
  
   function turtle.forward()
     if nTraveled < oldTurtle.getFuelLevel() then
