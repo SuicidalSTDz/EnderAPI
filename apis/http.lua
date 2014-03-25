@@ -1,5 +1,5 @@
 local function assert(bBool, sMessage, nLevel)
-  local nLevel = nLevel or -1
+  nLevel = nLevel or -1
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
   elseif type(nLevel) ~= "number" then
