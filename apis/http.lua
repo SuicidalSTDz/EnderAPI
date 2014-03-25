@@ -5,9 +5,9 @@ local function assert(bBool, sMessage, nLevel)
   elseif type(nLevel) ~= "number" then
     error("Number expected, got " .. type( nLevel ), 2)
   end
-	
+  
   if not bBool then
-    error( sMessage, iLevel + 1 )
+    error( sMessage, nLevel + 1 )
   end
   return bBool
 end
