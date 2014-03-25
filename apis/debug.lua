@@ -12,6 +12,14 @@
 
 ]]
 
+--[[
+    
+    To be totally honest, they don't do a very good job explaining what the various results mean. If you know more than what
+    they state on the above sites, or if you know that something on one of them is incorrect, please double-check my work.
+    I may (READ: probably) got something wrong, esp. in the conditionals determining the values of 'what' and 'namewhat'.
+    
+]]
+
 -- local declarations
 
 local getSource
@@ -54,7 +62,14 @@ function getinfo(thread, func, what)
     tOut.source = tmp.name or '' -- find the source file containing func, or the name of the string containing it
     tOut.short_src = tOut.source:sub(1, math.min(tOut.source:len(), 60)) -- short_src must be no longer than 60 chars
     tOut.linedefined = tmp.line or 0 -- find the line number of func's definition
-    tOut.what = '' -- "Lua", "C", or "main"; It may be best to replace "C" with "J" since we're in JLua, not C/++
+    -- tOut.what: "Lua", "C", or "main"
+    if tOut.linedefined == 0 then -- it's probably not written in Lua
+      tOut.what = 'C' -- It may be best to replace "C" with "J" since we're in JLua, not C/++
+    elseif type(func) == 'function' then
+      tOut.what = 'Lua'
+    else
+      tOut.what = 'main'
+    end
   end
   if n then
     local tmp = getContainer(func, env, 'func', true) or {} -- Try to find the name of the variable containing the function
