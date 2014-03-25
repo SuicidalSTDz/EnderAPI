@@ -1,4 +1,4 @@
-local oldTurtle = {}
+local oldTurtle, nSelected = {}, 1
 for k, v in pairs( turtle ) do
   oldTurtle[ k ] = v
 end
@@ -24,17 +24,38 @@ function turtle.canExecute( func )
     turtle[ k ] = v
   end
   if not ok then
-    print( err )
     error( "Error invoking function", 2 )
   end
   print( "Traveled: " .. nTraveled .. "/" .. nTotal .. " block(s)" )
   print( "Need " .. nTotal - nTraveled .. " more fuel to complete" )
 end
  
-local f = function()
-  for i = 1, 5000 do
-    turtle.forward()
-  end
-  turtle.turnLeft()
+function turtle.select( nSlot )
+  oldTurtle.select( nSlot )
+  nSelected = nSlot
 end
-turtle.canExecute( f )
+ 
+function turtle.selectedSlot()
+  return nSelected
+end
+ 
+function turtle.place( nSlot, bReturn )
+  local prevSlot = nSelected
+  turtle.select( nSlot or prevSlot )
+  oldTurtle.place()
+  if bReturn then
+    turtle.select( prevSlot )
+  end
+end
+ 
+function turtle.turnRight( nTimes )
+  for i = 1, nTimes do
+    oldTurtle.turnRight()
+  end
+end
+ 
+function turtle.turnLeft( nTimes )
+  for i = 1, nTimes do
+    oldTurtle.turnLeft()
+  end
+end
