@@ -87,7 +87,7 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
   end
   text.bracket( "Yes", math.floor( ( ( startX + nMiddle ) / 2 ) - 2 ), endY - 2, colours.red, colours.white, nInnerColour ) -- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality
   text.bracket( "No", math.floor( ( endX + nMiddle ) / 2 ), endY - 2, colours.red, colours.white, nInnerColour )
-  term.setCursorPos( nMiddle - ( #sText / 2 ), startY + 2 )
+  term.setCursorPos( nMiddle - ( #sText / 2 ) + 1, startY + 2 )
   term.write( sText )
   
   local sEvent, nButton, xPos, yPos, fSelection
@@ -96,7 +96,7 @@ function create( sText, nBorderColour, nInnerColour, fYes, fNo )
     
     if nButton == 1 then
       if yPos == endY - 2 then
-        if ( xPos >= math.floor( ( startX + nMiddle ) / 2 - 3 ) and xPos <= math.floor( ( startX + nMiddle ) / 2 - 3 ) + 4 ) then
+        if ( xPos >= math.floor( ( startX + nMiddle ) / 2 - 2 ) and xPos <= math.floor( ( startX + nMiddle ) / 2 - 2 ) + 4 ) then
           local ok, err = pcall( fYes )
           fSelection = fYes
           break
