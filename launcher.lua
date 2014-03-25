@@ -14,6 +14,7 @@ local showGUI = ( term.isColor and term.isColor() )
 local showTextOutput = true
 local updateAPI = true
 local updateLauncher = true
+local branch = "master"
 
 for i, v in ipairs( tArgs ) do
   local a = v:lower()
@@ -27,6 +28,8 @@ for i, v in ipairs( tArgs ) do
     elseif tArgs[ i + 1 ] == "text" then
       showTextOutput = false
     end
+  elseif a == "-prerelease" then
+    branch = "prerelease"
   end
 end
 
@@ -38,7 +41,7 @@ if updateLauncher then
   if showTextOutput then
     print( "Checking for launcher update.." )
   end
-  local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/master/launcher.lua" )
+  local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/launcher.lua" )
   if httpHandle then
     local httpContent = httpHandle.readAll()
     httpHandle.close()
@@ -131,6 +134,9 @@ if updateLauncher then
             table.insert( arguments, "-n" )
             table.insert( arguments, "text" )
           end
+          if branch == "prerelease" then
+            table.insert( arguments, "-prerelease" )
+          end
           table.insert( arguments, "-n" )
           table.insert( arguments, "launcher" )
           
@@ -147,7 +153,7 @@ if updateAPI then
     error( "HTTP is required to search for updates!", 0 )
   end
 
-  local baseURL = "https://raw.github.com/SuicidalSTDz/EnderAPI/master/apis/"
+  local baseURL = "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/apis/"
   local folderExisted = true
   local tFiles = { 
     [ "fs.lua" ] = {},
