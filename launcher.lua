@@ -334,7 +334,7 @@ if fs.exists( folder ) then
         for k, v in pairs( tEnv ) do
           tAPI[ k ] = v
         end
-        
+                
         if not tAPI.isExtension then
           _G[ fs.getName( sPath ) ] = setmetatable( {}, { 
             __index = function( t, k )
@@ -348,6 +348,8 @@ if fs.exists( folder ) then
             end
           } )
           return true
+        else
+          shell.run( sPath )
         end
         
         tAPI.isExtension = nil
