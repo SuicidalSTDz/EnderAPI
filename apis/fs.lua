@@ -1,13 +1,11 @@
 local function assert(bBool, sMessage, nLevel)
-  nLevel = nLevel or -1
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
+  elseif nLevel and type(nLevel) ~= "number" then
     error("Number expected, got " .. type( nLevel ), 2)
   end
-	
   if not bBool then
-    error( sMessage, nLevel + 1 )
+    error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
   end
   return bBool
 end
