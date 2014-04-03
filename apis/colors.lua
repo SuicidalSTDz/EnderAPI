@@ -1,10 +1,10 @@
+local tColorNames = {}
+for k,v in pairs(colors) do
+  tColorNames[v] = k
+end
+
 function colors.convertToString( nColour )
-  for k, v in pairs( colors ) do
-    if nColour == v then
-      return k
-    end
-  end
-  return nil
+  return tColorNames[ nColour ]
 end
 colours.convertToString = colors.convertToString
 

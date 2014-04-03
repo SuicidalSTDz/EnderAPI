@@ -3,7 +3,7 @@
     This API is a pure-Lua implementation of the standard debug API from Lua 5.1
     All features are implemented as described at:
     http://www.lua.org/pil/23.html -- This describes the 5.0 implementation
-    http://www.lua.org/manual/5.1/maunual.html#5.9
+    http://www.lua.org/manual/5.1/manual.html#5.9
     Several features are unavailable due to the technical and usage limitations ComputerCraft
     
     This API is intended to be used only for debugging purposes.
@@ -43,19 +43,13 @@ function getinfo(thread, func, what)
   end
   local env = getfenv(thread)
   local tOut = {['func'] = func}
-  local f, l, n, S, u
+  local f, l, n, S, u = true, true, true, true, true
   if what then -- check for limitation flags
     f = what:find('f')
     l = what:find('l')
     n = what:find('n')
     S = what:find('S') -- for whatever reason, they ask for a capital 'S' in their description, so we comply here
     u = what:find('u')
-  else -- what was not defined; we return all possible values
-    f = true
-    l = true
-    n = true
-    S = true
-    u = true
   end
   if S then -- This is probably the heaviest hit in terms of performance; we have to scan every file on the system
     local tmp = getSource(func, env, 'func') or {}
@@ -200,14 +194,13 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
 end
 
 function assert(bBool, sMessage, nLevel)
-  nLevel = nLevel or -1
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
+  elseif nLevel and type(nLevel) ~= "number" then
     error("Number expected, got " .. type( nLevel ), 2)
   end
   if not bBool then
-    error( sMessage, nLevel + 1 )
+    error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
   end
   return bBool
 end
