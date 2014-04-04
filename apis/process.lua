@@ -1,4 +1,4 @@
--- Globals
+-- Globals - need to explicitly define them as global else they will not be available to coroutines.
 _G.processes = {}
 _G.process = {}
 
@@ -134,9 +134,6 @@ function process.dummy()
 	_G.dummy = 0
 	while true do
 		_G.dummy = dummy + 1
-		if dummy >= 100 then
-			break
-		end
 		coroutine.yield()
 	end
 end
