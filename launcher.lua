@@ -161,6 +161,7 @@ if updateAPI then
     [ "messageBox.lua" ] = {}, -- It's now stable enough for release
     [ "number.lua" ] = {},
     [ "pastebin.lua" ] = {},
+    [ "process.lua" ] = {},
     [ "string.lua" ] = {},
     [ "term.lua" ] = {},
     [ "text.lua" ] = {},
