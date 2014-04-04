@@ -348,6 +348,8 @@ if fs.exists( folder ) then
             end
           } )
           return true
+        else
+          shell.run( sPath )
         end
         
         tAPI.isExtension = nil
