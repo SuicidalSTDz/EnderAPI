@@ -15,6 +15,11 @@ local tHelp = {
     "Returns: nil"
   }
 }
+local sVersion
+do
+  local handle = io.open( "/.EnderAPI/master/version", "r" )
+  sVersion = handle:read(), handle:close()
+end
 
 function help( sTopic )
   if tHelp[ sTopic ] then
@@ -23,8 +28,5 @@ function help( sTopic )
 end
 
 function version()
-  local handle = io.open( "/.EnderAPI/master/version", "r" )
-  local sVersion = handle:read()
-  handle:close()
   return sVersion
 end

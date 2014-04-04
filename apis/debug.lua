@@ -1,9 +1,12 @@
+
+-- Don't load this!
+
 --[[
 
     This API is a pure-Lua implementation of the standard debug API from Lua 5.1
     All features are implemented as described at:
     http://www.lua.org/pil/23.html -- This describes the 5.0 implementation
-    http://www.lua.org/manual/5.1/maunual.html#5.9
+    http://www.lua.org/manual/5.1/manual.html#5.9
     Several features are unavailable due to the technical and usage limitations ComputerCraft
     
     This API is intended to be used only for debugging purposes.
@@ -27,6 +30,88 @@ local getContainer
 local assert
 local concatenate
 
+--[[
+  
+  Stack Manager object (will be used in the wrapped loadstring and error (maybe?))
+  
+  -- I can't decide whether to simply mirror the actual stack, or use this as an actual stack
+  -- The latter might actually be easier to implement, but it'd be easier to corrupt
+  -- I've started to code towards the latter, but I might change it depending on how I wrap loadstring
+  
+  The stack uses numeric keys to indicate the current level
+  In the official debug API, the stack is actually a linked list, and is controlled by C code.
+  Since we're writing this in Lua, we have to use totally different internals, but end up with the same frontend.
+  The stack is an array with the following format:
+  
+  stack = {
+    [n] = {
+      ['name'] = string containing the name of the function at level n, if it has a name
+      ['env'] = the function's environment table
+      ['source'] = the file where the function at level n is defined
+      ['code'] = the code that actually gets run
+    }
+  }
+  
+]]
+
+local stack = {
+  stack = {
+    [0] = { -- will hold data about commands, etc.
+      ['env'] = getfenv(0),
+      ['name'] = 'global',
+      ['source'] = nil,
+      ['code'] = nil,
+    }
+  },
+  stackLevel = 0, -- The depth of the stack
+}
+
+function stack:increment()
+  for i = #self.stack, 1, -1 do -- push everything up one numeric key, except for key 0
+    self.stack[i + 1] = self.stack[i]
+  end
+  self.stack[1] = nil -- we nil this because we want to error if the stack fails to insert a command at the top of the list, rather than execute the same command over and over
+end
+
+function stack:decrement()
+  for i = 2, #self.stack do -- push everything down one numeric key, except for key 1
+    self.stack[i - 1] = self.stack[i]
+  end
+end
+
+function stack:insert(elem) -- stick a new value at into the top of the stack
+  self.increment()
+  self.stack[1] = elem
+end
+
+function stack:resolve() -- run and remove the first element of the stack
+  --code that runs the function at level 1
+  self.decrement()
+end
+
+function stack:trace(maxLevel)
+  if maxLevel then
+    maxLevel = math.min(maxLevel, #self.stack)
+  else
+    maxLevel = #self.stack
+  end
+  -- should I print the trace here, or return a formatted string?
+end
+
+--[[
+
+  These next two functions should only be used for formatting stacktraces, as they will normally cause errors when the elements they add are run
+
+]]
+
+function stack:removeAt(key) -- remove a specific level (Dangerous!)
+  
+end
+
+function stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
+  
+end
+
 -- API functions
 
 function getinfo(thread, func, what)
@@ -43,19 +128,13 @@ function getinfo(thread, func, what)
   end
   local env = getfenv(thread)
   local tOut = {['func'] = func}
-  local f, l, n, S, u
+  local f, l, n, S, u = true, true, true, true, true
   if what then -- check for limitation flags
     f = what:find('f')
     l = what:find('l')
     n = what:find('n')
     S = what:find('S') -- for whatever reason, they ask for a capital 'S' in their description, so we comply here
     u = what:find('u')
-  else -- what was not defined; we return all possible values
-    f = true
-    l = true
-    n = true
-    S = true
-    u = true
   end
   if S then -- This is probably the heaviest hit in terms of performance; we have to scan every file on the system
     local tmp = getSource(func, env, 'func') or {}
@@ -200,14 +279,13 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
 end
 
 function assert(bBool, sMessage, nLevel)
-  nLevel = nLevel or -1
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
+  elseif nLevel and type(nLevel) ~= "number" then
     error("Number expected, got " .. type( nLevel ), 2)
   end
   if not bBool then
-    error( sMessage, nLevel + 1 )
+    error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
   end
   return bBool
 end
