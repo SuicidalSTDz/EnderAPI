@@ -5,7 +5,7 @@ _G.process = {}
 -- Functions
 
 -- Local version of table.maxn because there may be a bug
-function table.maxn(tbl)
+local function table.maxn(tbl)
 	local i = 0
 	while not tbl[i] == nil do
 		i = i + 1
