@@ -1,6 +1,14 @@
+--[[
 As of version 5.4.1
-Requirements marked with (nonessential) mean that functions provided by the requirement are used, but the file would still function without that requirement present.
+Requirements marked with (nonessential) mean that functions provided by the requirement are used
+]]
 
+return {
+  ['messageBox.lua'] = 'required-after:term.lua;required-after:text.lua;',
+  ['term.lua'] = 'after:term.lua;'
+}
+
+--[[
 File            Requires
 launcher.lua    none
 colors.lua      none
@@ -14,3 +22,4 @@ string.lua      none
 table.lua       none
 term.lua        none
 text.lua        term.lua (nonessential);
+]]
