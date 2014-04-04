@@ -5,9 +5,9 @@ _G.process = {}
 -- Functions
 
 -- Local version of table.maxn because there may be a bug
-local function table.maxn(tbl)
+function table.maxn(tbl)
 	local i = 0
-	while not tbl[i] == nil do
+	while tbl[i] do
 		i = i + 1
 	end
 	return i
