@@ -89,4 +89,6 @@ function updateFile( sCode, sFile )
       end
     end
     return false
+  end
+  return false
 end
