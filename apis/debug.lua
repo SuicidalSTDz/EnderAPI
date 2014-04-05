@@ -109,7 +109,7 @@ DEBUG.stack = {
       ['code'] = nil,
     }
   },
-  stackLevel = 0, -- The depth of the stack
+  ['stackLevel'] = 0, -- The depth of the stack
 }
 
 function DEBUG.stack:increment()
