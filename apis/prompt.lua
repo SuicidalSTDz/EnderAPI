@@ -33,7 +33,12 @@ function promptForNum(text, min, max)
  term.write(text..": ")
  input = tonumber(read())
  if min == nil then
-  return input
+  if input then
+   return input
+  else
+   print("Please Enter a Number")
+   return promptForNum(text)
+  end
  elseif input then
   if input >= min and input <= max then
    return input
