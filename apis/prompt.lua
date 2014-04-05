@@ -22,11 +22,13 @@ end
 function promptForColor(text) --self explanitory, will only accept colors as input(eg. blue)
  term.write(text..": ")
  local input = read()
- if parseColor(input) then
-  return parseColor(input)
+ if (colors[input] and type(colors[input]) == "number") or (colours[input] and type(colours[input]) == "number") then
+   return colors[input] or colours[input]
+ elseif tonumber(input) then
+   return tonumber(input)
  else
-  print("Please Enter a Color")
-  return promptForColor()
+   print("Please Enter A Color")
+   return promptForColor(text)
  end
 end
 function promptForNum(text, min, max) --Prompts for a number, the number fields can be specified as nil or you can set your min & max to limit the options.
@@ -73,14 +75,5 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
  else
   print("Please Enter a Number Between "..min.." and "..max)
   return promptForNum(text, min, max)
- end
-end
-local function parseColor(input) --parses string 'orange' into colors.orange
- if (colors[input] and type(colors[input]) == "number") or (colours[input] and type(colours[input]) == "number") then
-   return colors[input] or colours[input]
- elseif tonumber(input) then
-   return tonumber(input)
- else
-   return false
  end
 end
