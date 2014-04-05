@@ -319,12 +319,11 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
       log('Called!', 'debug.getSource.scanFiles.scanFile')
       log(file, 'debug.getSource.scanFiles.scanFile')
       local h = fs.open(file,'r')
-      local lastLine = true
+      local lastLine = h.readLine()
       local wasFound = false
       local isLocal = false
       local line = 0
       while lastLine and not wasFound do
-        lastLine = h.readLine()
         line = line + 1
         log('Doing regex stuff...', 'debug.getSource.scanFiles.scanFile')
         local found1 = lastLine:find('(local )?( )*function ( )*'..name..'( )*\(') -- I'm kinda new to regex, so if there's a better pattern, let me know.
@@ -337,7 +336,7 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
             isLocal = true
           end
         end
-        last = h.readLine()
+        lastLine = h.readLine()
       end
       if not wasFound then
         log('Not in this file', 'debug.getSource.scanFiles.scanFile')
