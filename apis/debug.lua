@@ -28,6 +28,7 @@ _G.debug = {}
 
 -- local declarations
 
+local debug
 local getSource
 local getContainer
 local assert
@@ -406,5 +407,7 @@ function concatenate(t1, t2)
   fLevel = fLevel - 1
   return t1
 end
+
+_G.debug = debug
 
 log('Done', 'debug')
