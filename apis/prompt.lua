@@ -31,7 +31,7 @@ function promptForColor(text)
 end
 function promptForNum(text, min, max)
  term.write(text..": ")
- input = tonumber(read())
+ local input = tonumber(read())
  if min == nil and max == nil then
   if input then
    return input
