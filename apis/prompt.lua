@@ -16,7 +16,7 @@ function promptFor(text, ...) --it will print 'text: ', and only except answers 
     term.write("or ")
    end
   end
-  return prompt(text, ...)
+  return promptFor(text, ...)
  end
 end
 function promptForColor(text) --self explanitory, will only accept colors as input(eg. blue)
@@ -33,7 +33,7 @@ function promptForColor(text) --self explanitory, will only accept colors as inp
 end
 function promptForNum(text, min, max) --Prompts for a number, the number fields can be specified as nil or you can set your min & max to limit the options.
  term.write(text..": ")
- local input = read()
+ local input = tonumber(read())
  if min == nil and max == nil then
   if input then --if tonumber(read()) is valid  **This line is found in many places**
    return input
