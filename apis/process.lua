@@ -148,14 +148,14 @@ function process.loop()
 		-- Start main loop
 		while true do
 			-- Count processes
-			local processes = 0
+			local process_count = 0
 			for k,v in pairs(processes) do
 				if process.state(k) == "normal" then
-					processes = processes + 1
+					process_count = process_count + 1
 				end
 			end
 			-- Loop through them, providing event data
-			if processes == 0 then break end
+			if process_count == 0 then break end
 			local eventData = {coroutine.yield()}
 			for k,v in pairs(processes) do
 				process.active = k
