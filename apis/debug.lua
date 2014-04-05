@@ -28,7 +28,7 @@ _G.debug = {}
 
 -- local declarations
 
-local debug
+local DEBUG
 local getSource
 local getContainer
 local assert
@@ -81,7 +81,7 @@ log('Loading...', 'debug')
 ]]
 
 log('Init stack', 'debug')
-debug.stack = {
+DEBUG.stack = {
   stack = {
     [0] = { -- will hold data about commands, etc.
       ['env'] = getfenv(0),
@@ -93,7 +93,7 @@ debug.stack = {
   stackLevel = 0, -- The depth of the stack
 }
 
-function debug.stack:increment()
+function DEBUG.stack:increment()
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:increment')
   for i = #self.stack, 1, -1 do -- push everything up one numeric key, except for key 0
@@ -104,7 +104,7 @@ function debug.stack:increment()
   fLevel = fLevel - 1
 end
 
-function debug.stack:decrement()
+function DEBUG.stack:decrement()
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:decrement')
   for i = 2, #self.stack do -- push everything down one numeric key, except for key 1
@@ -114,7 +114,7 @@ function debug.stack:decrement()
   fLevel = fLevel - 1
 end
 
-function debug.stack:insert(elem) -- stick a new value at into the top of the stack
+function DEBUG.stack:insert(elem) -- stick a new value at into the top of the stack
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:insert')
   self.increment()
@@ -123,7 +123,7 @@ function debug.stack:insert(elem) -- stick a new value at into the top of the st
   fLevel = fLevel - 1
 end
 
-function debug.stack:resolve() -- run and remove the first element of the stack
+function DEBUG.stack:resolve() -- run and remove the first element of the stack
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:resolve')
   --code that runs the function at level 1
@@ -132,7 +132,7 @@ function debug.stack:resolve() -- run and remove the first element of the stack
   fLevel = fLevel - 1
 end
 
-function debug.stack:trace(maxLevel)
+function DEBUG.stack:trace(maxLevel)
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:trace')
   if maxLevel then
@@ -151,7 +151,7 @@ end
 
 ]]
 
-function debug.stack:removeAt(key) -- remove a specific level (Dangerous!)
+function DEBUG.stack:removeAt(key) -- remove a specific level (Dangerous!)
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:removeAt')
   
@@ -159,7 +159,7 @@ function debug.stack:removeAt(key) -- remove a specific level (Dangerous!)
   fLevel = fLevel - 1
 end
 
-function debug.stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
+function DEBUG.stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:insertAt')
   
@@ -169,7 +169,7 @@ end
 
 -- API functions
 
-function debug.getinfo(thread, func, what)
+function DEBUG.getinfo(thread, func, what)
   fLevel = fLevel + 1
   log('Called!', 'debug.getinfo')
   if type( thread ) == 'function' then -- thread was not provided by the calling function, so we shift everything up; I didn't make it this way, lua 5.1 is weird, and apparently optional args should come before normal ones. Who knows.
@@ -408,6 +408,6 @@ function concatenate(t1, t2)
   return t1
 end
 
-_G.debug = debug
+_G.debug = DEBUG
 
 log('Done', 'debug')
