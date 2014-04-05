@@ -1,4 +1,4 @@
-function promptFor(text, ...)
+function promptFor(text, ...) --it will print 'text: ', and only except answers specified aftet text. eg promptFor("hello", "right", "left") would accept 'right' or 'left'
  local tArgs = {...}
  local tValid = {}
  for i = 1, #tArgs do
@@ -9,7 +9,7 @@ function promptFor(text, ...)
  if tValid[input] or #tArgs == 0 then
   return input
  else
-  print("Valid Options:")
+  print("Valid Options:") --gives the user a list of specified options
   for i = 1, #tArgs do
    print(tArgs[i])
    if i < #tArgs then
@@ -19,7 +19,7 @@ function promptFor(text, ...)
   return prompt(text, ...)
  end
 end
-function promptForColor(text)
+function promptForColor(text) --self explanitory, will only accept colors as input(eg. blue)
  term.write(text..": ")
  local input = read()
  if parseColor(input) then
@@ -29,17 +29,11 @@ function promptForColor(text)
   return promptForColor()
  end
 end
-function promptForNum(text, min, max)
+function promptForNum(text, min, max) --Prompts for a number, the number fields can be specified as nil or you can set your min & max to limit the options.
  term.write(text..": ")
  local input = read()
- if tonumber(input) then
-  input = tonumber(input)
- else
-  print("Plese Enter a Number")
-  return promptForNum(text, min, max)
- end
  if min == nil and max == nil then
-  if input then
+  if input then --if tonumber(read()) is valid  **This line is found in many places**
    return input
   else
    print("Please Enter a Number")
@@ -50,11 +44,11 @@ function promptForNum(text, min, max)
    if input >= min then
     return input
    else
-    print("Please Enter a Number Higher Than "..min)
+    print("Please Enter a Number Higher Than "..min) --notice this error message is repeated
     return promptForNum(text, min, max)
    end
   else
-   print("Please Enter a Number Higher Than "..min)
+   print("Please Enter a Number Higher Than "..min) --This one is for if they didn't enter a number
    return promptForNum(text, min, max)
   end
  elseif min == nil and max ~= nil then
@@ -80,7 +74,7 @@ function promptForNum(text, min, max)
   return promptForNum(text, min, max)
  end
 end
-local function parseColor(input)
+local function parseColor(input) --parses string 'orange' into colors.orange
  if (colors[input] and type(colors[input]) == "number") or (colours[input] and type(colours[input]) == "number") then
    return colors[input] or colours[input]
  elseif tonumber(input) then
