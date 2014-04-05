@@ -367,7 +367,11 @@ if fs.exists( folder ) then
   end
 
   for _, file in pairs( fs.list( folder ) ) do
-    loadAPI( folder .. file )
+    if file == 'debug.lua' then
+      dofile( folder .. file )
+    else
+      loadAPI( folder .. file )
+    end
   end
 else
   error( "Update first!", 0 ) 

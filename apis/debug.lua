@@ -1,5 +1,6 @@
 
 -- Don't load this!
+-- Run it instead!
 
 --[[
 
@@ -23,6 +24,8 @@
     
 ]]
 
+_G.debug = {}
+
 -- local declarations
 
 local getSource
@@ -31,7 +34,7 @@ local assert
 local concatenate
 local fLevel = 0 -- Temporary, used to track call depth for logger
 
-function log(msg, caller, level) -- Temporary; will be replaced when actual logger is implemented
+local function log(msg, caller, level) -- Temporary; will be replaced when actual logger is implemented
   level = level or 0
   assert(type(caller) == 'string', "String expected, got "..type(caller))
   local h = fs.open('/debugger.log', 'a')
@@ -77,7 +80,7 @@ log('Loading...', 'debug')
 ]]
 
 log('Init stack', 'debug')
-local stack = {
+debug.stack = {
   stack = {
     [0] = { -- will hold data about commands, etc.
       ['env'] = getfenv(0),
@@ -89,7 +92,7 @@ local stack = {
   stackLevel = 0, -- The depth of the stack
 }
 
-function stack:increment()
+function debug.stack:increment()
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:increment')
   for i = #self.stack, 1, -1 do -- push everything up one numeric key, except for key 0
@@ -100,7 +103,7 @@ function stack:increment()
   fLevel = fLevel - 1
 end
 
-function stack:decrement()
+function debug.stack:decrement()
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:decrement')
   for i = 2, #self.stack do -- push everything down one numeric key, except for key 1
@@ -110,7 +113,7 @@ function stack:decrement()
   fLevel = fLevel - 1
 end
 
-function stack:insert(elem) -- stick a new value at into the top of the stack
+function debug.stack:insert(elem) -- stick a new value at into the top of the stack
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:insert')
   self.increment()
@@ -119,7 +122,7 @@ function stack:insert(elem) -- stick a new value at into the top of the stack
   fLevel = fLevel - 1
 end
 
-function stack:resolve() -- run and remove the first element of the stack
+function debug.stack:resolve() -- run and remove the first element of the stack
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:resolve')
   --code that runs the function at level 1
@@ -128,7 +131,7 @@ function stack:resolve() -- run and remove the first element of the stack
   fLevel = fLevel - 1
 end
 
-function stack:trace(maxLevel)
+function debug.stack:trace(maxLevel)
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:trace')
   if maxLevel then
@@ -147,7 +150,7 @@ end
 
 ]]
 
-function stack:removeAt(key) -- remove a specific level (Dangerous!)
+function debug.stack:removeAt(key) -- remove a specific level (Dangerous!)
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:removeAt')
   
@@ -155,7 +158,7 @@ function stack:removeAt(key) -- remove a specific level (Dangerous!)
   fLevel = fLevel - 1
 end
 
-function stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
+function debug.stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:insertAt')
   
@@ -165,7 +168,7 @@ end
 
 -- API functions
 
-function getinfo(thread, func, what)
+function debug.getinfo(thread, func, what)
   fLevel = fLevel + 1
   log('Called!', 'debug.getinfo')
   if type( thread ) == 'function' then -- thread was not provided by the calling function, so we shift everything up; I didn't make it this way, lua 5.1 is weird, and apparently optional args should come before normal ones. Who knows.
