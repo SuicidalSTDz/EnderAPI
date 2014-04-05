@@ -102,7 +102,7 @@ log('Loading...', 'debug')
 log('Init stack', 'debug')
 DEBUG.stack = {
   ['stack'] = {
-    [0] = { -- will hold data about commands, etc.
+    { -- will hold data about commands, etc.
       ['env'] = getfenv(0),
       ['name'] = 'global',
       ['source'] = nil,
