@@ -27,6 +27,8 @@ function promptForColor(text)
  else
   print("Please Enter a Color")
   return promptForColor()
+ end
+end
 function promptForNum(text, min, max)
  term.write(text..": ")
  input = tonumber(read())
@@ -42,6 +44,7 @@ function promptForNum(text, min, max)
   print("Please Enter a Number Between "..min.." and "..max)
   return promptForNum(text, min, max)
  end
+end
 local function parseColor(input)
  if (colors[input] and type(colors[input]) == "number") or (colours[input] and type(colours[input]) == "number") then
    return colors[input] or colours[input]
