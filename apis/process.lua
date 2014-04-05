@@ -170,6 +170,7 @@ function process.loop()
 	end)
 	process.active = "parent"
 	if not alive then
+		error(err)
 		--Error handling
 	return end
 end
