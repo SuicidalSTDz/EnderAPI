@@ -31,13 +31,43 @@ function promptForColor(text)
 end
 function promptForNum(text, min, max)
  term.write(text..": ")
- input = tonumber(read())
- if min == nil then
+ local input = read()
+ if tonumber(input) then
+  input = tonumber(input)
+ else
+  print("Plese Enter a Number")
+  return promptForNum(text, min, max)
+ end
+ if min == nil and max == nil then
   if input then
    return input
   else
    print("Please Enter a Number")
    return promptForNum(text)
+  end
+ elseif min ~= nil and max == nil then
+  if input then
+   if input >= min then
+    return input
+   else
+    print("Please Enter a Number Higher Than "..min)
+    return promptForNum(text, min, max)
+   end
+  else
+   print("Please Enter a Number Higher Than "..min)
+   return promptForNum(text, min, max)
+  end
+ elseif min == nil and max ~= nil then
+  if input then
+   if input <= max then
+    return input
+   else
+    print("PLease Enter a Number Lower Than "..max)
+    return promptForNum(text, min, max)
+   end
+  else
+   print("Please Enter a Number Lower Than "..max)
+   return promptForNum(text, min, max)
   end
  elseif input then
   if input >= min and input <= max then
