@@ -101,17 +101,15 @@ log('Loading...', 'debug')
 
 log('Init stack', 'debug')
 DEBUG.stack = {
-  ['stack'] = {
-    { -- will hold data about commands, etc.
-      ['env'] = getfenv(0),
-      ['name'] = 'global',
-      ['source'] = nil,
-      ['code'] = nil,
-    }
-  },
+  ['stack'] = {}, -- will hold data about commands, etc.
   ['stackLevel'] = 0, -- The depth of the stack
 }
-
+DEBUG.stack.stack[0] = {
+  ['env'] = getfenv(0),
+  ['name'] = 'global',
+  ['source'] = nil,
+  ['code'] = nil,
+}
 function DEBUG.stack:increment()
   fLevel = fLevel + 1
   log('Called!', 'debug.stack:increment')
