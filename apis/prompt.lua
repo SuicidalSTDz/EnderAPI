@@ -69,6 +69,7 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
   else
    print("Please Enter a Number Between "..min.." and "..max)
    return promptForNum(text, min, max)
+  end
  else
   print("Please Enter a Number Between "..min.." and "..max)
   return promptForNum(text, min, max)
