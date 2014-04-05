@@ -31,14 +31,33 @@ _G.debug = {}
 local DEBUG
 local getSource
 local getContainer
-local assert
 local concatenate
 local fLevel = 0 -- Temporary, used to track call depth for logger
+
+local function assert(bBool, sMessage, nLevel)
+  fLevel = fLevel + 1
+  if type(sMessage) ~= "string" then
+    error("String expected, got " .. type( sMessage ), 2)
+  elseif nLevel and type(nLevel) ~= "number" then
+    error("Number expected, got " .. type( nLevel ), 2)
+  end
+  if not bBool then
+    log('Assert failed!', 'debug.assert')
+    error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
+  end
+  fLevel = fLevel - 1
+  return bBool
+end
 
 local function log(msg, caller, level) -- Temporary; will be replaced when actual logger is implemented
   level = level or 0
   assert(type(caller) == 'string', "String expected, got "..type(caller))
-  local h = fs.open('/debugger.log', 'a')
+  local h
+  if fs.exists('.debugger.log') then
+    h = fs.open('/debugger.log', 'a')
+  else
+    h = fs.open('/debugger.log', 'w')
+  end
   local tabs = ''
   for i=0, fLevel do -- each function that calls another function should log at least once to maintain continuity
     tabs = tabs..' '
@@ -368,21 +387,6 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
   log('Done', 'debug.getSource')
   fLevel = fLevel - 1
   return t
-end
-
-function assert(bBool, sMessage, nLevel)
-  fLevel = fLevel + 1
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif nLevel and type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
-  end
-  if not bBool then
-    log('Assert failed!', 'debug.assert')
-    error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
-  end
-  fLevel = fLevel - 1
-  return bBool
 end
 
 function concatenate(t1, t2)
