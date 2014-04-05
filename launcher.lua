@@ -25,11 +25,16 @@ for i, v in ipairs( tArgs ) do
       updateAPI = false
     elseif tArgs[ i + 1 ] == "launcher" then
       updateLauncher = false
+    elseif tArgs[ i + 1 ] == "update" then
+      updateAPI = false
+      updateLauncher = false
     elseif tArgs[ i + 1 ] == "text" then
       showTextOutput = false
     end
-  elseif a == "-prerelease" then
+  elseif a == "-prerelease" then -- Shouldn't we use POSIX arguments? e.g. --prerelease instead of -prerelease
     branch = "prerelease"
+  elseif a == "-dev" then
+    branch = "dev"
   end
 end
 
@@ -168,6 +173,10 @@ if updateAPI then
     [ "colors.lua" ] = {},
     [ "turtle.lua" ] = {}
   }
+  
+  if branch == "dev" then -- update all dev-only files
+    tFiles[ "debug.lua" ] = {}
+  end
 
   if not fs.exists( folder ) or not fs.isDir( folder ) then
     fs.makeDir( folder )
