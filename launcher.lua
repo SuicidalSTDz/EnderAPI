@@ -166,6 +166,7 @@ if updateAPI then
     [ "number.lua" ] = {},
     [ "pastebin.lua" ] = {},
     [ "process.lua" ] = {},
+    [ "prompt.lua" ] = {},
     [ "string.lua" ] = {},
     [ "term.lua" ] = {},
     [ "text.lua" ] = {},
