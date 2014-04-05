@@ -368,7 +368,7 @@ if fs.exists( folder ) then
 
   for _, file in pairs( fs.list( folder ) ) do
     if file == 'debug.lua' then
-      dofile( folder .. file )
+      shell.run( folder .. file )
     else
       loadAPI( folder .. file )
     end
