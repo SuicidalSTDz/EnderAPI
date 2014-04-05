@@ -30,6 +30,8 @@ for i, v in ipairs( tArgs ) do
     end
   elseif a == "-prerelease" then
     branch = "prerelease"
+  elseif a == "-dev" then
+    branch = "dev"
   end
 end
 
@@ -136,6 +138,8 @@ if updateLauncher then
           end
           if branch == "prerelease" then
             table.insert( arguments, "-prerelease" )
+          elseif branch == "dev" then
+            table.insert( arguments, "-dev" )
           end
           table.insert( arguments, "-n" )
           table.insert( arguments, "launcher" )
