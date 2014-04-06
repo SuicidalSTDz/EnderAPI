@@ -43,7 +43,7 @@ do -- Nice closure trick
 	for index, arg in next, tArgs do
 		if not skip then
 			if arg == "-b" and tArgs[ index + 1 ] and (tArgs[ index + 1 ] == "dev" or tArgs[ index + 1 ] == "prerelease" )then
-				branch = tArgs[ index + 1 ]
+				sBranch = tArgs[ index + 1 ]
 				skip = true
 			elseif arg == "-u" and tArgs[ index + 1 ] then
 				for _, subArg in next, parse( tArgs[ index + 1 ] ) do
