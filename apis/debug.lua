@@ -317,18 +317,23 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
     local function scanFile(file, name)
       DEBUG.fLevel = DEBUG.fLevel + 1
       log('Called!', 'debug.getSource.scanFiles.scanFile')
-      log(file, 'debug.getSource.scanFiles.scanFile')
       local h = fs.open(file,'r')
       local lastLine = h.readLine()
       local wasFound = false
       local isLocal = false
       local line = 0
       while lastLine and not wasFound do
+        sleep(0)
         line = line + 1
         log('Doing regex stuff...', 'debug.getSource.scanFiles.scanFile')
+        log('File:   '..file, 'debug.getSource.scanFiles.scanFile')
+        log('Line:   '..line, 'debug.getSource.scanFiles.scanFile')
+        log('Text:   '..lastLine, 'debug.getSource.scanFiles.scanFile')
         local found1 = lastLine:find('(local )?( )*function ( )*'..name..'( )*\(') -- I'm kinda new to regex, so if there's a better pattern, let me know.
+        log('Test 1: '..(found1 or 'false'), 'debug.getSource.scanFiles.scanFile')
         local found2 = lastLine:find('(local )?( )*'..name..'( )*=( )*function( )*\(')
-        if found1 or found2 then 
+        log('Test 2: '..(found2 or 'false'), 'debug.getSource.scanFiles.scanFile')
+        if found1 or found2 then
           wasFound = true
           log('Found it!', 'debug.getSource.scanFiles.scanFile')
           lastLine = ' '..lastLine -- Add a space to the start of lastLine so we can isolate 'local' if it's there
