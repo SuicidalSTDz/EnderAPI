@@ -5,9 +5,11 @@
 --           -> dev
 -- Example: -b prerelease
 
--- Description: switch to not update, just load
--- Switch: u 
--- Example: -u
+-- Description: switch to not update a part, just load
+-- Switch: u -> api
+--           -> launcher
+-- Example1: -u api
+-- Example2: -u api|launcher
 
 -- Description: turns off the show output
 -- Switch: n -> gui
@@ -22,7 +24,10 @@
 -- Variables for switch'n'stuff
 local sBranch = "master"
 local sBaseDir = "/.EnderAPI/"
-local bUpdate = true
+local update = {
+	launcher = true,
+	api = true
+}
 local show = {
 	gui = true,
 	text = true
@@ -55,7 +60,11 @@ do -- Nice closure trick
 				sBaseDir = tArgs[ index + 1 ]
 				skip = true
 			elseif arg == "-n" then
-				bUpdate = false
+				for _, subArg in next, parse( tArgs[ index + 1 ] ) do
+					if subArg == "gui" then show.gui = false end
+					if subArg == "text" then show.text = false end
+				end
+				skip = true
 			end
 		else
 			skip = false
@@ -68,9 +77,10 @@ if bUpdate and not http then
 	error( "HTTP is required to update!", 0 )
 end
 
--- Check for updates
 local sBranchDir = fs.combine( sBaseDir, "repo/" .. sBranch )
-if bUpdate then
+
+-- Check for launcher update
+if update.launcher then
 	-- Check for a launcher update
 	local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/" .. sBranch .. "/launcher.lua" )
 	if httpHandle then
@@ -86,12 +96,16 @@ if bUpdate then
 			fileHandle.write( sResponse )
 			fileHandle.close()
 			
-			shell.run( shell.getRunningProgram(), "-d", sBaseDir, "-b", sBranch, ( show.gui and "" or "-n gui " ) .. ( show.text and "" or "-n text" ) )
+			local sNarg = ( show.gui and "" or "-n gui " ) .. ( show.text and "" or "-n text" )
+			local sUarg = "-u launcher" .. ( update.api and "" or "|api" )
+			shell.run( shell.getRunningProgram(), "-d", sBaseDir, "-b", sBranch, sNarg, sUarg )
 			return
 		end
 	end
-	
-	-- Check for updates with the api list
+end
+
+-- Check for updates with the api list
+if update.api then
 	local tFileList = {}
 	httpHandle = http.get( "https://api.github.com/repos/SuicidalSTDz/EnderAPI/git/trees/" .. sBranch .. "?recursive=1" )
 	if httpHandle then
@@ -104,13 +118,13 @@ if bUpdate then
 		sResponse = sResponse:gsub( "%[", "{" )
 		sResponse = sResponse:gsub( "%]", "}" )
 		-- Load the table
-		local func, err = loadstring( "return " .. sResponse, "GihubAPI" )
+		local func, err = loadstring( "return " .. sResponse, "GithubAPI" )
 		if func then
 			local ok, JSON = pcall( func )
 			if ok then
 				-- Create the fileList and dirList (only downloads the api folder)
 				for _, fileObj in next, JSON.tree do
-					if fileObj.type:sub( 1, 3 ) == "api" then
+					if fileObj.path:sub( 1, 3 ) == "api" then
 						if fileObj.type == "tree" then
 							fs.makeDir( fs.combine( sBranchDir, fileObj.path ) )
 						elseif fileObj.type == "blob" then
@@ -121,7 +135,7 @@ if bUpdate then
 			end
 		end
 	end
-
+	
 	if #tFileList > 0 then
 		for _, sFile in next, tFileList do
 			httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/" .. sBranch .. "/" .. sFile )
