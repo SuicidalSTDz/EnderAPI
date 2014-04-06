@@ -166,12 +166,10 @@ if update.api then
 			end
 		end
 	end
-
-	return
 end
 
 -- Load the files
-local sApiDir = fs.combine( sBranchDir, "api" )
+local sApiDir = fs.combine( sBranchDir, "apis" )
 if fs.isDir( sApiDir ) then
 	-- logger API copied straight with slight modifications out of project of mine (c) 2014
 	local logger = {}
@@ -214,32 +212,32 @@ if fs.isDir( sApiDir ) then
 		if not bBool then
 			error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
 		end
-			return bBool
+		return bBool
 	end
 
 	local function loadAPI( sPath )
-		if fs.exists( sPath ) and not fs.isDir( sPath ) then
+		if fs.exists( sPath ) then	
 			local fileHandle = fs.open( sPath, "r" )
 			local content = fileHandle.readAll()
-			fileHandle.close()
+			fileHandle.close() 
 
-		  local sName = fs.getName( sPath )
+			local sName = fs.getName( sPath )
 			local func, err = loadstring( content, sName )
 			if func then
-				local tEnv = setmetatable( { log = log.new( sName:sub( 1, sName:len() - 4 ) ), assert = newAssert }, { __index = _G } )
+				local tEnv = setmetatable( { log = logger.new( sName:sub( 1, sName:len() - 4 ) ), assert = newAssert }, { __index = _G } )
 				setfenv( func, tEnv )
 
 				local ok, err = pcall( func )
 				if not ok then
 					return false
 				end
-
+	
+				local tAPI = {}
+				for k, v in pairs( tEnv ) do
+					tAPI[ k ] = v
+				end
+				
 				if not tAPI.isExtension then
-					local tAPI = {}
-					for k, v in pairs( tEnv ) do
-						tAPI[ k ] = v
-					end
-					
 					_G[ sName:sub( 1, sName:len() - 4 ) ] = setmetatable( {}, { 
 						__index = function( t, k )
 							if tAPI[ k ] then
@@ -261,8 +259,12 @@ if fs.isDir( sApiDir ) then
 	end
 	
 	local function loadDir( sDir )
-		for _, sFile in pairs( fs.list( fs.combine( sApiDir, sDir )) ) do
-			loadAPI( fs.combine( sApiDir, sFile ) )
+		local sDir = fs.combine( sApiDir, sDir )
+		for _, sFile in pairs( fs.list( sDir )) do
+			local sPath = fs.combine( sDir, sFile )
+			if not fs.isDir( sPath ) then 
+				loadAPI( sPath )
+			end
 		end
 	end
 	
