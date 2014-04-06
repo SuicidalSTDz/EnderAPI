@@ -19,7 +19,7 @@
 
 -- Description: sets the base directory
 -- Switch: d
--- Exmaple: -d .EnderAPI
+-- Example: -d .EnderAPI
 
 -- Variables for switch'n'stuff
 local sBranch = "master"
