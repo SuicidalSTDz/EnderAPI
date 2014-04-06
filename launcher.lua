@@ -204,9 +204,21 @@ if fs.isDir( sApiDir ) then
 	function logger:warning( sMessage ) self:log( "WARNING", sMessage, true ) end
 	function logger:severe( sMessage ) self:log( "SEVERE", sMessage, true ) end
 	-- END LOG API
+	
+	local function newAssert(bBool, sMessage, nLevel)
+		if type(sMessage) ~= "string" then
+			error("String expected, got " .. type( sMessage ), 2)
+		elseif nLevel and type(nLevel) ~= "number" then
+			error("Number expected, got " .. type( nLevel ), 2)
+		end
+		if not bBool then
+			error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
+		end
+			return bBool
+	end
 
 	local function loadAPI( sPath )
-		if fs.exists( sPath ) then
+		if fs.exists( sPath ) and not fs.isDir( sPath ) then
 			local fileHandle = fs.open( sPath, "r" )
 			local content = fileHandle.readAll()
 			fileHandle.close()
@@ -214,7 +226,7 @@ if fs.isDir( sApiDir ) then
 		  local sName = fs.getName( sPath )
 			local func, err = loadstring( content, sName )
 			if func then
-				local tEnv = setmetatable( { log = log.new( sName:sub( 1, sName:len() - 4 ) ) }, { __index = _G } )
+				local tEnv = setmetatable( { log = log.new( sName:sub( 1, sName:len() - 4 ) ), assert = newAssert }, { __index = _G } )
 				setfenv( func, tEnv )
 
 				local ok, err = pcall( func )
@@ -222,12 +234,12 @@ if fs.isDir( sApiDir ) then
 					return false
 				end
 
-				local tAPI = {}
-				for k, v in pairs( tEnv ) do
-					tAPI[ k ] = v
-				end
-
 				if not tAPI.isExtension then
+					local tAPI = {}
+					for k, v in pairs( tEnv ) do
+						tAPI[ k ] = v
+					end
+					
 					_G[ sName:sub( 1, sName:len() - 4 ) ] = setmetatable( {}, { 
 						__index = function( t, k )
 							if tAPI[ k ] then
@@ -238,17 +250,25 @@ if fs.isDir( sApiDir ) then
 							-- Dont set anything
 						end
 					} )
-				return true
-			end
+					return true
+				end
 
-			tAPI.isExtension = nil
-			return true
+				tAPI.isExtension = nil
+				return true
 			end
 		end
 		return false
 	end
 	
-	for _, sFile in pairs( fs.list( sApiDir ) ) do
-		loadAPI( fs.combine( sApiDir, sFile ) )
+	local function loadDir( sDir )
+		for _, sFile in pairs( fs.list( fs.combine( sApiDir, sDir )) ) do
+			loadAPI( fs.combine( sApiDir, sFile ) )
+		end
 	end
+	
+	loadDir( "" )
+	if turtle then loadDir( "turtle" ) end
+	if term.isColor and term.isColor then loadDir( "advanced" ) end
+	if pocket then loadDir( "pocket" ) end
+	if http then loadDir( "http" ) end
 end

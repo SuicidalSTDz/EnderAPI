@@ -1,6 +1,7 @@
 
 -- Don't load this!
 -- Run it instead!
+isExtension = true -- This is used for API extensions, though this way it gets runned instead of loaded
 
 --[[
 

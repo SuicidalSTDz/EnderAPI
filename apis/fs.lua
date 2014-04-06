@@ -1,15 +1,3 @@
-local function assert(bBool, sMessage, nLevel)
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif nLevel and type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
-  end
-  if not bBool then
-    error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
-  end
-  return bBool
-end
-
 isExtension = true
 
 function fs.save( sPath, sData )

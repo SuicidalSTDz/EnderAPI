@@ -1,17 +1,3 @@
-local function assert(bBool, sMessage, nLevel)
-  nLevel = nLevel or -1 -- Changing the value of a param doesn't affect its scope, so local isn't necessary. (confirmed by eclipse)
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
-  end
-  
-  if not bBool then
-    error( sMessage, nLevel + 1 ) -- should be nLevel; iLevel was a typo
-  end
-  return bBool
-end
-
 local function getContainer( obj, env, tIgnore, bGlobal ) -- a nifty little function that finds the name of the variable holding its first param in the environment provided by env, and ignores all variables with names matching those in tIgnore. It will scan _G if bGlobal == true and the variable is not in env
   if not tIgnore then
     tIgnore = {}

@@ -1,17 +1,3 @@
-local function assert(bBool, sMessage, nLevel)
-  nLevel = nLevel or -1
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
-  end
-  
-  if not bBool then
-    error( sMessage, nLevel + 1 )
-  end
-  return bBool
-end
-
 function center( sText, nx, ny )
 	assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
 	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
@@ -21,9 +7,9 @@ function center( sText, nx, ny )
 end
 
 function bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
-	assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
-	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
-	assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
+  assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
+  assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
+  assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
 	
   if nTextColour then
     assert( type( nTextColour ) == "number", "Number/nil expected, got " .. type( nTextColour ), 2)
@@ -32,18 +18,18 @@ function bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour 
     assert( type( nBracketColour ) == "number", "Number/nil expected, got " .. type( nBracketColour ), 2)
   end
   if nBackgroundColour then
-		assert( type( nBackgroundColour ) == "number", "Number/nil expected, got " .. type( nBackgroundColour ), 2)
+    assert( type( nBackgroundColour ) == "number", "Number/nil expected, got " .. type( nBackgroundColour ), 2)
     term.setBackgroundColour( nBackgroundColour )
-	end
+  end
   
-	local xPos, yPos = term.getCursorPos()
-	term.setCursorPos( nx, ny )
-	term.setTextColour( nBracketColour or colours.white )
-	term.write( "[" .. string.rep(" ", #sText) .. "]" )
+  local xPos, yPos = term.getCursorPos()
+  term.setCursorPos( nx, ny )
+  term.setTextColour( nBracketColour or colours.white )
+  term.write( "[" .. string.rep(" ", #sText) .. "]" )
   
-	term.setTextColour( nTextColour or colours.white )
+  term.setTextColour( nTextColour or colours.white )
   term.setCursorPos( nx + 1, ny )
-	term.write( sText )
+  term.write( sText )
 end
 
 --[[

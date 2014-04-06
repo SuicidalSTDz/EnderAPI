@@ -1,17 +1,3 @@
-local function assert(bBool, sMessage, nLevel)
-  nLevel = nLevel or -1
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
-  end
-  
-  if not bBool then
-    error( sMessage, nLevel + 1 )
-  end
-  return bBool
-end
-
 function generate( nLength, nMin, nMax )
   assert( type( nLength ) == "number", "Number expected, got " .. type( nLength ), 2)
   assert( type( nMins ) == "number", "Number expected, got " .. type( nMin ), 2)
