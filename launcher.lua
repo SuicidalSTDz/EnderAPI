@@ -71,14 +71,34 @@ end
 -- Check for updates
 local sBranchDir = fs.combine( sBaseDir, "repo/" .. sBranch )
 if bUpdate then
-	local tFileList = {}
+	-- Check for a launcher update
+	local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/" .. sBranch .. "/launcher.lua" )
+	if httpHandle then
+		local sResponse = httpHandle.readAll()
+		httpHandle.close()
+		
+		local fileHandle = fs.open( shell.getRunningProgram(), "r" )
+		local sContent = fileHandle.readAll()
+		fileHandle.close()
+		
+		if sResponse ~= sContent then
+			fileHandle = fs.open( shell.getRunningProgram(), "w" )
+			fileHandle.write( sResponse )
+			fileHandle.close()
+			
+			shell.run( shell.getRunningProgram(), "-d", sBaseDir, "-b", sBranch, ( show.gui and "" or "-n gui " ) .. ( show.text and "" or "-n text" ) )
+			return
+		end
+	end
 	
-	local httpHandle = http.get( "https://api.github.com/repos/SuicidalSTDz/EnderAPI/git/trees/" .. sBranch .. "?recursive=1" )
+	-- Check for updates with the api list
+	local tFileList = {}
+	httpHandle = http.get( "https://api.github.com/repos/SuicidalSTDz/EnderAPI/git/trees/" .. sBranch .. "?recursive=1" )
 	if httpHandle then
 		local sResponse = httpHandle.readAll()
 		httpHandle.close()
 		httpHandle = nil
-		
+
 		-- Parse the JSON response
 		sResponse = sResponse:gsub( "\"(%a+)\":%s*", "%1 = " )
 		sResponse = sResponse:gsub( "%[", "{" )
@@ -87,32 +107,34 @@ if bUpdate then
 		local func, err = loadstring( "return " .. sResponse, "GihubAPI" )
 		if func then
 			local ok, JSON = pcall( func )
-			if ok then			
-				-- Create the fileList and dirList
+			if ok then
+				-- Create the fileList and dirList (only downloads the api folder)
 				for _, fileObj in next, JSON.tree do
-					if fileObj.type == "tree" then
-						fs.makeDir( fs.combine( sBranchDir, fileObj.path ) )
-					elseif fileObj.path:sub( 1, 3 ) == "api" or fileObj.path == "launcher.lua" then
-						table.insert( tFileList, fileObj.path )
+					if fileObj.type:sub( 1, 3 ) == "api" then
+						if fileObj.type == "tree" then
+							fs.makeDir( fs.combine( sBranchDir, fileObj.path ) )
+						elseif fileObj.type == "blob" then
+							table.insert( tFileList, fileObj.path )
+						end
 					end
 				end
 			end
 		end
 	end
-	
+
 	if #tFileList > 0 then
 		for _, sFile in next, tFileList do
 			httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/" .. sBranch .. "/" .. sFile )
 			if httpHandle then
 				local sResponse = httpHandle.readAll()
 				httpHandle.close()
-				
+
 				local fileHandle = fs.open( fs.combine( sBranchDir, sFile ), "w" )
 				fileHandle.write( sResponse )
 				fileHandle.close()
 			end
 		end
-		
+
 		local tFiles = fs.list( sBranchDir )
 		if #tFileList ~= #tFiles then
 			for _, sFile in next, tFiles do
@@ -123,16 +145,14 @@ if bUpdate then
 						break
 					end
 				end
-				
+
 				if found then
 					fs.delete( fs.combine( sBranchDir, sFile ) )
 				end
 			end
 		end
 	end
-	
-	-- Collect arguments
-	shell.run( fs.combine( sBranchDir, "launcher.lua") , "-d", sBaseDir, "-b", sBranch, "-n", ( show.gui and "" or "-n gui " ) .. ( show.text and "" or "-n text" ) )
+
 	return
 end
 
@@ -142,29 +162,29 @@ if fs.isDir( sApiDir ) then
 	-- logger API copied straight with slight modifications out of project of mine (c) 2014
 	local logger = {}
 	logger.session = string.format( "%d_%d", os.day(), os.time() )
-	
+
 	function logger.new( sName )
 		if type( sName ) ~= "string" then error( "String expected, got " .. type( sName ), 2 ) end
 		local self = setmetatable( {}, { __index = logger } )
 		self.name = sName
 		return self
 	end
-	
+
 	function logger:log( sStatus, sMessage, bAddStack )
 		if type( sMessage ) ~= "string" then error( "String expected, got " .. type( sMessage ), ( bAddStack and 3 or 2 )) end
 		if type( sStatus ) ~= "string" then error( "String expected, got " .. type( sStatus ), ( bAddStack and 3 or 2 )) end
-		
+
 		local sLogDir = fs.combine( sBaseDir, "logs/" .. sBranch )
 		if fs.isDir( sLogDir ) then
 			fs.makeDir( sLogDir )
 		end
-		
+
 		local sFile = fs.combine( sLogDir, logger.session )
 		local fileHandle = fs.exists( sFile ) and fs.open( sFile, "a" ) or fs.open( sFile, "w" )
 		fileHandle.writeLine( string.format( "%d %s [%s][%s] %s", os.day(), textutils.formatTime( os.time(), true ), sStatus:upper(), self.name, sMessage ) )
 		fileHandle.close()
 	end
-	
+
 	function logger:fine( sMessage ) self:log( "FINE", sMessage, true ) end
 	function logger:info( sMessage ) self:log( "INFO", sMessage, true ) end
 	function logger:warning( sMessage ) self:log( "WARNING", sMessage, true ) end
@@ -176,23 +196,23 @@ if fs.isDir( sApiDir ) then
 			local fileHandle = fs.open( sPath, "r" )
 			local content = fileHandle.readAll()
 			fileHandle.close()
-		  
+
 		  local sName = fs.getName( sPath )
 			local func, err = loadstring( content, sName )
 			if func then
 				local tEnv = setmetatable( { log = log.new( sName:sub( 1, sName:len() - 4 ) ) }, { __index = _G } )
 				setfenv( func, tEnv )
-			
+
 				local ok, err = pcall( func )
 				if not ok then
 					return false
 				end
-			
+
 				local tAPI = {}
 				for k, v in pairs( tEnv ) do
 					tAPI[ k ] = v
 				end
-					
+
 				if not tAPI.isExtension then
 					_G[ sName:sub( 1, sName:len() - 4 ) ] = setmetatable( {}, { 
 						__index = function( t, k )
@@ -206,11 +226,15 @@ if fs.isDir( sApiDir ) then
 					} )
 				return true
 			end
-			
+
 			tAPI.isExtension = nil
 			return true
 			end
 		end
 		return false
+	end
+	
+	for _, sFile in pairs( fs.list( sApiDir ) ) do
+		loadAPI( fs.combine( sApiDir, sFile ) )
 	end
 end
