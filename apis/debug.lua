@@ -29,14 +29,14 @@ _G.debug = {}
 
 -- local declarations
 
-local DEBUG = {}
+local debug = {}
 local getSource
 local getContainer
 local concatenate
-DEBUG.fLevel = 0 -- Temporary, used to track call depth for logger
+debug.fLevel = 0 -- Temporary, used to track call depth for logger
 
 local function assert(bBool, sMessage, nLevel)
-  DEBUG.fLevel = DEBUG.fLevel + 1
+  debug.fLevel = debug.fLevel + 1
   if type(sMessage) ~= "string" then
     error("String expected, got " .. type( sMessage ), 2)
   elseif nLevel and type(nLevel) ~= "number" then
@@ -46,7 +46,7 @@ local function assert(bBool, sMessage, nLevel)
     log('Assert failed!', 'debug.assert')
     error( sMessage, nLevel == 0 and 0 or nLevel and (nLevel + 1) or 2 )
   end
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
   return bBool
 end
 
@@ -64,7 +64,7 @@ local function log(msg, caller, level) -- Temporary; will be replaced when actua
     h = fs.open('/debugger.log', 'w')
   end
   local tabs = ''
-  for i=0, DEBUG.fLevel do -- each function that calls another function should log at least once to maintain continuity
+  for i=0, debug.fLevel do -- each function that calls another function should log at least once to maintain continuity
     tabs = tabs..' '
   end
   if level == 1 then
@@ -107,7 +107,7 @@ log('Loading...', 'debug')
 ]]
 
 log('Init stack', 'debug')
-DEBUG.stack = {
+debug.stack = {
   ['stack'] = {
     [0] = { -- will hold data about commands, etc.
       ['env'] = getfenv(0),
@@ -119,47 +119,47 @@ DEBUG.stack = {
   ['stackLevel'] = 0, -- The depth of the stack
 }
 
-function DEBUG.stack:increment()
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:increment()
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:increment')
   for i = #self.stack, 1, -1 do -- push everything up one numeric key, except for key 0
     self.stack[i + 1] = self.stack[i]
   end
   self.stack[1] = nil -- we nil this because we want to error if the stack fails to insert a command at the top of the list, rather than execute the same command over and over
   log('Done', 'debug.stack:increment')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
-function DEBUG.stack:decrement()
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:decrement()
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:decrement')
   for i = 2, #self.stack do -- push everything down one numeric key, except for key 1
     self.stack[i - 1] = self.stack[i]
   end
   log('Done', 'debug.stack:decrement')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
-function DEBUG.stack:insert(elem) -- stick a new value at into the top of the stack
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:insert(elem) -- stick a new value at into the top of the stack
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:insert')
   self.increment()
   self.stack[1] = elem
   log('Done', 'debug.stack:insert')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
-function DEBUG.stack:resolve() -- run and remove the first element of the stack
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:resolve() -- run and remove the first element of the stack
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:resolve')
   --code that runs the function at level 1
   self.decrement()
   log('Done', 'debug.stack:resolve')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
-function DEBUG.stack:trace(maxLevel)
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:trace(maxLevel)
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:trace')
   if maxLevel then
     maxLevel = math.min(maxLevel, #self.stack)
@@ -168,7 +168,7 @@ function DEBUG.stack:trace(maxLevel)
   end
   -- should I print the trace here, or return a formatted string?
   log('Done', 'debug.stack:trace')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
 --[[
@@ -177,26 +177,26 @@ end
 
 ]]
 
-function DEBUG.stack:removeAt(key) -- remove a specific level (Dangerous!)
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:removeAt(key) -- remove a specific level (Dangerous!)
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:removeAt')
   
   log('Done', 'debug.stack:removeAt')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
-function DEBUG.stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.stack:insertAt')
   
   log('Done', 'debug.stack:insertAt')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
 end
 
 -- API functions
 
-function DEBUG.getinfo(thread, func, what)
-  DEBUG.fLevel = DEBUG.fLevel + 1
+function debug.getinfo(thread, func, what)
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.getinfo')
   if type( thread ) == 'function' then -- thread was not provided by the calling function, so we shift everything up; I didn't make it this way, lua 5.1 is weird, and apparently optional args should come before normal ones. Who knows.
     if type( func ) == 'string' then -- 'what' was provided, but it ended up in func, so we push it to the correct variable
@@ -249,7 +249,7 @@ function DEBUG.getinfo(thread, func, what)
     tOut.nups = nil -- find the number of upvalues for that function
   end
   log('Done', 'debug.getinfo')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
   return tOut
 end
 
@@ -258,7 +258,7 @@ end
 -- This function may not be necessary once we wrap all executed code
 -- It can't see local variables yet anyway
 function getContainer( obj, env, tIgnore, bGlobal ) -- oeed was a big help with this
-  DEBUG.fLevel = DEBUG.fLevel + 1
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.getContainer')
   if not tIgnore then
     tIgnore = {}
@@ -285,7 +285,7 @@ function getContainer( obj, env, tIgnore, bGlobal ) -- oeed was a big help with 
         t.what = 'field'
       end
       log('Done', 'debug.getContainer')
-      DEBUG.fLevel = DEBUG.fLevel - 1
+      debug.fLevel = debug.fLevel - 1
       return t -- Return as soon as we find it; we're only looking for one value, and it's not our fault if they didn't use tIgnore
     end
   end
@@ -301,24 +301,24 @@ function getContainer( obj, env, tIgnore, bGlobal ) -- oeed was a big help with 
         t.name = k
         t.what = 'global'
         log('Done', 'debug.getContainer')
-        DEBUG.fLevel = DEBUG.fLevel - 1
+        debug.fLevel = debug.fLevel - 1
         return t
       end
     end
   end
   log('Done', 'debug.getContainer', 2) -- Fail quietly
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
   return nil, "Couldn't find the value's container" -- Couldn't find the value; doesn't mean it doesn't exist, we just can't see it (it might be local)
 end
 
 function getSource(func, env, tIgnore) -- Is there a faster/less intense way to do this?
-  DEBUG.fLevel = DEBUG.fLevel + 1
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.getSource')
   local function scanFiles(dir, name)
-    DEBUG.fLevel = DEBUG.fLevel + 1
+    debug.fLevel = debug.fLevel + 1
     log('Called!', 'debug.getSource.scanFiles')
     local function scanFile(file, name)
-      DEBUG.fLevel = DEBUG.fLevel + 1
+      debug.fLevel = debug.fLevel + 1
       log('Called!', 'debug.getSource.scanFiles.scanFile')
       local h = fs.open(file,'r')
       log('File:   '..(h and file or 'Directory'), 'debug.getSource.scanFiles.scanFile')
@@ -355,7 +355,7 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
         log('Not in this file', 'debug.getSource.scanFiles.scanFile')
       end
       log('Done', 'debug.getSource.scanFiles.scanFile')
-      DEBUG.fLevel = DEBUG.fLevel - 1
+      debug.fLevel = debug.fLevel - 1
       return { ['wasFound'] = wasFound, ['file'] = file, ['line'] = line, ['isLocal'] = isLocal } -- These are the fields that will be passed to debug.getinfo
     end
     local data = {}
@@ -368,7 +368,7 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
       end
     end
     log('Done', 'debug.getSource.scanFiles')
-    DEBUG.fLevel = DEBUG.fLevel - 1
+    debug.fLevel = debug.fLevel - 1
     return data
   end
   local t = {}
@@ -376,7 +376,7 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
   local gc, err = getContainer(func, env, tIgnore, true)
   if not gc then
     log('Could not find the source: '..err, 'debug.getSource', 1)
-    DEBUG.fLevel = DEBUG.fLevel - 1
+    debug.fLevel = debug.fLevel - 1
     return nil, err
   end
   log('Scanning fs to find source file', 'debug.getSource')
@@ -400,16 +400,16 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
   end
   if t == {} then -- we didn't find a match
     log('Could not find the source', 'debug.getSource', 1)
-    DEBUG.fLevel = DEBUG.fLevel - 1
+    debug.fLevel = debug.fLevel - 1
     return nil, 'No match found'
   end
   log('Done', 'debug.getSource')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
   return t
 end
 
 function concatenate(t1, t2)
-  DEBUG.fLevel = DEBUG.fLevel + 1
+  debug.fLevel = debug.fLevel + 1
   log('Called!', 'debug.concatenate')
   t1 = t1 or (printError('t1: Assuming empty table; got nil') or {})
   t2 = t2 or (printError('t2: Assuming empty table; got nil') or {})
@@ -427,10 +427,10 @@ function concatenate(t1, t2)
     log('Lost '..nMissing..' keys', 'debug.concatenate', 1)
   end
   log('Done', 'debug.concatenate')
-  DEBUG.fLevel = DEBUG.fLevel - 1
+  debug.fLevel = debug.fLevel - 1
   return t1
 end
 
-_G.debug = DEBUG
+_G.debug = debug
 
 log('Done', 'debug')
