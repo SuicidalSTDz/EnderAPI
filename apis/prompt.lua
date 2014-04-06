@@ -41,7 +41,7 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
    print("Please Enter a Number")
    return promptForNum(text)
   end
- elseif min ~= nil and max == nil then
+ elseif min ~= nil and max == nil then --number above min
   if input then
    if input >= min then
     return input
@@ -53,7 +53,7 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
    print("Please Enter a Number Higher Than "..min) --This one is for if they didn't enter a number
    return promptForNum(text, min, max)
   end
- elseif min == nil and max ~= nil then
+ elseif min == nil and max ~= nil then --number less than max
   if input then
    if input <= max then
     return input
@@ -66,7 +66,7 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
    return promptForNum(text, min, max)
   end
  elseif input then
-  if input >= min and input <= max then
+  if input >= min and input <= max then --number between min and max
    return input
   else
    print("Please Enter a Number Between "..min.." and "..max)
