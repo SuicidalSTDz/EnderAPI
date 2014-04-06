@@ -70,8 +70,10 @@ local function log(msg, caller, level) -- Temporary; will be replaced when actua
     printError('['..caller..'] '..msg)
     h.writeLine('['..caller..'][NOT OK] '..msg)
   elseif level == 2 then
+    printError('['..caller..'][NOT OK] '..msg)
     h.writeLine('['..caller..'][NOT OK] '..msg)
   else
+    print('['..caller..'][OK] '..msg)
     h.writeLine('['..caller..'][OK] '..msg)
   end
   h.close()
@@ -318,45 +320,50 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
       DEBUG.fLevel = DEBUG.fLevel + 1
       log('Called!', 'debug.getSource.scanFiles.scanFile')
       local h = fs.open(file,'r')
-      local lastLine = h.readLine()
+      log('File:   '..(h and file or 'Directory'), 'debug.getSource.scanFiles.scanFile')
+      local lastLine = false
       local wasFound = false
       local isLocal = false
       local line = 0
-      while lastLine and not wasFound do
-        sleep(0)
-        line = line + 1
-        log('Doing regex stuff...', 'debug.getSource.scanFiles.scanFile')
-        log('File:   '..file, 'debug.getSource.scanFiles.scanFile')
-        log('Line:   '..line, 'debug.getSource.scanFiles.scanFile')
-        log('Text:   '..lastLine, 'debug.getSource.scanFiles.scanFile')
-        local found1 = lastLine:find('(local )?( )*function ( )*'..name..'( )*\(') -- I'm kinda new to regex, so if there's a better pattern, let me know.
-        log('Test 1: '..(found1 or 'false'), 'debug.getSource.scanFiles.scanFile')
-        local found2 = lastLine:find('(local )?( )*'..name..'( )*=( )*function( )*\(')
-        log('Test 2: '..(found2 or 'false'), 'debug.getSource.scanFiles.scanFile')
-        if found1 or found2 then
-          wasFound = true
-          log('Found it!', 'debug.getSource.scanFiles.scanFile')
-          lastLine = ' '..lastLine -- Add a space to the start of lastLine so we can isolate 'local' if it's there
-          if lastLine:find(' local ') then
-            isLocal = true
-          end
-        end
-        lastLine = h.readLine()
+      if file == 'debugger.log' then -- this is blacklisted b/c it's just awful
+        h = nil
       end
-      if not wasFound then
+      if h then -- the file exists and is not a dir
+        lastLine = h.readLine()
+        while lastLine and not wasFound do
+          sleep(0)
+          line = line + 1
+          log('Line '..line, 'debug.getSource.scanFiles.scanFile')
+          log(lastLine, 'debug.getSource.scanFiles.scanFile')
+          local found1 = lastLine:find('(local )?( )*function ( )*'..name..'( )*(') -- I'm kinda new to regex, so if there's a better pattern, let me know.
+          local found2 = lastLine:find('(local )?( )*'..name..'( )*=( )*function( )*(')
+          log((found1 and true or 'false')..', '..(found2 and true or 'false'), 'debug.getSource.scanFiles.scanFile')
+          if found1 or found2 then
+            wasFound = true
+            log('Found it!', 'debug.getSource.scanFiles.scanFile')
+            lastLine = ' '..lastLine -- Add a space to the start of lastLine so we can isolate 'local' if it's there
+            if lastLine:find(' local ') then
+              isLocal = true
+            end
+          end
+          lastLine = h.readLine()
+        end
+        h.close()
+      end
+       if not wasFound then
         log('Not in this file', 'debug.getSource.scanFiles.scanFile')
       end
       log('Done', 'debug.getSource.scanFiles.scanFile')
       DEBUG.fLevel = DEBUG.fLevel - 1
-      h.close()
       return { ['wasFound'] = wasFound, ['file'] = file, ['line'] = line, ['isLocal'] = isLocal } -- These are the fields that will be passed to debug.getinfo
     end
     local data = {}
+    data[1] = { scanFile(dir..'/', name) } -- Make sure to search the base directory
     for k,v in ipairs(fs.list(dir)) do
       if fs.isDir(dir..v) then
         data = concatenate(data, scanFiles(dir..'/'..v, name)) -- We combine multiple arrays of arrays here
       else
-        data[k] = { scanFile(dir..'/'..v, name) } -- We are searching a file, so we want to set a member, not concatenate
+        data[k + 1] = { scanFile(dir..'/'..v, name) } -- We are searching a file, so we want to set a member, not concatenate
       end
     end
     log('Done', 'debug.getSource.scanFiles')
