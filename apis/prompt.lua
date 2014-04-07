@@ -129,6 +129,6 @@ function promptForSecure(text, c, tries, ...) --useful for getting passwords
   return promptForSecure(text, c, tries, ...)
  else
   print("Please try again.")
-  return promptForSecure(text, c, tries, ...
+  return promptForSecure(text, c, tries, ...)
  end
 end
