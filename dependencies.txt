@@ -4,6 +4,7 @@ Requirements marked with (nonessential) mean that functions provided by the requ
 File            Requires
 launcher.lua    none
 colors.lua      none
+debug.lua       none
 enderAPI.lua    none
 fs.lua          none
 http.lua        none
