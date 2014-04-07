@@ -165,6 +165,8 @@ if updateAPI then
     [ "messageBox.lua" ] = {}, -- It's now stable enough for release
     [ "number.lua" ] = {},
     [ "pastebin.lua" ] = {},
+    [ "process.lua" ] = {},
+    [ "prompt.lua" ] = {},
     [ "string.lua" ] = {},
     [ "term.lua" ] = {},
     [ "text.lua" ] = {},
@@ -362,7 +364,12 @@ if fs.exists( folder ) then
   end
 
   for _, file in pairs( fs.list( folder ) ) do
-    loadAPI( folder .. file )
+    if file ~= "process.lua" then
+      --Process API needs to be run as a program to work
+      dofile( folder .. file )
+    else
+      loadAPI( folder .. file )
+    end
   end
 else
   error( "Update first!", 0 ) 
