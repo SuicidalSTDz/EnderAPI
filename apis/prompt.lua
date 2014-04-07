@@ -77,7 +77,7 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
   return promptForNum(text, min, max)
  end
 end
-function promptForUser(tries, ...)
+function promptForUser(tries, ...) --login sequence, allows max tries. Format: (tries, Username1, Password1, Usernmae2, Password2)
  local Args = {...}
  print("Please Enter Username & Password")
  term.write("Username: ")
@@ -86,32 +86,32 @@ function promptForUser(tries, ...)
  local uPass = read("*")
  local User = {}
  local cPass = {}
- for i = 1, #Args, 2 do
+ for i = 1, #Args, 2 do --splits Usernames & Passwords into two different arrays (so a password can be same as a username)
   User[i] = Args[i]
   cPass[i] = Args[i+1]
  end
- local x = 0
- for k,v in pairs(User) do
+ local x --makes x a variable for entire function
+ for k,v in pairs(User) do --finds Username inside of User
   if v == Username then
    x = k
   end
  end
- if Username == User[x] and uPass == cPass[x] then
+ if Username == User[x] and uPass == cPass[x] then --if username & password match each other
   print("Welcome "..Username.."!")
   return Username
- elseif tries ~= nil and tries == 0 then
+ elseif tries ~= nil and tries == 0 then --if usernamme & password do not match and tries are maxed out
   print("Too many Incorrect Login Attempts!")
-  return(false)
- elseif tries ~=nil then
+  return false
+ elseif tries ~= nil then --if username & password do not match and tries are left
   tries = tries - 1
   print("Incorrect Username or Password!")
   return promptForUser(tries, ...)
- else
+ else --if tries are nil and username & password do not match
   print("Incorrect Username or Password!")
   return promptForUser(tries, ...)
  end
 end
-function promptForSecure(text, c, tries, ...)
+function promptForSecure(text, c, tries, ...) --useful for getting passwords
  local Args = {...}
  local Valid = {}
  for i = 1, #Args do
@@ -119,11 +119,11 @@ function promptForSecure(text, c, tries, ...)
  end
  term.write(text..": ")
  input = read(c)
- if Valid[input] or #Args == 0 then
+ if Valid[input] or #Args == 0 then --if input matches one of the argments provided or no argments
   return input
- elseif tries ~= nil and tries == 0 then
+ elseif tries ~= nil and tries == 0 then --if tries are maxed out & input does not match arguments
   return false
- elseif tries ~= nil then
+ elseif tries ~= nil then --if tries aren't maxed out & input does not match arguments
   tries = tries-1
   print("Please try again.")
   return promptForSecure(text, char, tries, ...)
