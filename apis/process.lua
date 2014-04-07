@@ -1,3 +1,5 @@
+isExtension = true
+
 -- Globals - need to explicitly define them as global else they will not be available to coroutines.
 _G.processes = {}
 _G.process = {}
