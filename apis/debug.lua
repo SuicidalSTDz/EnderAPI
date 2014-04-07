@@ -37,24 +37,24 @@ local getContainer
 local concatenate
 
 local function doLog(msg, caller, level) -- Temporary; will be replaced when actual logger is implemented
-  sleep(0)
+  sleep(0) -- We sleep here to avoid coroutine errors
   level = level or 3
-  caller = caller or 'debug.<unknown>'
+  caller = caller or '<unknown>'
   if not msg then
     level = 1
   end
   msg = msg or 'nil'
   if level == 4 then
-    log:fine('['..caller..'] '..msg)
+    --log:fine('['..caller..'] '..msg)
   elseif level == 3 then
-    log:info('['..caller..'] '..msg)
+    --log:info('['..caller..'] '..msg)
   elseif level == 1 then
-    printError('['..caller..'] '..msg)
-    log:severe('['..caller..'] '..msg)
+    printError('[debug]['..caller..'] '..msg)
+    --log:severe('['..caller..'] '..msg)
   elseif level == 2 then
-    log:warning('['..caller..'] '..msg)
+    --log:warning('['..caller..'] '..msg)
   elseif isDev then
-    log:log('DEBUG', '['..caller..'][DEV] '..msg)
+    --log:log('DEBUG', '['..caller..'][DEV] '..msg)
   end
 end
 
@@ -99,45 +99,45 @@ debug.stack = {
 }
 
 function debug.stack:increment()
-  doLog('Called!', 'debug.stack:increment')
+  doLog('Called!', 'stack:increment')
   for i = #self.stack, 1, -1 do -- push everything up one numeric key, except for key 0
     self.stack[i + 1] = self.stack[i]
   end
   self.stack[1] = nil -- we nil this because we want to error if the stack fails to insert a command at the top of the list, rather than execute the same command over and over
-  doLog('Done', 'debug.stack:increment')
+  doLog('Done', 'stack:increment')
 end
 
 function debug.stack:decrement()
-  doLog('Called!', 'debug.stack:decrement')
+  doLog('Called!', 'stack:decrement')
   for i = 2, #self.stack do -- push everything down one numeric key, except for key 1
     self.stack[i - 1] = self.stack[i]
   end
-  doLog('Done', 'debug.stack:decrement')
+  doLog('Done', 'stack:decrement')
 end
 
 function debug.stack:insert(elem) -- stick a new value at into the top of the stack
-  doLog('Called!', 'debug.stack:insert')
+  doLog('Called!', 'stack:insert')
   self.increment()
   self.stack[1] = elem
-  doLog('Done', 'debug.stack:insert')
+  doLog('Done', 'stack:insert')
 end
 
 function debug.stack:resolve() -- run and remove the first element of the stack
-  doLog('Called!', 'debug.stack:resolve')
+  doLog('Called!', 'stack:resolve')
   --code that runs the function at level 1
   self.decrement()
-  doLog('Done', 'debug.stack:resolve')
+  doLog('Done', 'stack:resolve')
 end
 
 function debug.stack:trace(maxLevel)
-  doLog('Called!', 'debug.stack:trace')
+  doLog('Called!', 'stack:trace')
   if maxLevel then
     maxLevel = math.min(maxLevel, #self.stack)
   else
     maxLevel = #self.stack
   end
   -- should I print the trace here, or return a formatted string?
-  doLog('Done', 'debug.stack:trace')
+  doLog('Done', 'stack:trace')
 end
 
 --[[
@@ -147,21 +147,21 @@ end
 ]]
 
 function debug.stack:removeAt(key) -- remove a specific level (Dangerous!)
-  doLog('Called!', 'debug.stack:removeAt')
+  doLog('Called!', 'stack:removeAt')
   
-  doLog('Done', 'debug.stack:removeAt')
+  doLog('Done', 'stack:removeAt')
 end
 
 function debug.stack:insertAt(key, elem) -- insert a value at a specific level (Dangerous!)
-  doLog('Called!', 'debug.stack:insertAt')
+  doLog('Called!', 'stack:insertAt')
   
-  doLog('Done', 'debug.stack:insertAt')
+  doLog('Done', 'stack:insertAt')
 end
 
 -- API functions
 
 function debug.getinfo(thread, func, what)
-  doLog('Called!', 'debug.getinfo')
+  doLog('Called!', 'getinfo')
   if type( thread ) == 'function' then -- thread was not provided by the calling function, so we shift everything up; I didn't make it this way, lua 5.1 is weird, and apparently optional args should come before normal ones. Who knows.
     if type( func ) == 'string' then -- 'what' was provided, but it ended up in func, so we push it to the correct variable
       what = func
@@ -212,7 +212,7 @@ function debug.getinfo(thread, func, what)
   if u then
     tOut.nups = nil -- find the number of upvalues for that function
   end
-  doLog('Done', 'debug.getinfo')
+  doLog('Done', 'getinfo')
   return tOut
 end
 
@@ -221,7 +221,7 @@ end
 -- This function may not be necessary once we wrap all executed code
 -- It can't see local variables yet anyway
 function getContainer( obj, env, tIgnore, bGlobal ) -- oeed was a big help with this
-  doLog('Called!', 'debug.getContainer')
+  doLog('Called!', 'getContainer')
   if not tIgnore then
     tIgnore = {}
   end
@@ -246,7 +246,7 @@ function getContainer( obj, env, tIgnore, bGlobal ) -- oeed was a big help with 
       else
         t.what = 'field'
       end
-      doLog('Done', 'debug.getContainer')
+      doLog('Done', 'getContainer')
       return t -- Return as soon as we find it; we're only looking for one value, and it's not our fault if they didn't use tIgnore
     end
   end
@@ -261,23 +261,23 @@ function getContainer( obj, env, tIgnore, bGlobal ) -- oeed was a big help with 
       if v == obj and not shouldIgnore then
         t.name = k
         t.what = 'global'
-        doLog('Done', 'debug.getContainer')
+        doLog('Done', 'getContainer')
         return t
       end
     end
   end
-  doLog('Done', 'debug.getContainer', 2) -- Fail quietly
+  doLog('Done', 'getContainer', 2) -- Fail quietly
   return nil, "Couldn't find the value's container" -- Couldn't find the value; doesn't mean it doesn't exist, we just can't see it (it might be local)
 end
 
 function getSource(func, env, tIgnore) -- Is there a faster/less intense way to do this?
-  doLog('Called!', 'debug.getSource')
+  doLog('Called!', 'getSource')
   local function scanFiles(dir, name)
-    doLog('Called!', 'debug.getSource.scanFiles')
+    doLog('Called!', 'getSource.scanFiles')
     local function scanFile(file, name)
-      doLog('Called!', 'debug.getSource.scanFiles.scanFile')
+      doLog('Called!', 'getSource.scanFiles.scanFile')
       local h = fs.open(file,'r')
-      doLog('File:   '..(h and file or 'Directory'), 'debug.getSource.scanFiles.scanFile')
+      doLog('File:   '..(h and file or 'Directory'), 'getSource.scanFiles.scanFile')
       local lastLine = false
       local wasFound = false
       local isLocal = false
@@ -289,14 +289,14 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
         lastLine = h.readLine()
         while lastLine and not wasFound do
           line = line + 1
-          doLog('Line '..line, 'debug.getSource.scanFiles.scanFile')
-          doLog(lastLine, 'debug.getSource.scanFiles.scanFile')
+          doLog('Line '..line, 'getSource.scanFiles.scanFile')
+          doLog(lastLine, 'getSource.scanFiles.scanFile')
           local found1 = lastLine:find('(local )?( )*function ( )*'..name..'( )*(') -- I'm kinda new to regex, so if there's a better pattern, let me know.
           local found2 = lastLine:find('(local )?( )*'..name..'( )*=( )*function( )*(')
-          doLog((found1 and true or 'false')..', '..(found2 and true or 'false'), 'debug.getSource.scanFiles.scanFile')
+          doLog((found1 and true or 'false')..', '..(found2 and true or 'false'), 'getSource.scanFiles.scanFile')
           if found1 or found2 then
             wasFound = true
-            doLog('Found it!', 'debug.getSource.scanFiles.scanFile')
+            doLog('Found it!', 'getSource.scanFiles.scanFile')
             lastLine = ' '..lastLine -- Add a space to the start of lastLine so we can isolate 'local' if it's there
             if lastLine:find(' local ') then
               isLocal = true
@@ -307,9 +307,9 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
         h.close()
       end
        if not wasFound then
-        doLog('Not in this file', 'debug.getSource.scanFiles.scanFile')
+        doLog('Not in this file', 'getSource.scanFiles.scanFile')
       end
-      doLog('Done', 'debug.getSource.scanFiles.scanFile')
+      doLog('Done', 'getSource.scanFiles.scanFile')
       return { ['wasFound'] = wasFound, ['file'] = file, ['line'] = line, ['isLocal'] = isLocal } -- These are the fields that will be passed to debug.getinfo
     end
     local data = {}
@@ -321,17 +321,17 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
         data[k + 1] = { scanFile(dir..'/'..v, name) } -- We are searching a file, so we want to set a member, not concatenate
       end
     end
-    doLog('Done', 'debug.getSource.scanFiles')
+    doLog('Done', 'getSource.scanFiles')
     return data
   end
   local t = {}
-  doLog("Looking for the function's container", 'debug.getSource')
+  doLog("Looking for the function's container", 'getSource')
   local gc, err = getContainer(func, env, tIgnore, true)
   if not gc then
-    doLog('Could not find the source: '..err, 'debug.getSource', 1)
+    doLog('Could not find the source: '..err, 'getSource', 1)
     return nil, err
   end
-  doLog('Scanning fs to find source file', 'debug.getSource')
+  doLog('Scanning fs to find source file', 'getSource')
   local data = scanFiles('', gc.name) -- Scan the whole filesystem for files containing the name of the function in a function declaration
   for k,v in pairs(data) do
     if v.wasFound then
@@ -351,31 +351,31 @@ function getSource(func, env, tIgnore) -- Is there a faster/less intense way to 
     end
   end
   if t == {} then -- we didn't find a match
-    doLog('Could not find the source', 'debug.getSource', 1)
+    doLog('Could not find the source', 'getSource', 1)
     return nil, 'No match found'
   end
-  doLog('Done', 'debug.getSource')
+  doLog('Done', 'getSource')
   return t
 end
 
 function concatenate(t1, t2)
-  doLog('Called!', 'debug.concatenate')
+  doLog('Called!', 'concatenate')
   t1 = t1 or (printError('t1: Assuming empty table; got nil') or {})
   t2 = t2 or (printError('t2: Assuming empty table; got nil') or {})
   assert(type(t1) == 'table', 'Expected table, got '..type(t1))
   assert(type(t2) == 'table', 'Expected table, got '..type(t2))
-  doLog('Dim t1: '..#t1, 'debug.concatenate')
-  doLog('Dim t2: '..#t2, 'debug.concatenate')
+  doLog('Dim t1: '..#t1, 'concatenate')
+  doLog('Dim t2: '..#t2, 'concatenate')
   local expectedLen = #t1 + #t2
   for n,e in ipairs(t2) do -- We don't want non-integer keys to collide, so we skip them altogether. The ones in t1 are preserved, however.
     table.insert(t1, e)
   end
-  doLog('Dim t3: '..#t1, 'debug.concatenate')
+  doLog('Dim t3: '..#t1, 'concatenate')
   local nMissing = expectedLen - #t1
   if nMissing ~= 0 then
-    doLog('Lost '..nMissing..' keys', 'debug.concatenate', 1)
+    doLog('Lost '..nMissing..' keys', 'concatenate', 1)
   end
-  doLog('Done', 'debug.concatenate')
+  doLog('Done', 'concatenate')
   return t1
 end
 
