@@ -21,7 +21,7 @@ function promptFor(text, ...) --it will print 'text: ', and only except answers 
 end
 function promptForColor(text) --self explanitory, will only accept colors as input(eg. blue)
  term.write(text..": ")
- local input = read()
+ local input = string.lower(read())
  if (colors[input] and type(colors[input]) == "number") or (colours[input] and type(colours[input]) == "number") then
    return colors[input] or colours[input]
  elseif tonumber(input) then
@@ -75,5 +75,57 @@ function promptForNum(text, min, max) --Prompts for a number, the number fields 
  else
   print("Please Enter a Number Between "..min.." and "..max)
   return promptForNum(text, min, max)
+ end
+end
+function promptForUser(tries, ...)
+ local Args = {...}
+ print("Please Enter Username & Password")
+ term.write("Username: ")
+ local Username = read()
+ term.write("Password: ")
+ local uPass = read("*")
+ local User = {}
+ local cPass = {}
+ for i = 1, #Args, 2 do
+  User[i] = Args[i]
+  cPass[i] = Args[i+1]
+ end
+ local x = 0
+ for k,v in pairs(User) do
+  if v == Username then
+   x = k
+  end
+ end
+ if Username == User[x] and uPass == cPass[x] then
+  print("Welcome "..Username.."!")
+  return Username
+ elseif tries ~= nil and tries == 0 then
+  print("Too many Incorrect Login Attempts!")
+  return(false)
+ elseif tries ~=nil then
+  tries = tries - 1
+  print("Incorrect Username or Password!")
+  return promptForUser(tries, ...)
+ else
+  print("Incorrect Username or Password!")
+  return promptForUser(tries, ...)
+ end
+end
+function promptForSecure(text, c, tries, ...)
+ local Args = {...}
+ local Valid = {}
+ for i = 1, #Args do
+  Valid[Args[i]] = true
+ end
+ term.write(text..": ")
+ input = read(c)
+ if Valid[input] or #Args == 0 then
+  return input
+ elseif tries ~= nil and tries == 0 then
+  return false
+ elseif tries ~= nil then
+  tries = tries-1
+  print("Please try again.")
+  return promptForSecure(text, char, tries, ...)
  end
 end
