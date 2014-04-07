@@ -123,9 +123,12 @@ function promptForSecure(text, c, tries, ...) --useful for getting passwords
   return input
  elseif tries ~= nil and tries == 0 then --if tries are maxed out & input does not match arguments
   return false
- elseif tries ~= nil then --if tries aren't maxed out & input does not match arguments
+ elseif tries ~= nilthen --if tries aren't maxed out & input does not match arguments
   tries = tries-1
   print("Please try again.")
-  return promptForSecure(text, char, tries, ...)
+  return promptForSecure(text, c, tries, ...)
+ else
+  print("Please try again.")
+  return promptForSecure(text, c, tries, ...
  end
 end
