@@ -1,4 +1,19 @@
+local function assert(bBool, sMessage, nLevel)
+  nLevel = nLevel or -1
+  if type(sMessage) ~= "string" then
+    error("String expected, got " .. type( sMessage ), 2)
+  elseif type(nLevel) ~= "number" then
+    error("Number expected, got " .. type( nLevel ), 2)
+  end
+  
+  if not bBool then
+    error( sMessage, nLevel + 1 )
+  end
+  return bBool
+end
+
 function promptFor(text, ...) --it will print 'text: ', and only except answers specified aftet text. eg promptFor("hello", "right", "left") would accept 'right' or 'left'
+ assert(type(text) == "string", "String expected, got " .. type(text), 2)
  local tArgs = {...}
  local tValid = {}
  for i = 1, #tArgs do
@@ -20,6 +35,7 @@ function promptFor(text, ...) --it will print 'text: ', and only except answers 
  end
 end
 function promptForColor(text) --self explanitory, will only accept colors as input(eg. blue)
+ assert(type(text) == "string", "String expected, got " .. type(text), 2)
  term.write(text..": ")
  local input = string.lower(read())
  if (colors[input] and type(colors[input]) == "number") or (colours[input] and type(colours[input]) == "number") then
@@ -31,50 +47,53 @@ function promptForColor(text) --self explanitory, will only accept colors as inp
    return promptForColor(text)
  end
 end
-function promptForNum(text, min, max) --Prompts for a number, the number fields can be specified as nil or you can set your min & max to limit the options.
+function promptForNum(text, nmin, nmax) --Prompts for a number, the number fields can be specified as nil or you can set your min & max to limit the options.
+ assert(type(text) == "string", "String expected, got "..type(text), 2)
+ assert(type(nmin) == "number", "Number expected, got "..type(nmin), 2)
+ assert(type(nmax) == "number", "Number expected, got "..type(nmax), 2)
  term.write(text..": ")
  local input = tonumber(read())
- if min == nil and max == nil then
+ if nmin == nil and nmax == nil then
   if input then --if tonumber(read()) is valid  **This line is found in many places**
    return input
   else
    print("Please Enter a Number")
    return promptForNum(text)
   end
- elseif min ~= nil and max == nil then --number above min
+ elseif nmin ~= nil and nmax == nil then --number above min
   if input then
-   if input >= min then
+   if input >= nmin then
     return input
    else
-    print("Please Enter a Number Higher Than "..min) --notice this error message is repeated
-    return promptForNum(text, min, max)
+    print("Please Enter a Number Higher Than "..nmin) --notice this error message is repeated
+    return promptForNum(text, nmin, nmax)
    end
   else
-   print("Please Enter a Number Higher Than "..min) --This one is for if they didn't enter a number
-   return promptForNum(text, min, max)
+   print("Please Enter a Number Higher Than "..nmin) --This one is for if they didn't enter a number
+   return promptForNum(text, nmin, nmax)
   end
- elseif min == nil and max ~= nil then --number less than max
+ elseif nmin == nil and nmax ~= nil then --number less than max
   if input then
-   if input <= max then
+   if input <= nmax then
     return input
    else
-    print("PLease Enter a Number Lower Than "..max)
-    return promptForNum(text, min, max)
+    print("PLease Enter a Number Lower Than "..nmax)
+    return promptForNum(text, nmin, nmax)
    end
   else
-   print("Please Enter a Number Lower Than "..max)
-   return promptForNum(text, min, max)
+   print("Please Enter a Number Lower Than "..nmax)
+   return promptForNum(text, nmin, nmax)
   end
  elseif input then
-  if input >= min and input <= max then --number between min and max
+  if input >= nmin and input <= nmax then --number between min and max
    return input
   else
-   print("Please Enter a Number Between "..min.." and "..max)
-   return promptForNum(text, min, max)
+   print("Please Enter a Number Between "..nmin.." and "..nmax)
+   return promptForNum(text, nmin, nmax)
   end
  else
-  print("Please Enter a Number Between "..min.." and "..max)
-  return promptForNum(text, min, max)
+  print("Please Enter a Number Between "..nmin.." and "..nmax)
+  return promptForNum(text, nmin, nmax)
  end
 end
 function promptForUser(tries, ...) --login sequence, allows max tries. Format: (tries, Username1, Password1, Usernmae2, Password2)
@@ -112,6 +131,8 @@ function promptForUser(tries, ...) --login sequence, allows max tries. Format: (
  end
 end
 function promptForSecure(text, c, tries, ...) --useful for getting passwords
+ assert(type(text) == "string", "String expected, got "..type(text), 2)
+ assert(type(c) == "string", "String expected, got "..type(text), 2)
  local Args = {...}
  local Valid = {}
  for i = 1, #Args do
