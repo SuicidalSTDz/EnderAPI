@@ -13,8 +13,19 @@ local function assert(bBool, sMessage, nLevel)
 end
 
 function promptFor(text, ...) --it will print 'text: ', and only except answers specified aftet text. eg promptFor("hello", "right", "left") would accept 'right' or 'left'
+ local tArgs
  assert(type(text) == "string", "String expected, got " .. type(text), 2)
- local tArgs = {...}
+ for k, v in pairs(tArgs)
+  assert(type(v) == "string", "String expected, got " .. type(v), 2)
+ end
+  if type(...) ~= "table" then
+   tArgs = {...}
+  for k, v in pairs(tArgs)
+   assert(type(v) == "string", "String Expected, got" .. type(v), 2)
+  end
+ else
+  assert(type(...) == "table", "Table or string Expected, got" .. type(...), 2)
+ end
  local tValid = {}
  for i = 1, #tArgs do
   tValid[tArgs[i]] = true
@@ -97,7 +108,14 @@ function promptForNum(text, nmin, nmax) --Prompts for a number, the number field
  end
 end
 function promptForUser(tries, ...) --login sequence, allows max tries. Format: (tries, Username1, Password1, Usernmae2, Password2)
- local Args = {...}
+ if type(...) ~= "table" then
+  local Args = {...}
+  for k, v in pairs(Args)
+   assert(type(v) == "string", "String Expected, got" .. type(v), 2)
+  end
+ else
+  assert(type(...) == "table", "Table or string Expected, got" .. type(...), 2)
+ end
  print("Please Enter Username & Password")
  term.write("Username: ")
  local Username = read()
@@ -131,9 +149,17 @@ function promptForUser(tries, ...) --login sequence, allows max tries. Format: (
  end
 end
 function promptForSecure(text, c, tries, ...) --useful for getting passwords
+ local Args
+ if type(...) ~= "table" then
+  Args = {...}
+  for k, v in pairs(Args)
+   assert(type(v) == "string", "String Expected, got" .. type(v), 2)
+  end
+ else
+  assert(type(...) == "table", "Table or string Expected, got" .. type(...), 2)
+ end
  assert(type(text) == "string", "String expected, got "..type(text), 2)
  assert(type(c) == "string", "String expected, got "..type(text), 2)
- local Args = {...}
  local Valid = {}
  for i = 1, #Args do
   Valid[Args[i]] = true
