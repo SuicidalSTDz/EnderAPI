@@ -1,13 +1,23 @@
 -- DONT COMPLAIN ABOUT THIS LAUNCHER. IT WORKS AND A NEW LAUNCHER IS ALREADY IN THE WORKS - EngineerCoding
 
+--# Declare Variables
+local nw, nh = term.getSize()
 local folder = "/.EnderAPI/"
--- Make it backwards compatible, remove it after a while though
-if fs.exists( "/.EnderAPI/master/apis" ) and fs.isDir( "/.EnderAPI/master/apis/" ) then
-  for _, name in ipairs( fs.list( "/.EnderAPI/master/apis/" ) ) do
-    fs.move( "/.EnderAPI/master/apis/" .. name, "/.EnderAPI/" .. name )
-  end
-  fs.delete( "/.EnderAPI/master/" )
+
+--# Yell at the user if HTTP is not enabled
+if not http then
+  error( "HTTP is required to utilize the EnderAPI Launcher", 0)
 end
+
+--# Download the GUI API, if needed, and load it
+local sCode = "qz7KGw3R"
+if not fs.exists( folder .. "gui" ) then
+  local ok = pcall( shell.run( "pastebin", "get", sCode, folder .. "gui" ) )
+  if not ok then
+    error( "A problem has occured while downloading the GUI API. Please try again later", 0 )
+  end
+end
+os.loadAPI( folder .. "gui" )
 
 local tArgs = { ... }
 local showGUI = ( term.isColor and term.isColor() )
@@ -36,14 +46,13 @@ for i, v in ipairs( tArgs ) do
 end
 
 if updateLauncher then
-  if not http then
-    error( "HTTP is required to search for updates!", 0 )
-  end
   
   if showTextOutput then
     print( "Checking for launcher update.." )
   end
+
   local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/launcher.lua" )
+  
   if httpHandle then
     local httpContent = httpHandle.readAll()
     httpHandle.close()
@@ -153,12 +162,10 @@ if updateLauncher then
 end
 
 if updateAPI then
-  if not http then
-    error( "HTTP is required to search for updates!", 0 )
-  end
 
   local baseURL = "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/apis/"
   local folderExisted = true
+  local nFiles = 11
   local tFiles = { 
     [ "fs.lua" ] = {},
     [ "http.lua" ] = {},
@@ -178,10 +185,21 @@ if updateAPI then
     folderExisted = false
   end
 
-  -- Let the user know that (s)he has to wait a minute
-  if showTextOutput then
-    print( "Downloading files, this can take a while.." )
-  end
+  --# Initialize Variables
+  local nPercent = 0
+  local nFilesDownloaded = nFiles
+  local nBarLength = nw / 2
+  local nBarStartX = nw / 2 - ( nBarLength / 2 )
+
+  --# Initialize and draw objects
+  local tBar = gui.createBar( "Initialization" )
+  tBar:draw( nBarStartX, nh / 2, nBarLength, colours.white, colours.purple, false, colours.black, colours.white )
+
+  local sText = "Downloading Files.."
+  term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+  term.setBackgroundColour( colours.black )
+  term.setTextColour( colours.lime )
+  term.write( sText )
 
   -- Download & check files
   for luaFile, tbl in pairs( tFiles ) do
@@ -208,13 +226,24 @@ if updateAPI then
     else
       tbl.update = false
     end
+    nFilesDownloaded = nFilesDownloaded - 1
+    nPercent = ( ( nFiles - nFilesDownloaded ) / nFiles ) * 100
+    tBar:update( nPercent )
   end
+
+  sText = "Download Complete"
+  term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+  term.setBackgroundColour( colours.black )
+  term.setTextColour( colours.lime )
+  term.clearLine()
+  term.write( sText)
+  sleep( 1 )
 
   if showGUI then  
     local w, h = term.getSize()
     local availableFiles = {}
    
-   local tryUpdate = false
+    local tryUpdate = false
     for k, v in pairs( tFiles ) do
       if v.update then
         tryUpdate = true
