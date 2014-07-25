@@ -19,6 +19,16 @@ if not fs.exists( folder .. "gui" ) then
 end
 os.loadAPI( folder .. "gui" )
 
+--# Fetch the current version
+local version
+local httpHandle = http.get( "https://raw.githubusercontent.com/SuicidalSTDz/EnderAPI/master/version.lua" )
+if httpHandle then
+  local sData = httpHandle.readAll()
+  httpHandle.close()
+  version = sData
+end
+
+
 local tArgs = { ... }
 local showGUI = ( term.isColor and term.isColor() )
 local showTextOutput = true
@@ -91,7 +101,11 @@ if updateLauncher then
             term.write( ' ' )
           end
           
-          -- Write the text
+          local sText = "An update has been found for your launcher!"
+          local dialogue = gui.createDialogueBox( "EnderAPI v" .. version, { sText, "Would you like to update?" }, "yn" ) --#Creates a dialogue box with the title "GUI API" ,two body lines: "This is a dialogue box!" and "Do you like it?" and the box type is "yn"
+          local update = dialogue:draw( ( nw - #sText + 1 ) / 2, 5, 5, colors.gray, colors.purple, colors.white ) --#Makes a text box at (20,5) with a width of 5, a gray background color, white text color, and lightBlue title bar color.
+          updateFile = update
+          --[[ Write the text
           term.setBackgroundColour( colours.black )
           term.setTextColour( colours.white )
           term.setCursorPos( beginBoxW, math.floor( h / 2 ) - 1 )
@@ -110,8 +124,8 @@ if updateLauncher then
           term.write( "[ No ]" )
           
           term.setBackgroundColour( colours.black )
-          
-          while true do
+          ]]
+          --[[while true do
             local ev = { os.pullEvent() }
             if ev[ 1 ] == "mouse_click" then
               if ev[ 3 ] >= oldX - 24 and ev[ 3 ] <= oldX - 17 and ev[ 4 ] == oldY + 1 then
@@ -125,9 +139,12 @@ if updateLauncher then
                 break
               end
             end
-          end
+          end]]
         end
         
+        term.setBackgroundColour( colours.black )
+        term.clear()
+
         if updateFile then
           fileHandle = fs.open( sFile, 'w' )
           fileHandle.write( httpContent )
