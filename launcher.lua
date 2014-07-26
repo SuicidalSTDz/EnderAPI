@@ -6,14 +6,14 @@ local folder = "/.EnderAPI/"
 
 --# Yell at the user if HTTP is not enabled
 if not http then
-  error( "HTTP is required to utilize the EnderAPI Launcher", 0)
+  error( "HTTP is required to utilize the EnderAPI Launcher", 0 )
 end
 
 --# Download the GUI API, if needed, and load it
 local sCode = "qz7KGw3R"
 if not fs.exists( folder .. "gui" ) then
-  local ok = pcall( shell.run( "pastebin", "get", sCode, folder .. "gui" ) )
-  if not ok then
+  shell.run( "pastebin", "get", sCode, folder .. "gui" )
+  if not fs.exists( folder .. "gui" ) then
     error( "A problem has occured while downloading the GUI API. Please try again later", 0 )
   end
 end
@@ -26,8 +26,9 @@ if httpHandle then
   local sData = httpHandle.readAll()
   httpHandle.close()
   version = sData
+else
+  version = "Unknown"
 end
-
 
 local tArgs = { ... }
 local showGUI = ( term.isColor and term.isColor() )
@@ -79,7 +80,10 @@ if updateLauncher then
         local oldX, oldY
         
         if showGUI then
-          local w, h = term.getSize()
+          term.setBackgroundColour( colours.black )
+          term.setTextColour( colours.white )
+          term.clear()
+          --[[local w, h = term.getSize()
           
           term.setBackgroundColour( colours.black )
           term.clear()
@@ -99,7 +103,7 @@ if updateLauncher then
             term.write( ' ' )
             term.setCursorPos( beginBoxW + i, beginBoxH + 3 )
             term.write( ' ' )
-          end
+          end]]
           
           local sText = "An update has been found for your launcher!"
           local dialogue = gui.createDialogueBox( "EnderAPI v" .. version, { sText, "Would you like to update?" }, "yn" ) --#Creates a dialogue box with the title "GUI API" ,two body lines: "This is a dialogue box!" and "Do you like it?" and the box type is "yn"
@@ -182,8 +186,9 @@ if updateAPI then
 
   local baseURL = "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/apis/"
   local folderExisted = true
-  local nFiles = 11
+  local nFiles = 12
   local tFiles = { 
+  	[ "debug.lua" ] = {},
     [ "fs.lua" ] = {},
     [ "http.lua" ] = {},
     [ "messageBox.lua" ] = {}, -- It's now stable enough for release
@@ -212,12 +217,14 @@ if updateAPI then
   local tBar = gui.createBar( "Initialization" )
   tBar:draw( nBarStartX, nh / 2, nBarLength, colours.white, colours.purple, false, colours.black, colours.white )
 
-  local sText = "Downloading Files.."
-  term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
-  term.setBackgroundColour( colours.black )
-  term.setTextColour( colours.lime )
-  term.write( sText )
+  local function redraw( sText )
+  	term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+  	term.setBackgroundColour( colours.black )
+  	term.setTextColour( colours.lime )
+  	term.write( sText )
+  end
 
+  redraw( "Downloading files from Github.." )
   -- Download & check files
   for luaFile, tbl in pairs( tFiles ) do
     tbl.fileName = string.sub( luaFile, 1, luaFile:len() - 4 )
@@ -248,7 +255,7 @@ if updateAPI then
     tBar:update( nPercent )
   end
 
-  sText = "Download Complete"
+  sText = "Download Complete!"
   term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
   term.setBackgroundColour( colours.black )
   term.setTextColour( colours.lime )
