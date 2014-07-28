@@ -34,7 +34,7 @@
         <h2>
 <a name="developement-team" class="anchor" href="#developement-team"><span class="octicon octicon-link"></span></a>Developement Team</h2>
 
-<p><a href="https://github.com/SuicidalSTDz">SuicidalSTDz</a> - Lead Developer <br><a href="https://github.com/apemanzilla">apemanzilla</a> - Developer <br><a href="https://github.com/skwerlman">skwerlman</a> - Developer <br><a href="https://github.com/EngineerCoding">EngineerCoding</a> - Developer <br></p>
+<p><a href="https://github.com/SuicidalSTDz">SuicidalSTDz</a> - Lead Developer <br><a href="https://github.com/apemanzilla">apemanzilla</a> - Developer <br><a href="https://github.com/skwerlman">skwerlman</a> - Developer <br><a href="https://github.com/EngineerCoding">EngineerCoding</a> - Developer <br><a href="https://github.com/KingofGamesYami">KingofGamesYami</a> - Developer <br></p>
 
 <h2>
 <a name="accepted-suggestions" class="anchor" href="#accepted-suggestions"><span class="octicon octicon-link"></span></a>Accepted Suggestions</h2>
@@ -63,7 +63,7 @@
 </pre></div>
 
 <ul>
-<li>Converts nColor to it's english string. For instance, colors.convertToString( 1 ) will return "black"</li>
+<li>Converts nColor to it's english string. For instance, colors.convertToString( 1 ) will return "white"</li>
 <li>Returns color [<em>string</em>]</li>
 </ul><h2>
 <a name="fs-api" class="anchor" href="#fs-api"><span class="octicon octicon-link"></span></a>Fs API</h2>
@@ -120,8 +120,7 @@
 
 <ul>
 <li>Saves sData to sPath ( overwrites current file )</li>
-<li>Returns: <em>nil</em>
-</li>
+<li>Returns: [<em>nil</em>]</li>
 </ul><h2>
 <a name="http-api" class="anchor" href="#http-api"><span class="octicon octicon-link"></span></a>HTTP API</h2>
 
@@ -147,146 +146,13 @@
 
 <ul>
 <li>Downloads the given sUrl in sPath</li>
-<li>Returns: success <em>boolean</em>
-</li>
+<li>Returns: success [<em>boolean</em>]</li>
 </ul><h2>
 <a name="messagebox-api" class="anchor" href="#messagebox-api"><span class="octicon octicon-link"></span></a>MessageBox API</h2>
 
-<h3>
-<a name="messageboxcreate-stext-fyes-fno-" class="anchor" href="#messageboxcreate-stext-fyes-fno-"><span class="octicon octicon-link"></span></a>messageBox.create( sText, fYes, fNo )</h3>
-
-<p>WARNING: Probably very unappealing but don't complain. I am working on it <br></p>
-
-<div class="highlight highlight-Lua"><pre><span class="kd">local</span> <span class="k">function</span> <span class="nf">assert</span><span class="p">(</span><span class="n">bBool</span><span class="p">,</span> <span class="n">sMessage</span><span class="p">,</span> <span class="n">nLevel</span><span class="p">)</span>
-  <span class="n">nLevel</span> <span class="o">=</span> <span class="n">nLevel</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span> <span class="c1">-- Changing the value of a param doesn't affect its scope, so local isn't necessary. (confirmed by eclipse)</span>
-  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">sMessage</span><span class="p">)</span> <span class="o">~=</span> <span class="s2">"</span><span class="s">string"</span> <span class="k">then</span>
-    <span class="nb">error</span><span class="p">(</span><span class="s2">"</span><span class="s">String expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sMessage</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-  <span class="k">elseif</span> <span class="nb">type</span><span class="p">(</span><span class="n">nLevel</span><span class="p">)</span> <span class="o">~=</span> <span class="s2">"</span><span class="s">number"</span> <span class="k">then</span>
-    <span class="nb">error</span><span class="p">(</span><span class="s2">"</span><span class="s">Number expected, got "</span> <span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">nLevel</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-  <span class="k">end</span>
-
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">bBool</span> <span class="k">then</span>
-    <span class="nb">error</span><span class="p">(</span> <span class="n">sMessage</span><span class="p">,</span> <span class="n">nLevel</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="c1">-- should be nLevel; iLevel was a typo</span>
-  <span class="k">end</span>
-  <span class="k">return</span> <span class="n">bBool</span>
-<span class="k">end</span>
-
-<span class="kd">local</span> <span class="k">function</span> <span class="nf">getContainer</span><span class="p">(</span> <span class="n">obj</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">tIgnore</span><span class="p">,</span> <span class="n">bGlobal</span> <span class="p">)</span> <span class="c1">-- a nifty little function that finds the name of the variable holding its first param in the environment provided by env, and ignores all variables with names matching those in tIgnore. It will scan _G if bGlobal == true and the variable is not in env</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">tIgnore</span> <span class="k">then</span>
-    <span class="n">tIgnore</span> <span class="o">=</span> <span class="p">{}</span>
-  <span class="k">end</span>
-  <span class="n">bGlobal</span> <span class="o">=</span> <span class="n">bGlobal</span> <span class="ow">or</span> <span class="kc">false</span>
-  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span> <span class="n">tIgnore</span> <span class="p">)</span> <span class="o">~=</span> <span class="s1">'</span><span class="s">table'</span> <span class="k">then</span>
-    <span class="n">tIgnore</span> <span class="o">=</span> <span class="p">{</span> <span class="n">tIgnore</span> <span class="p">}</span>
-  <span class="k">end</span>
-  <span class="nb">table.insert</span><span class="p">(</span> <span class="n">tIgnore</span><span class="p">,</span> <span class="s1">'</span><span class="s">obj'</span> <span class="p">)</span>
-  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">env</span><span class="p">)</span> <span class="k">do</span> <span class="c1">-- Check the provided environment</span>
-    <span class="kd">local</span> <span class="n">shouldIgnore</span> <span class="o">=</span> <span class="kc">false</span>
-    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">#</span><span class="n">tIgnore</span> <span class="k">do</span>
-      <span class="k">if</span> <span class="n">tIgnore</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">k</span> <span class="k">then</span>
-        <span class="n">shouldIgnore</span> <span class="o">=</span> <span class="kc">true</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-    <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">obj</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">shouldIgnore</span> <span class="k">then</span>
-      <span class="k">return</span> <span class="n">k</span> <span class="c1">-- Return as soon as we find it</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-  <span class="k">if</span> <span class="n">bGlobal</span> <span class="k">then</span> <span class="c1">-- scan _G, if we haven't found it yet</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="nb">_G</span><span class="p">)</span> <span class="k">do</span>
-      <span class="kd">local</span> <span class="n">shouldIgnore</span> <span class="o">=</span> <span class="kc">false</span>
-      <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">#</span><span class="n">tIgnore</span> <span class="k">do</span>
-        <span class="k">if</span> <span class="n">tIgnore</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">k</span> <span class="k">then</span>
-          <span class="n">shouldIgnore</span> <span class="o">=</span> <span class="kc">true</span>
-        <span class="k">end</span>
-      <span class="k">end</span>
-      <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">obj</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">shouldIgnore</span> <span class="k">then</span>
-        <span class="k">return</span> <span class="n">k</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-  <span class="k">return</span> <span class="s1">'</span><span class="s">? (a local '</span><span class="o">..</span><span class="nb">type</span><span class="p">(</span> <span class="n">obj</span> <span class="p">)</span><span class="o">..</span><span class="s1">'</span><span class="s">)'</span> <span class="c1">-- Return a value similar in format to those provided for native errors if we couldn't find the object's name.</span>
-<span class="k">end</span>
-
-<span class="k">function</span> <span class="nf">create</span><span class="p">(</span> <span class="n">sText</span><span class="p">,</span> <span class="n">nBorderColour</span><span class="p">,</span> <span class="n">nInnerColour</span><span class="p">,</span> <span class="n">fYes</span><span class="p">,</span> <span class="n">fNo</span> <span class="p">)</span>
-  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">string"</span><span class="p">,</span> <span class="s2">"</span><span class="s">String expected, got "</span><span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">sText</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fYes</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">function"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Function expected, got "</span><span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fYes</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-  <span class="nb">assert</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fNo</span> <span class="p">)</span> <span class="o">==</span> <span class="s2">"</span><span class="s">function"</span><span class="p">,</span> <span class="s2">"</span><span class="s">Function expected, got "</span><span class="o">..</span> <span class="nb">type</span><span class="p">(</span> <span class="n">fNo</span> <span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span> <span class="k">then</span>
-    <span class="nb">error</span><span class="p">(</span> <span class="s2">"</span><span class="s">The Text API must be installed to use this function"</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
-  <span class="k">end</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span><span class="p">.</span><span class="n">enderAPI</span> <span class="k">then</span> <span class="c1">-- We're also dependent on our term extensions, although no one noticed</span>
-    <span class="nb">error</span><span class="p">(</span> <span class="s2">"</span><span class="s">The EnderAPI term extension must be enabled to use this function"</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
-  <span class="k">end</span>
-
-  <span class="kd">local</span> <span class="n">nw</span><span class="p">,</span> <span class="n">nh</span> <span class="o">=</span> <span class="n">term</span><span class="p">.</span><span class="n">getSize</span><span class="p">()</span>
-  <span class="kd">local</span> <span class="n">startX</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="n">nw</span> <span class="o">-</span> <span class="o">#</span><span class="n">sText</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">-</span> <span class="mi">5</span> <span class="p">)</span>
-  <span class="kd">local</span> <span class="n">startY</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="n">nh</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span>
-  <span class="kd">local</span> <span class="n">endX</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="n">nw</span> <span class="o">+</span> <span class="o">#</span><span class="n">sText</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">7</span> <span class="p">)</span>
-  <span class="kd">local</span> <span class="n">endY</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="n">nh</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span> <span class="p">)</span>
-  <span class="kd">local</span> <span class="n">nMiddle</span> <span class="o">=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">startX</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span>
-  <span class="kd">local</span> <span class="n">tOverwrite</span> <span class="o">=</span> <span class="p">{}</span>
-
-  <span class="c1">--# The two line below this were compacted. term.getCursorPos returns two values which can be put directly into a table, instead of asigning them manually</span>
-  <span class="kd">local</span> <span class="n">tCursorPos</span> <span class="o">=</span> <span class="p">{</span> <span class="n">term</span><span class="p">.</span><span class="n">getCursorPos</span><span class="p">()</span> <span class="p">}</span>
-  <span class="c1">--tCursorPos[1], tCursorPos[2] = term.getCursorPos() -- Save where the cursor was so we can put it back later</span>
-
-  <span class="k">for</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">startY</span><span class="p">,</span> <span class="n">endY</span> <span class="k">do</span>
-    <span class="k">for</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">startX</span><span class="p">,</span> <span class="n">endX</span> <span class="k">do</span>
-      <span class="n">tOverwrite</span><span class="p">[</span> <span class="n">nx</span> <span class="o">..</span> <span class="s2">"</span><span class="s"> "</span> <span class="o">..</span> <span class="n">ny</span> <span class="p">]</span> <span class="o">=</span> <span class="n">term</span><span class="p">.</span><span class="n">getPixelData</span><span class="p">(</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">endX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">nBorderColour</span> <span class="p">)</span>
-  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">startX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">nBorderColour</span> <span class="p">)</span>
-  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">endX</span><span class="p">,</span> <span class="n">startY</span><span class="p">,</span> <span class="n">endX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">nBorderColour</span> <span class="p">)</span>
-  <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">endX</span><span class="p">,</span> <span class="n">endY</span><span class="p">,</span> <span class="n">nBorderColour</span> <span class="p">)</span>
-  <span class="k">for</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">startY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">do</span>
-    <span class="n">paintutils</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">endX</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nInnerColour</span> <span class="p">)</span>
-  <span class="k">end</span>
-  <span class="n">text</span><span class="p">.</span><span class="n">bracket</span><span class="p">(</span> <span class="s2">"</span><span class="s">Yes"</span><span class="p">,</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="p">),</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">red</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">white</span><span class="p">,</span> <span class="n">nInnerColour</span> <span class="p">)</span> <span class="c1">-- Shouldn't we be using 'color' instead of 'colour'? 'color' takes up less space on the computer and is a microscopic amount faster, and there's no change in functionality</span>
-  <span class="n">text</span><span class="p">.</span><span class="n">bracket</span><span class="p">(</span> <span class="s2">"</span><span class="s">No"</span><span class="p">,</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">),</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">red</span><span class="p">,</span> <span class="n">colours</span><span class="p">.</span><span class="n">white</span><span class="p">,</span> <span class="n">nInnerColour</span> <span class="p">)</span>
-  <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="n">nMiddle</span> <span class="o">-</span> <span class="p">(</span> <span class="o">#</span><span class="n">sText</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">),</span> <span class="n">startY</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span>
-  <span class="n">term</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sText</span> <span class="p">)</span>
-
-  <span class="kd">local</span> <span class="n">sEvent</span><span class="p">,</span> <span class="n">nButton</span><span class="p">,</span> <span class="n">xPos</span><span class="p">,</span> <span class="n">yPos</span><span class="p">,</span> <span class="n">fSelection</span>
-  <span class="k">while</span> <span class="kc">true</span> <span class="k">do</span>
-    <span class="n">sEvent</span><span class="p">,</span> <span class="n">nButton</span><span class="p">,</span> <span class="n">xPos</span><span class="p">,</span> <span class="n">yPos</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">pullEvent</span><span class="p">(</span> <span class="s2">"</span><span class="s">mouse_click"</span> <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">nButton</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">then</span>
-      <span class="k">if</span> <span class="n">yPos</span> <span class="o">==</span> <span class="n">endY</span> <span class="o">-</span> <span class="mi">2</span> <span class="k">then</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="n">xPos</span> <span class="o">&gt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">xPos</span> <span class="o">&lt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">startX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">4</span> <span class="p">)</span> <span class="k">then</span>
-          <span class="kd">local</span> <span class="n">ok</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="nb">pcall</span><span class="p">(</span> <span class="n">fYes</span> <span class="p">)</span>
-          <span class="n">fSelection</span> <span class="o">=</span> <span class="n">fYes</span>
-          <span class="k">break</span>
-        <span class="k">elseif</span> <span class="p">(</span> <span class="n">xPos</span> <span class="o">&gt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">xPos</span> <span class="o">&lt;=</span> <span class="nb">math.floor</span><span class="p">(</span> <span class="p">(</span> <span class="n">endX</span> <span class="o">+</span> <span class="n">nMiddle</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">)</span> <span class="k">then</span>
-          <span class="n">fSelection</span> <span class="o">=</span> <span class="n">fNo</span>
-          <span class="k">break</span>
-        <span class="k">end</span>
-      <span class="k">end</span> <span class="c1">-- Fixed errant tabs; use tabs OR spaces, not both</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="k">for</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">startY</span><span class="p">,</span> <span class="n">endY</span> <span class="k">do</span> <span class="c1">-- Moved this loop to execute before the response functions; prevents odd behavior</span>
-    <span class="k">for</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">startX</span><span class="p">,</span> <span class="n">endX</span> <span class="k">do</span>
-      <span class="n">term</span><span class="p">.</span><span class="n">setTextColour</span><span class="p">(</span> <span class="n">tOverwrite</span><span class="p">[</span> <span class="n">nx</span> <span class="o">..</span> <span class="s2">"</span><span class="s"> "</span> <span class="o">..</span> <span class="n">ny</span> <span class="p">].</span><span class="n">TextColour</span> <span class="p">)</span>
-      <span class="n">term</span><span class="p">.</span><span class="n">setBackgroundColour</span><span class="p">(</span> <span class="n">tOverwrite</span><span class="p">[</span> <span class="n">nx</span> <span class="o">..</span> <span class="s2">"</span><span class="s"> "</span> <span class="o">..</span> <span class="n">ny</span> <span class="p">].</span><span class="n">BackgroundColour</span> <span class="p">)</span>
-      <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="p">)</span>
-      <span class="n">term</span><span class="p">.</span><span class="n">write</span><span class="p">(</span> <span class="n">tOverwrite</span><span class="p">[</span> <span class="n">nx</span> <span class="o">..</span> <span class="s2">"</span><span class="s"> "</span> <span class="o">..</span> <span class="n">ny</span> <span class="p">].</span><span class="n">Character</span> <span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-  <span class="n">term</span><span class="p">.</span><span class="n">setCursorPos</span><span class="p">(</span><span class="nb">unpack</span><span class="p">(</span><span class="n">tCursorPos</span><span class="p">))</span>
-
-  <span class="kd">local</span> <span class="n">ok</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="nb">pcall</span><span class="p">(</span> <span class="n">fSelection</span> <span class="p">)</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="k">then</span>
-    <span class="nb">error</span><span class="p">(</span> <span class="s2">"</span><span class="s">Could not invoke "</span><span class="o">..</span><span class="n">getContainer</span><span class="p">(</span><span class="n">fSelection</span><span class="p">,</span> <span class="nb">getfenv</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="p">{</span> <span class="s1">'</span><span class="s">fNo'</span><span class="p">,</span> <span class="s1">'</span><span class="s">fYes'</span><span class="p">,</span> <span class="s1">'</span><span class="s">fSelection'</span> <span class="p">}),</span> <span class="mi">2</span> <span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</pre></div>
-
-<p>( Insert description here )</p>
-
-<h2>
+<ul>
+<li>Deprecated, for now [-STDz]</li>
+</ul><h2>
 <a name="number-api" class="anchor" href="#number-api"><span class="octicon octicon-link"></span></a>Number API</h2>
 
 <h3>
@@ -308,8 +174,7 @@
 
 <ul>
 <li>Generates a number of nLength with values ranging from nMin to nMax</li>
-<li>Returns: <em>number</em>
-</li>
+<li>Returns: [<em>number</em>]</li>
 </ul><h3>
 <a name="numberisodd-n-" class="anchor" href="#numberisodd-n-"><span class="octicon octicon-link"></span></a>number.isOdd( n )</h3>
 
@@ -321,8 +186,7 @@
 
 <ul>
 <li>Returns whether or not n is an odd number</li>
-<li>Returns: <em>boolean</em>
-</li>
+<li>Returns: [<em>boolean</em>]</li>
 </ul><h3>
 <a name="numberiseven-n-" class="anchor" href="#numberiseven-n-"><span class="octicon octicon-link"></span></a>number.isEven( n )</h3>
 
@@ -334,8 +198,7 @@
 
 <ul>
 <li>Returns whether or not n is an even number</li>
-<li>Returns <em>boolean</em>
-</li>
+<li>Returns [<em>boolean</em>]</li>
 </ul><h2>
 <a name="pastebin-api" class="anchor" href="#pastebin-api"><span class="octicon octicon-link"></span></a>Pastebin API</h2>
 
@@ -364,8 +227,7 @@
 
 <ul>
 <li>Downloads sCode from pastebin as sFile</li>
-<li>Returns: success <em>boolean</em>
-</li>
+<li>Returns: success [<em>boolean</em>]</li>
 </ul><h3>
 <a name="pastebinput-sfile-" class="anchor" href="#pastebinput-sfile-"><span class="octicon octicon-link"></span></a>pastebin.put( sFile )</h3>
 
@@ -402,8 +264,7 @@
 
 <ul>
 <li>Uploads sFile to pastebin</li>
-<li>Returns: code <em>string</em>, success <em>boolean</em>
-</li>
+<li>Returns: code [<em>string</em>], success [<em>boolean</em>]</li>
 </ul><h3>
 <a name="pastebinupdatefile-scode-sfile-" class="anchor" href="#pastebinupdatefile-scode-sfile-"><span class="octicon octicon-link"></span></a>pastebin.updateFile( sCode, sFile )</h3>
 
@@ -440,8 +301,7 @@
 
 <ul>
 <li>Updates sFile using sCode from pastebin, if sFile is not the same as pastebin file</li>
-<li>Returns: success <em>boolean</em>
-</li>
+<li>Returns: success [<em>boolean</em>]</li>
 </ul><h2>
 <a name="string-api" class="anchor" href="#string-api"><span class="octicon octicon-link"></span></a>String API</h2>
 
@@ -461,9 +321,8 @@
 </pre></div>
 
 <ul>
-<li>Generates a string of nLength with ASCII characters ranging from 0 to nCharSet</li>
-<li>Returns: <em>string</em>
-</li>
+<li>Generates a string of nLength with ASCII characters ranging from 0 to nCharSet (or, by default, 128)</li>
+<li>Returns: [<em>string</em>]</li>
 </ul><h3>
 <a name="stringreplacechar-str-npos-sreplace--or-stringreplacechar-npos-sreplace-" class="anchor" href="#stringreplacechar-str-npos-sreplace--or-stringreplacechar-npos-sreplace-"><span class="octicon octicon-link"></span></a>string.replaceChar( str, nPos, sReplace ) OR string:replaceChar( nPos, sReplace )</h3>
 
@@ -476,8 +335,7 @@
 
 <ul>
 <li>Replaces character at nPos in string with sReplace</li>
-<li>Returns: <em>string</em>
-</li>
+<li>Returns: [<em>string</em>]</li>
 </ul><h3>
 <a name="stringsafepattern" class="anchor" href="#stringsafepattern"><span class="octicon octicon-link"></span></a>string.safePattern()</h3>
 
@@ -500,8 +358,7 @@
 
 <ul>
 <li>Splits str into seperate elements based on whitespace. Good for pulling arguments from a single string</li>
-<li>Returns: <em>table</em>
-</li>
+<li>Returns: [<em>table</em>]</li>
 </ul><h2>
 <a name="table-api" class="anchor" href="#table-api"><span class="octicon octicon-link"></span></a>Table API</h2>
 
@@ -517,8 +374,7 @@
 
 <ul>
 <li>Sorts tbl's elements from least to greatest( A - Z, 1 - 9, etc )</li>
-<li>Returns: <em>table</em>
-</li>
+<li>Returns: [<em>table</em>]</li>
 </ul><h3>
 <a name="tablesortgtol-tbl-" class="anchor" href="#tablesortgtol-tbl-"><span class="octicon octicon-link"></span></a>table.sortGToL( tbl )</h3>
 
@@ -530,7 +386,7 @@
 
 <ul>
 <li>Sorts tbl's elements from greatest to least ( Z - A, 9 - 1, etc )</li>
-<li>Returns: table</li>
+<li>Returns: [<em>table</em>]</li>
 </ul><h2>
 <a name="term-api" class="anchor" href="#term-api"><span class="octicon octicon-link"></span></a>Term API</h2>
 
@@ -616,8 +472,7 @@
 
 <ul>
 <li>Returns the current terminal's text color</li>
-<li>Returns: color <em>number</em>
-</li>
+<li>Returns: color [<em>number</em>]</li>
 </ul><h3>
 <a name="termgetbackgroundcolour" class="anchor" href="#termgetbackgroundcolour"><span class="octicon octicon-link"></span></a>term.getBackgroundColour()</h3>
 
@@ -628,8 +483,7 @@
 
 <ul>
 <li>Returns the current terminal's background color</li>
-<li>Returns: color <em>number</em>
-</li>
+<li>Returns: color [<em>number</em>]</li>
 </ul><h2>
 <a name="text-api" class="anchor" href="#text-api"><span class="octicon octicon-link"></span></a>Text API</h2>
 
