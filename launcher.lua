@@ -1,13 +1,13 @@
 -- DONT COMPLAIN ABOUT THIS LAUNCHER. IT WORKS AND A NEW LAUNCHER IS ALREADY IN THE WORKS - EngineerCoding
 
---# Declare Variables
-local nw, nh = term.getSize()
-local folder = "/.EnderAPI/"
-
 --# Yell at the user if HTTP is not enabled
 if not http then
   error( "HTTP is required to utilize the EnderAPI Launcher", 0 )
 end
+
+--# Declare Variables
+local nw, nh = term.getSize()
+local folder = "/.EnderAPI/"
 
 --# Download the GUI API, if needed, and load it
 local sCode = "qz7KGw3R"
@@ -30,6 +30,7 @@ else
   version = "Unknown"
 end
 
+--# Initialize variables
 local tArgs = { ... }
 local showGUI = ( term.isColor and term.isColor() )
 local showTextOutput = true
@@ -37,6 +38,12 @@ local updateAPI = true
 local updateLauncher = true
 local branch = "master"
 
+--[[ Pull out passed arguments and determine how to set-up the launcher.
+The below lines are for developers and those competent enough to
+utilize it's functionality, therefore, no description will be provided
+
+ - SuicidalSTDz
+]]
 for i, v in ipairs( tArgs ) do
   local a = v:lower()
   if a == "nogui" then 
@@ -83,70 +90,28 @@ if updateLauncher then
           term.setBackgroundColour( colours.black )
           term.setTextColour( colours.white )
           term.clear()
-          --[[local w, h = term.getSize()
           
-          term.setBackgroundColour( colours.black )
-          term.clear()
-          
-          term.setBackgroundColour( colours.purple )
-          local beginBoxW = ( w - 25 ) / 2
-          local beginBoxH = math.floor( h / 2 ) - 2
-          for i = 0, 3 do
-            term.setCursorPos( beginBoxW - 1, beginBoxH + i )
-            term.write( ' ' )
-            term.setCursorPos( beginBoxW + 26, beginBoxH + i )
-            term.write( ' ' )
-          end
-          
-          for i = 0, 25 do
-            term.setCursorPos( beginBoxW + i, beginBoxH )
-            term.write( ' ' )
-            term.setCursorPos( beginBoxW + i, beginBoxH + 3 )
-            term.write( ' ' )
-          end]]
-          
+          --# Initialize local variables
           local sText = "An update has been found for your launcher!"
-          local dialogue = gui.createDialogueBox( "EnderAPI v" .. version, { sText, "Would you like to update?" }, "yn" ) --#Creates a dialogue box with the title "GUI API" ,two body lines: "This is a dialogue box!" and "Do you like it?" and the box type is "yn"
-          local update = dialogue:draw( ( nw - #sText + 1 ) / 2, 5, 5, colors.gray, colors.purple, colors.white ) --#Makes a text box at (20,5) with a width of 5, a gray background color, white text color, and lightBlue title bar color.
+          local dialogue = gui.createDialogueBox( "EnderAPI v" .. version, { sText, "Would you like to update?" }, "yn" )
+          local update = dialogue:draw( ( nw - #sText + 1 ) / 2, 5, 5, colors.gray, colors.purple, colors.white )
           updateFile = update
-          --[[ Write the text
-          term.setBackgroundColour( colours.black )
-          term.setTextColour( colours.white )
-          term.setCursorPos( beginBoxW, math.floor( h / 2 ) - 1 )
-          term.write( "An update has been found" )
-          
-          oldX, oldY = term.getCursorPos()
-          term.setCursorPos( oldX - 24, oldY + 1 )
-          term.write( "for the launcher, update?" )
-          
-          term.setBackgroundColour( colours.purple )
-          oldX, oldY = term.getCursorPos()
-          term.setCursorPos( oldX - 24, oldY + 1 )
-          term.write( "[ Yes ]" )
-          
-          term.setCursorPos( oldX - 7, oldY + 1 )
-          term.write( "[ No ]" )
-          
-          term.setBackgroundColour( colours.black )
-          ]]
-          --[[while true do
-            local ev = { os.pullEvent() }
-            if ev[ 1 ] == "mouse_click" then
-              if ev[ 3 ] >= oldX - 24 and ev[ 3 ] <= oldX - 17 and ev[ 4 ] == oldY + 1 then
-                term.clear()
-                term.setCursorPos( 1, 1 )
-                break
-              elseif ev[ 3 ] >= oldX - 7 and ev[ 3 ] <= oldX - 1 and ev[ 4 ] == oldY + 1 then
-                updateFile = false
-                term.clear()
-                term.setCursorPos( 1, 1 )
-                break
-              end
-            end
-          end]]
+
+        else
+        	local sInput
+        	repeat
+          	  term.setBackgroundColour( colours.black )
+              term.setTextColour( colours.white )
+              term.clear()
+              term.setCursorPos( 1, 1 )
+          	  term.write( "Update launcher? Y/N: ")
+          	  sInput = read():lower()
+	          updateFile = ( sInput == "yes" ) or ( sInput == "y" )
+            until ( sInput == "yes" ) or ( sInput == "y" ) or ( sInput == "no" ) or ( sInput == "n" )
         end
-        
+
         term.setBackgroundColour( colours.black )
+        term.setTextColour( colours.white )
         term.clear()
 
         if updateFile then
@@ -209,22 +174,35 @@ if updateAPI then
 
   --# Initialize Variables
   local nPercent = 0
-  local nFilesDownloaded = nFiles
+  local nFiles_To_Go = nFiles
   local nBarLength = nw / 2
   local nBarStartX = nw / 2 - ( nBarLength / 2 )
 
   --# Initialize and draw objects
-  local tBar = gui.createBar( "Initialization" )
-  tBar:draw( nBarStartX, nh / 2, nBarLength, colours.white, colours.purple, false, colours.black, colours.white )
+  local tBar, redraw
+  if showGUI then
+   	tBar = gui.createBar( "Initialization" )
+  	tBar:draw( nBarStartX, nh / 2, nBarLength, colours.white, colours.purple, false, colours.black, colours.white )
 
-  local function redraw( sText )
-  	term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
-  	term.setBackgroundColour( colours.black )
-  	term.setTextColour( colours.lime )
-  	term.write( sText )
+  	redraw = function( sText )
+	  term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+	  term.setBackgroundColour( colours.black )
+	  term.setTextColour( colours.lime )
+	  term.write( sText )
+  	end
+
+  	redraw( "Downloading file " .. nFiles - nFiles_To_Go .. " of " .. nFiles )
+  else
+    if showTextOutput then
+      term.setBackgroundColour( colours.black )
+      term.setTextColour( colours.white )
+      term.clear()
+      term.setCursorPos( 1, 1 )
+      write( "Downloading files..\nThis may take a while..\n")
+    end
   end
 
-  redraw( "Downloading files from Github.." )
+
   -- Download & check files
   for luaFile, tbl in pairs( tFiles ) do
     tbl.fileName = string.sub( luaFile, 1, luaFile:len() - 4 )
@@ -250,17 +228,27 @@ if updateAPI then
     else
       tbl.update = false
     end
-    nFilesDownloaded = nFilesDownloaded - 1
-    nPercent = ( ( nFiles - nFilesDownloaded ) / nFiles ) * 100
-    tBar:update( nPercent )
+    
+    if showGUI then
+      nFiles_To_Go = nFiles_To_Go - 1
+      nPercent = ( ( nFiles - nFiles_To_Go ) / nFiles ) * 100
+      tBar:update( nPercent )
+      redraw( "Downloading file " .. nFiles - nFiles_To_Go .. " of " .. nFiles )
+    end
   end
-
-  sText = "Download Complete!"
-  term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
-  term.setBackgroundColour( colours.black )
-  term.setTextColour( colours.lime )
-  term.clearLine()
-  term.write( sText)
+ 
+  if showGUI then
+  	sText = "Download Complete!"
+  	term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+  	term.setBackgroundColour( colours.black )
+  	term.setTextColour( colours.lime )
+  	term.clearLine()
+  	term.write( sText)
+  else
+  	if showTextOutput then
+  	  print( "Download Complete!" )
+  	end
+  end
   sleep( 1 )
 
   if showGUI then  
@@ -309,16 +297,12 @@ if updateAPI then
         local lastColour = 'g'
         for i = offset, #availableFiles do
           term.setCursorPos( 2, i - offset + 2 )
-          
-          -- Reduces server -> client packets
-         -- if availableFiles[ i ].colour ~= lastColour then
-            lastColour = availableFiles[ i ].colour
-            if lastColour == 'g' then
-              term.setTextColour( colours.green )
-            elseif lastColour == 'r' then
-              term.setTextColour( colours.red )
-            end
-         -- end
+          lastColour = availableFiles[ i ].colour
+          if lastColour == 'g' then
+            term.setTextColour( colours.green )
+          elseif lastColour == 'r' then
+            term.setTextColour( colours.red )
+          end
           term.write( availableFiles[ i ].name )
         end
       end
@@ -351,6 +335,7 @@ if updateAPI then
           end
         elseif event[ 1 ] == "mouse_scroll" then
           -- Add scrolling
+          -- I'll get to it, eventually [-STDz]
         end
       end
     else
