@@ -340,7 +340,12 @@ if updateAPI then
       end
     else
       if showTextOutput then
+      	term.setBackgroundColour( colours.black )
+      	term.setTextColour( colours.white )
+      	term.clear()
+      	term.setCursorPos( 1, 1 )
         print( "Everything is up to date!" )
+        sleep( 1 )
       end
     end
   end
