@@ -1,14 +1,45 @@
--- DONT COMPLAIN ABOUT THIS LAUNCHER. IT WORKS AND A NEW LAUNCHER IS ALREADY IN THE WORKS - EngineerCoding
+--# DONT COMPLAIN ABOUT THIS LAUNCHER. IT WORKS AND A NEW LAUNCHER IS ALREADY IN THE WORKS - EngineerCoding
 
-local folder = "/.EnderAPI/"
--- Make it backwards compatible, remove it after a while though
-if fs.exists( "/.EnderAPI/master/apis" ) and fs.isDir( "/.EnderAPI/master/apis/" ) then
-  for _, name in ipairs( fs.list( "/.EnderAPI/master/apis/" ) ) do
-    fs.move( "/.EnderAPI/master/apis/" .. name, "/.EnderAPI/" .. name )
-  end
-  fs.delete( "/.EnderAPI/master/" )
+--# Start the timer to track setup time
+local nStart_Time = os.clock()
+
+--# Yell at the user if HTTP is not enabled
+if not http then
+  error( "HTTP is required to utilize the EnderAPI Launcher", 0 )
 end
 
+--# Initialize Variables
+local nw, nh = term.getSize()
+local folder = "/.EnderAPI/"
+local isColour = ( term.isColour and term.isColour() )
+
+--# Download the GUI API, if needed, and load it
+local sCode = "qz7KGw3R"
+if not fs.exists( folder .. "gui" ) then
+  shell.run( "pastebin", "get", sCode, folder .. "gui" )
+  if not fs.exists( folder .. "gui" ) then
+    error( "A problem has occured while downloading the GUI API. Please try again later", 0 )
+  end
+end
+os.loadAPI( folder .. "gui" )
+
+--# Fetch the current version
+if not _G.enderAPI then
+  local version
+  local httpHandle = http.get( "https://raw.githubusercontent.com/SuicidalSTDz/EnderAPI/master/version.lua" )
+  if httpHandle then
+    local sData = httpHandle.readAll()
+    httpHandle.close()
+    version = sData
+  else
+    version = "Unknown"
+  end
+  _G.enderAPI = {
+    version = version
+  }
+end
+
+--# Initialize variables
 local tArgs = { ... }
 local showGUI = ( term.isColor and term.isColor() )
 local showTextOutput = true
@@ -16,6 +47,12 @@ local updateAPI = true
 local updateLauncher = true
 local branch = "master"
 
+--[[ Pull out passed arguments and determine how to set-up the launcher.
+The below lines are for developers and those competent enough to
+utilize it's functionality, therefore, no description will be provided
+
+ - SuicidalSTDz
+]]
 for i, v in ipairs( tArgs ) do
   local a = v:lower()
   if a == "nogui" then 
@@ -35,15 +72,24 @@ for i, v in ipairs( tArgs ) do
   end
 end
 
+--# Clear the terminal
+term.setBackgroundColor( colours.black )
+term.clear()
+term.setCursorPos( 1, 1 )
+
+--# Begin the tedious update process
 if updateLauncher then
-  if not http then
-    error( "HTTP is required to search for updates!", 0 )
-  end
   
+  --[[# Tell the user that EnderAPI is searching for an update
   if showTextOutput then
+    if isColour then term.setTextColour( colours.lime ) end
     print( "Checking for launcher update.." )
-  end
-  local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/launcher.lua" )
+  end]]
+
+  --# Download the specified branch to check for updates
+  local httpHandle = http.get( "https://raw.github.com/SuicidalSTDz/EnderAPI/" .. branch .. "/launcher.lua" )
+  
+  --# If we get a response, tell the user that an update has been found
   if httpHandle then
     local httpContent = httpHandle.readAll()
     httpHandle.close()
@@ -55,96 +101,66 @@ if updateLauncher then
       local fileContent = fileHandle.readAll()
       fileHandle.close()
       
+      --# The current launcher and the up-to-date launcher are different (content wise). Ask the user to update
       if fileContent ~= httpContent then
         local updateFile = true
         local oldX, oldY
-        
+
         if showGUI then
-          local w, h = term.getSize()
-          
-          term.setBackgroundColour( colours.black )
-          term.clear()
-          
-          term.setBackgroundColour( colours.purple )
-          local beginBoxW = ( w - 25 ) / 2
-          local beginBoxH = math.floor( h / 2 ) - 2
-          for i = 0, 3 do
-            term.setCursorPos( beginBoxW - 1, beginBoxH + i )
-            term.write( ' ' )
-            term.setCursorPos( beginBoxW + 26, beginBoxH + i )
-            term.write( ' ' )
-          end
-          
-          for i = 0, 25 do
-            term.setCursorPos( beginBoxW + i, beginBoxH )
-            term.write( ' ' )
-            term.setCursorPos( beginBoxW + i, beginBoxH + 3 )
-            term.write( ' ' )
-          end
-          
-          -- Write the text
-          term.setBackgroundColour( colours.black )
-          term.setTextColour( colours.white )
-          term.setCursorPos( beginBoxW, math.floor( h / 2 ) - 1 )
-          term.write( "An update has been found" )
-          
-          oldX, oldY = term.getCursorPos()
-          term.setCursorPos( oldX - 24, oldY + 1 )
-          term.write( "for the launcher, update?" )
-          
-          term.setBackgroundColour( colours.purple )
-          oldX, oldY = term.getCursorPos()
-          term.setCursorPos( oldX - 24, oldY + 1 )
-          term.write( "[ Yes ]" )
-          
-          term.setCursorPos( oldX - 7, oldY + 1 )
-          term.write( "[ No ]" )
-          
-          term.setBackgroundColour( colours.black )
-          
-          while true do
-            local ev = { os.pullEvent() }
-            if ev[ 1 ] == "mouse_click" then
-              if ev[ 3 ] >= oldX - 24 and ev[ 3 ] <= oldX - 17 and ev[ 4 ] == oldY + 1 then
-                term.clear()
-                term.setCursorPos( 1, 1 )
-                break
-              elseif ev[ 3 ] >= oldX - 7 and ev[ 3 ] <= oldX - 1 and ev[ 4 ] == oldY + 1 then
-                updateFile = false
-                term.clear()
-                term.setCursorPos( 1, 1 )
-                break
-              end
-            end
-          end
+          --# Initialize local variables
+          local sText = "An update has been found for your launcher!"
+          local dialogue = gui.createDialogueBox( "EnderAPI v" .. _G.enderAPI.version, { sText, "Would you like to update?" }, "yn" )
+          local update = dialogue:draw( ( nw - #sText + 1 ) / 2, 5, 5, colors.gray, colors.purple, colors.white )
+          updateFile = update
+
+        else
+          --# No GUI, use a textual input approach instead
+          local sInput
+          repeat
+              term.setBackgroundColour( colours.black )
+              term.setTextColour( colours.white )
+              term.clear()
+              term.setCursorPos( 1, 1 )
+              write( "An update has been found for your launcher\nUpdate launcher? Y/N: ")
+              sInput = read():lower()
+            updateFile = ( sInput == "yes" ) or ( sInput == "y" )
+            until ( sInput == "yes" ) or ( sInput == "y" ) or ( sInput == "no" ) or ( sInput == "n" )
         end
-        
+
+        --# Clear the terminal. It's riddled with the nasties now
+        term.setBackgroundColour( colours.black )
+        term.setTextColour( colours.white )
+        term.clear()
+        term.setCursorPos( 1, 1 )
+
+        --# If the user wants to update, then update
         if updateFile then
           fileHandle = fs.open( sFile, 'w' )
           fileHandle.write( httpContent )
           fileHandle.close()
           
-          local arguments = {}
+          --# Sort through the passed arguments and set up the update process using said arguments
+          local tArguments = {}
           if not gui then
-            table.insert( arguments, "nogui" )
+            table.insert( tArguments, "nogui" )
           end
           if not updateAPI then
-            table.insert( arguments, "-n" )
-            table.insert( arguments, "api" )
+            table.insert( tArguments, "-n" )
+            table.insert( tArguments, "api" )
           end
           if not showTextOutput then
-            table.insert( arguments, "-n" )
-            table.insert( arguments, "text" )
+            table.insert( tArguments, "-n" )
+            table.insert( tArguments, "text" )
           end
           if branch == "prerelease" then
-            table.insert( arguments, "-prerelease" )
+            table.insert( tArguments, "-prerelease" )
           elseif branch == "dev" then
-            table.insert( arguments, "-dev" )
+            table.insert( tArguments, "-dev" )
           end
-          table.insert( arguments, "-n" )
-          table.insert( arguments, "launcher" )
+          table.insert( tArguments, "-n" )
+          table.insert( tArguments, "launcher" )
           
-          shell.run( shell.getRunningProgram(), unpack( arguments ) )
+          shell.run( shell.getRunningProgram(), unpack( tArguments ) )
           return
         end
       end
@@ -152,17 +168,22 @@ if updateLauncher then
   end
 end
 
+--# Clear the terminal. It's riddled with the nasties now
+term.setBackgroundColour( colours.black )
+term.setTextColour( colours.white )
+term.clear()
+term.setCursorPos( 1, 1 )
+
+--# If the user wants to update their APIs, then do so
 if updateAPI then
-  if not http then
-    error( "HTTP is required to search for updates!", 0 )
-  end
 
   local baseURL = "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/apis/"
   local folderExisted = true
+  local nFiles = 11
   local tFiles = { 
+    [ "debug.lua" ] = {},
     [ "fs.lua" ] = {},
     [ "http.lua" ] = {},
-    [ "messageBox.lua" ] = {}, -- It's now stable enough for release
     [ "number.lua" ] = {},
     [ "pastebin.lua" ] = {},
     [ "string.lua" ] = {},
@@ -178,10 +199,38 @@ if updateAPI then
     folderExisted = false
   end
 
-  -- Let the user know that (s)he has to wait a minute
-  if showTextOutput then
-    print( "Downloading files, this can take a while.." )
+  --# Initialize Variables
+  local nPercent = 0
+  local nFiles_To_Go = nFiles
+  local nBarLength = nw / 2
+  local nBarStartX = nw / 2 - ( nBarLength / 2 )
+
+  --# Initialize and draw objects
+  local tBar, redraw
+  if showGUI then
+    tBar = gui.createBar( "Download" )
+    tBar:draw( nBarStartX, nh / 2, nBarLength, colours.white, colours.purple, false, colours.black, colours.white )
+
+    redraw = function( sText )
+    term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+    term.setBackgroundColour( colours.black )
+    term.setTextColour( colours.lime )
+    term.write( sText )
+    end
+
+    redraw( "Fetching API files.." )
+    sleep( 1 )
+  else
+    if showTextOutput then
+      term.setBackgroundColour( colours.black )
+      term.setTextColour( colours.white )
+      term.clear()
+      term.setCursorPos( 1, 1 )
+      if isColour then term.setTextColour( colours.lime ) end
+      write( "Downloading files..\nThis may take a while..\n")
+    end
   end
+
 
   -- Download & check files
   for luaFile, tbl in pairs( tFiles ) do
@@ -208,13 +257,40 @@ if updateAPI then
     else
       tbl.update = false
     end
+    
+    if showGUI then
+      nFiles_To_Go = nFiles_To_Go - 1
+      nPercent = ( ( nFiles - nFiles_To_Go ) / nFiles ) * 100
+      tBar:update( nPercent )
+      redraw( "Downloaded file " .. nFiles - nFiles_To_Go .. " of " .. nFiles )
+    end
   end
+ 
+  if showGUI then
+    sText = "Download Complete!"
+    term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+    term.setBackgroundColour( colours.black )
+    term.setTextColour( colours.lime )
+    term.clearLine()
+    term.write( sText)
+  else
+    if showTextOutput then
+      print( "Download Complete!" )
+    end
+  end
+  sleep( 1 )
+
+  --# Clear the terminal. It's riddled with the nasties now
+  term.setBackgroundColour( colours.black )
+  term.setTextColour( colours.white )
+  term.clear()
+  term.setCursorPos( 1, 1 )
 
   if showGUI then  
     local w, h = term.getSize()
     local availableFiles = {}
    
-   local tryUpdate = false
+    local tryUpdate = false
     for k, v in pairs( tFiles ) do
       if v.update then
         tryUpdate = true
@@ -226,9 +302,6 @@ if updateAPI then
     end
     
     if tryUpdate then
-      term.setBackgroundColour( colours.black )
-      term.clear()
-      
       term.setBackgroundColour( colours.purple )
       for i = 1, w do
         term.setCursorPos( i, 1 )
@@ -256,16 +329,12 @@ if updateAPI then
         local lastColour = 'g'
         for i = offset, #availableFiles do
           term.setCursorPos( 2, i - offset + 2 )
-          
-          -- Reduces server -> client packets
-         -- if availableFiles[ i ].colour ~= lastColour then
-            lastColour = availableFiles[ i ].colour
-            if lastColour == 'g' then
-              term.setTextColour( colours.green )
-            elseif lastColour == 'r' then
-              term.setTextColour( colours.red )
-            end
-         -- end
+          lastColour = availableFiles[ i ].colour
+          if lastColour == 'g' then
+            term.setTextColour( colours.green )
+          elseif lastColour == 'r' then
+            term.setTextColour( colours.red )
+          end
           term.write( availableFiles[ i ].name )
         end
       end
@@ -281,9 +350,6 @@ if updateAPI then
               end
             end
             
-            term.setBackgroundColour( colours.black )
-            term.clear()
-            term.setCursorPos( 1, 1 )
             break
           elseif event[ 4 ] ~= h and event[ 4 ] ~= 1 then
             local index = offset + event[ 4 ] - 2
@@ -298,21 +364,78 @@ if updateAPI then
           end
         elseif event[ 1 ] == "mouse_scroll" then
           -- Add scrolling
+          -- I'll get to it, eventually [-STDz]
         end
       end
     else
       if showTextOutput then
+        term.setBackgroundColour( colours.black )
+        term.setTextColour( colours.white )
+        term.clear()
+        term.setCursorPos( 1, 1 )
         print( "Everything is up to date!" )
       end
     end
   end
 
+  local function redraw( sText )
+    term.setBackgroundColour( colours.black )
+  term.setCursorPos( 1, nh / 2 - 1 )
+  term.write( string.rep( " ", nw ) )
+  term.setCursorPos( ( nw - #sText ) / 2, nh / 2 - 1 )
+  term.setBackgroundColour( colours.black )
+  if isColour then term.setTextColour( colours.lime ) end
+  term.write( sText )
+  end
+
+  if showGUI then
+    --# Initlize Progress Bar
+    local nPercent = 0
+    local nFiles_To_Go = nFiles
+    local nBarLength = nw / 2
+    local nBarStartX = nw / 2 - ( nBarLength / 2 )
+    local tBar = gui.createBar( "Update" )
+    tBar:draw( nBarStartX, nh / 2, nBarLength, colours.white, colours.purple, false, colours.black, colours.white )
+  end
+
+  local nFiles, nFiles_To_Go, nPercent = 0
+  local bUpdate = false
+  for _, tFiles in pairs( tFiles ) do
+    if tFiles.update then
+      nFiles = nFiles + 1
+    end
+  end
+  nFiles_To_Go = nFiles
+
   -- Update files
   for _, tFile in pairs( tFiles ) do
     if tFile.update then
+      if showGUI then redraw( "Updating " .. tFile.fileName .. ".lua" ) end
       local fileHandle = fs.open( folder .. tFile.fileName, "w" )
       fileHandle.write( tFile.content )
       fileHandle.close()
+      
+      if showGUI then
+        nFiles_To_Go = nFiles_To_Go - 1
+        nPercent = ( ( nFiles - nFiles_To_Go) / nFiles ) * 100
+        tBar:update( nPercent )
+        sleep( .2 )
+        bUpdate = true
+      end
+    end
+  end
+  if bUpdate then
+    if showGUI then
+      redraw( "Update Complete!" )
+      sleep( 1 )
+    else
+      if showTextOutput then
+        term.setBackgroundColour( colours.black )
+        term.setTextColour( colours.white )
+        term.clear()
+        term.setCursorPos( 1, 1 )
+        term.write( "Update Complete!" )
+      end
     end
   end
 end
@@ -367,3 +490,18 @@ if fs.exists( folder ) then
 else
   error( "Update first!", 0 ) 
 end
+
+if showTextOutput then
+  term.setBackgroundColor( colours.black )
+  if isColour then term.setTextColour( colours.lime ) end
+  term.setCursorPos( 1, 1 )
+  term.write( "Completed Initilization in " .. os.clock() - nStart_Time .. " seconds!")
+  sleep( 1 )
+  term.clear()
+  term.setCursorPos( 1, 1 )
+end
+
+term.setBackgroundColour( colours.black )
+term.setTextColour( colours.white )
+term.clear()
+term.setCursorPos( 1, 1 )
