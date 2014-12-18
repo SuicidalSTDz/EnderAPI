@@ -388,6 +388,9 @@ if updateAPI then
   term.write( sText )
   end
 
+  term.setBackgroundColour( colours.black )
+  term.clear()
+  
   if showGUI then
     --# Initlize Progress Bar
     local nPercent = 0
