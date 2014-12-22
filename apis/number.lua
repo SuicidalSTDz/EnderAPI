@@ -1,9 +1,9 @@
-local function assert(bBool, sMessage, nLevel)
+local function assert( bBool, sMessage, nLevel )
   nLevel = nLevel or -1
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
+  if type( sMessage ) ~= "string" then
+    error( "String expected, got " .. type( sMessage ), 2 )
+  elseif type( nLevel ) ~= "number" then
+    error( "Number expected, got " .. type( nLevel ), 2 )
   end
   
   if not bBool then
@@ -24,13 +24,13 @@ function generate( nLength, nMin, nMax )
   end
   return tonumber( n )
 end
-
+ 
 function isOdd( n )
-  assert( type( n ) == "number", "Number expected, got " .. type( n ), 2)
+  assert( type( n ) == "number", "Number expected, got " .. type( n ), 2 )
   return n % 2 ~= 0
 end
 
 function isEven( n )
-  assert( type( n ) == "number", "Number expected, got " .. type( n ), 2)
+  assert( type( n ) == "number", "Number expected, got " .. type( n ), 2 )
   return n % 2 == 0
 end
