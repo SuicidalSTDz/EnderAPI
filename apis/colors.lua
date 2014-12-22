@@ -1,6 +1,6 @@
 local tColorNames = {}
-for k,v in pairs(colors) do
-  tColorNames[v] = k
+for k,v in pairs( colors ) do
+  tColorNames[ v ] = k
 end
 
 function colors.convertToString( nColour )
