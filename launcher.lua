@@ -179,7 +179,7 @@ if updateAPI then
 
   local baseURL = "https://raw.github.com/SuicidalSTDz/EnderAPI/"..branch.."/apis/"
   local folderExisted = true
-  local nFiles = 11
+  local nFiles = 12
   local tFiles = { 
     [ "debug.lua" ] = {},
     [ "fs.lua" ] = {},
