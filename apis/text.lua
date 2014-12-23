@@ -1,9 +1,9 @@
-local function assert(bBool, sMessage, nLevel)
+local function assert( bBool, sMessage, nLevel )
   nLevel = nLevel or -1
-  if type(sMessage) ~= "string" then
-    error("String expected, got " .. type( sMessage ), 2)
-  elseif type(nLevel) ~= "number" then
-    error("Number expected, got " .. type( nLevel ), 2)
+  if type( sMessage ) ~= "string" then
+    error( "String expected, got " .. type( sMessage ), 2 )
+  elseif type( nLevel ) ~= "number" then
+    error( "Number expected, got " .. type( nLevel ), 2 )
   end
   
   if not bBool then
@@ -13,17 +13,17 @@ local function assert(bBool, sMessage, nLevel)
 end
 
 function center( sText, nx, ny )
-	assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
-	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
-	assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
-	term.setCursorPos( (( nx - #sText ) / 2) - 1, ny )
-	term.write( sText )
+  assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2 )
+  assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2 )
+  assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2 )
+  term.setCursorPos( ( ( nx - #sText ) / 2) - 1, ny )
+  term.write( sText )
 end
 
 function bracket( sText, nx, ny, nTextColour, nBracketColour, nBackgroundColour )
-	assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2)
-	assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2)
-	assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2)
+  assert( type( sText ) == "string", "String expected, got " .. type( sText ), 2 )
+  assert( type( nx ) == "number", "Number expected, got " .. type( nx ), 2 )
+  assert( type( ny ) == "number", "Number expected, got " .. type( ny ), 2 )
 	
   if nTextColour then
     assert( type( nTextColour ) == "number", "Number/nil expected, got " .. type( nTextColour ), 2)
