@@ -350,10 +350,10 @@ local function mixColumns(input, invert)
 	--print("MixColumns: #input: "..#input)
 	-- Ooops. I mixed the ROWS instead of the COLUMNS on accident.
 	local output = {}
-	local c1 = { input[1], input[5], input[9], input[13] }
-	local c2 = { input[2], input[6], input[10], input[14] }
-	local c3 = { input[3], input[7], input[11], input[15] }
-	local c4 = { input[4], input[8], input[12], input[16] }
+	local c1 = { input[1], input[2], input[3], input[4] }
+	local c2 = { input[5], input[6], input[7], input[8] }
+	local c3 = { input[9], input[10], input[11], input[12] }
+	local c4 = { input[13], input[14], input[15], input[16] }
 	if invert then
 		c1 = invMixColumn(c1)
 		c2 = invMixColumn(c2)
@@ -367,23 +367,23 @@ local function mixColumns(input, invert)
 	end
 	
 	output[1] = c1[1]
-	output[5] = c1[2]
-	output[9] = c1[3]
-	output[13] = c1[4]
+	output[2] = c1[2]
+	output[3] = c1[3]
+	output[4] = c1[4]
 	
-	output[2] = c2[1]
+	output[5] = c2[1]
 	output[6] = c2[2]
-	output[10] = c2[3]
-	output[14] = c2[4]
+	output[7] = c2[3]
+	output[8] = c2[4]
 	
-	output[3] = c3[1]
-	output[7] = c3[2]
+	output[9] = c3[1]
+	output[10] = c3[2]
 	output[11] = c3[3]
-	output[15] = c3[4]
+	output[12] = c3[4]
 	
-	output[4] = c4[1]
-	output[8] = c4[2]
-	output[12] = c4[3]
+	output[13] = c4[1]
+	output[14] = c4[2]
+	output[15] = c4[3]
 	output[16] = c4[4]
 	
 	return output
