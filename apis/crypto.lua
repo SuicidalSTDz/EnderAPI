@@ -257,51 +257,51 @@ end
 
 local function shiftRows(input)
 	local copy = {}
-	-- Row 1: No change
+
 	copy[1] = input[1]
-	copy[2] = input[2]
-	copy[3] = input[3]
-	copy[4] = input[4]
-	-- Row 2: Offset 1
-	copy[5] = input[6]
-	copy[6] = input[7]
-	copy[7] = input[8]
-	copy[8] = input[5]
-	-- Row 3: Offset 2
-	copy[9] = input[11]
-	copy[10] = input[12]
-	copy[11] = input[9]
-	copy[12] = input[10]
-	-- Row 4: Offset 3
-	copy[13] = input[16]
-	copy[14] = input[13]
-	copy[15] = input[14]
-	copy[16] = input[15]
+	copy[2] = input[6]
+	copy[3] = input[11]
+	copy[4] = input[16]
+
+	copy[5] = input[5]
+	copy[6] = input[10]
+	copy[7] = input[15]
+	copy[8] = input[4]
+
+	copy[9] = input[9]
+	copy[10] = input[14]
+	copy[11] = input[3]
+	copy[12] = input[8]
+
+	copy[13] = input[13]
+	copy[14] = input[2]
+	copy[15] = input[7]
+	copy[16] = input[12]
 	return copy
 end
 
 local function invShiftRows(input)
 	local copy = {}
-	-- Row 1: No change
+
 	copy[1] = input[1]
-	copy[2] = input[2]
-	copy[3] = input[3]
-	copy[4] = input[4]
-	-- Row 2: Offset 1
-	copy[5] = input[8]
-	copy[6] = input[5]
-	copy[7] = input[6]
-	copy[8] = input[7]
-	-- Row 3: Offset 2
-	copy[9] = input[11]
-	copy[10] = input[12]
-	copy[11] = input[9]
-	copy[12] = input[10]
-	-- Row 4: Offset 3
-	copy[13] = input[14]
-	copy[14] = input[15]
-	copy[15] = input[16]
-	copy[16] = input[13]
+	copy[2] = input[14]
+	copy[3] = input[11]
+	copy[4] = input[8]
+
+	copy[5] = input[5]
+	copy[6] = input[2]
+	copy[7] = input[15]
+	copy[8] = input[12]
+
+	copy[9] = input[9]
+	copy[10] = input[6]
+	copy[11] = input[3]
+	copy[12] = input[16]
+
+	copy[13] = input[13]
+	copy[14] = input[10]
+	copy[15] = input[7]
+	copy[16] = input[4]
 	return copy
 end
 
