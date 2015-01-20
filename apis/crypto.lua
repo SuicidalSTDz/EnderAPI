@@ -402,11 +402,11 @@ function key_schedule(enc_key)
 	elseif #enc_key >= 24 and #enc_key < 32 then
 		n = 24
 		b = 208
-		--key_type = 2
+		key_type = 2
 	else
 		n = 32
 		b = 240
-		--key_type = 3
+		key_type = 3
 	end
 	
 	local exp_key = {}
@@ -415,10 +415,10 @@ function key_schedule(enc_key)
 		exp_key[i] = enc_key[i]
 	end
 	while #exp_key < b do
-		local t1 = exp_key[#exp_key]
-		local t2 = exp_key[#exp_key-1]
-		local t3 = exp_key[#exp_key-2]
-		local t4 = exp_key[#exp_key-3]
+		local t1 = exp_key[#exp_key-3]
+		local t2 = exp_key[#exp_key-2]
+		local t3 = exp_key[#exp_key-1]
+		local t4 = exp_key[#exp_key]
 		t1, t2, t3, t4 = core(t1, t2, t3, t4, rcon_iter)
 		rcon_iter = rcon_iter+1
 		t1 = bxor(t1, exp_key[#exp_key-(n-1)])
@@ -430,10 +430,10 @@ function key_schedule(enc_key)
 		insert(exp_key, t3)
 		insert(exp_key, t4)
 		for i=1, 3 do
-			t1 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-1)])
-			t2 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-2)])
-			t3 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-3)])
-			t4 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-4)])
+			t1 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-1)])
+			t2 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-2)])
+			t3 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-3)])
+			t4 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-4)])
 			insert(exp_key, t1)
 			insert(exp_key, t2)
 			insert(exp_key, t3)
@@ -443,10 +443,10 @@ function key_schedule(enc_key)
 			-- Take the previous 4 bytes of the expanded key, run them through the sbox,
 			-- then XOR them with the previous n bytes of the expanded key, then output them
 			-- as the next 4 bytes of expanded key.
-			t1 = bxor(sbox[exp_key[#exp_key]], exp_key[#exp_key-(n-1)])
-			t2 = bxor(sbox[exp_key[#exp_key-1]], exp_key[#exp_key-(n-2)])
-			t3 = bxor(sbox[exp_key[#exp_key-2]], exp_key[#exp_key-(n-3)])
-			t4 = bxor(sbox[exp_key[#exp_key-3]], exp_key[#exp_key-(n-4)])
+			t1 = bxor(sbox[exp_key[#exp_key-3]], exp_key[#exp_key-(n-1)])
+			t2 = bxor(sbox[exp_key[#exp_key-2]], exp_key[#exp_key-(n-2)])
+			t3 = bxor(sbox[exp_key[#exp_key-1]], exp_key[#exp_key-(n-3)])
+			t4 = bxor(sbox[exp_key[#exp_key]], exp_key[#exp_key-(n-4)])
 			insert(exp_key, t1)
 			insert(exp_key, t2)
 			insert(exp_key, t3)
@@ -458,10 +458,10 @@ function key_schedule(enc_key)
 				i = 3
 			end
 			for j=1, i do
-				t1 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-1)])
-				t2 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-2)])
-				t3 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-3)])
-				t4 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-4)])
+				t1 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-1)])
+				t2 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-2)])
+				t3 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-3)])
+				t4 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-4)])
 				insert(exp_key, t1)
 				insert(exp_key, t2)
 				insert(exp_key, t3)
@@ -479,9 +479,9 @@ function encrypt_block(data, key)
 	
 	if #exp_key == 176 then -- Key type 1 (128-bits)
 		nr = 10
-	elseif #exp_key == 208 then -- Key type 2 (192-bits)
+	elseif #exp_key == 216 then -- Key type 2 (192-bits)
 		nr = 12
-	elseif #exp_key == 240 then -- Key type 3 (256-bits)
+	elseif #exp_key == 256 then -- Key type 3 (256-bits)
 		nr = 14
 	else
 		error("encrypt_block: Unknown key size?", 2)
@@ -491,7 +491,7 @@ function encrypt_block(data, key)
 	state = addRoundKey(state, exp_key, 1)
 	
 	-- Repeat (Nr-1) times:
-	for round_num = 2, nr-1 do	
+	for round_num = 2, nr do	
 		state = subBytes(state)
 		state = shiftRows(state)
 		state = mixColumns(state)
@@ -501,7 +501,7 @@ function encrypt_block(data, key)
 	-- Final round (No mixColumns()):
 	state = subBytes(state)
 	state = shiftRows(state)
-	state = addRoundKey(state, exp_key, nr)
+	state = addRoundKey(state, exp_key, nr+1)
 	return state
 end
 
@@ -512,19 +512,19 @@ function decrypt_block(data, key)
 	
 	if #exp_key == 176 then -- Key type 1 (128-bits)
 		nr = 10
-	elseif #exp_key == 208 then -- Key type 2 (192-bits)
+	elseif #exp_key == 216 then -- Key type 2 (192-bits)
 		nr = 12
-	elseif #exp_key == 240 then -- Key type 3 (256-bits)
+	elseif #exp_key == 256 then -- Key type 3 (256-bits)
 		nr = 14
 	else
 		error("decrypt_block: Unknown key size?", 2)
 	end
 	
 	-- Inital round:
-	state = addRoundKey(state, exp_key, nr)
+	state = addRoundKey(state, exp_key, nr+1)
 	
 	-- Repeat (Nr-1) times:
-	for round_num = nr-1, 2, -1 do
+	for round_num = nr, 2, -1 do
 		state = invShiftRows(state)
 		state = subBytes(state, true)
 		state = addRoundKey(state, exp_key, round_num)
