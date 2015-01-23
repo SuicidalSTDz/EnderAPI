@@ -257,51 +257,23 @@ end
 
 local function shiftRows(input)
 	local copy = {}
-	-- Row 1: No change
-	copy[1] = input[1]
-	copy[2] = input[2]
-	copy[3] = input[3]
-	copy[4] = input[4]
-	-- Row 2: Offset 1
-	copy[5] = input[6]
-	copy[6] = input[7]
-	copy[7] = input[8]
-	copy[8] = input[5]
-	-- Row 3: Offset 2
-	copy[9] = input[11]
-	copy[10] = input[12]
-	copy[11] = input[9]
-	copy[12] = input[10]
-	-- Row 4: Offset 3
-	copy[13] = input[16]
-	copy[14] = input[13]
-	copy[15] = input[14]
-	copy[16] = input[15]
+
+	copy[1] = input[1]; copy[2] = input[6]; copy[3] = input[11]; copy[4] = input[16]
+	copy[5] = input[5]; copy[6] = input[10]; copy[7] = input[15]; copy[8] = input[4]
+	copy[9] = input[9]; copy[10] = input[14]; copy[11] = input[3]; copy[12] = input[8]
+	copy[13] = input[13]; copy[14] = input[2]; copy[15] = input[7]; copy[16] = input[12]
+
 	return copy
 end
 
 local function invShiftRows(input)
 	local copy = {}
-	-- Row 1: No change
-	copy[1] = input[1]
-	copy[2] = input[2]
-	copy[3] = input[3]
-	copy[4] = input[4]
-	-- Row 2: Offset 1
-	copy[5] = input[8]
-	copy[6] = input[5]
-	copy[7] = input[6]
-	copy[8] = input[7]
-	-- Row 3: Offset 2
-	copy[9] = input[11]
-	copy[10] = input[12]
-	copy[11] = input[9]
-	copy[12] = input[10]
-	-- Row 4: Offset 3
-	copy[13] = input[14]
-	copy[14] = input[15]
-	copy[15] = input[16]
-	copy[16] = input[13]
+
+	copy[1] = input[1]; copy[2] = input[14]; copy[3] = input[11]; copy[4] = input[8]
+	copy[5] = input[5]; copy[6] = input[2]; copy[7] = input[15]; copy[8] = input[12]
+	copy[9] = input[9]; copy[10] = input[6]; copy[11] = input[3]; copy[12] = input[16]
+	copy[13] = input[13]; copy[14] = input[10]; copy[15] = input[7]; copy[16] = input[4]
+
 	return copy
 end
 
@@ -350,10 +322,10 @@ local function mixColumns(input, invert)
 	--print("MixColumns: #input: "..#input)
 	-- Ooops. I mixed the ROWS instead of the COLUMNS on accident.
 	local output = {}
-	local c1 = { input[1], input[5], input[9], input[13] }
-	local c2 = { input[2], input[6], input[10], input[14] }
-	local c3 = { input[3], input[7], input[11], input[15] }
-	local c4 = { input[4], input[8], input[12], input[16] }
+	local c1 = { input[1], input[2], input[3], input[4] }
+	local c2 = { input[5], input[6], input[7], input[8] }
+	local c3 = { input[9], input[10], input[11], input[12] }
+	local c4 = { input[13], input[14], input[15], input[16] }
 	if invert then
 		c1 = invMixColumn(c1)
 		c2 = invMixColumn(c2)
@@ -367,23 +339,23 @@ local function mixColumns(input, invert)
 	end
 	
 	output[1] = c1[1]
-	output[5] = c1[2]
-	output[9] = c1[3]
-	output[13] = c1[4]
+	output[2] = c1[2]
+	output[3] = c1[3]
+	output[4] = c1[4]
 	
-	output[2] = c2[1]
+	output[5] = c2[1]
 	output[6] = c2[2]
-	output[10] = c2[3]
-	output[14] = c2[4]
+	output[7] = c2[3]
+	output[8] = c2[4]
 	
-	output[3] = c3[1]
-	output[7] = c3[2]
+	output[9] = c3[1]
+	output[10] = c3[2]
 	output[11] = c3[3]
-	output[15] = c3[4]
+	output[12] = c3[4]
 	
-	output[4] = c4[1]
-	output[8] = c4[2]
-	output[12] = c4[3]
+	output[13] = c4[1]
+	output[14] = c4[2]
+	output[15] = c4[3]
 	output[16] = c4[4]
 	
 	return output
@@ -430,11 +402,11 @@ function key_schedule(enc_key)
 	elseif #enc_key >= 24 and #enc_key < 32 then
 		n = 24
 		b = 208
-		--key_type = 2
+		key_type = 2
 	else
 		n = 32
 		b = 240
-		--key_type = 3
+		key_type = 3
 	end
 	
 	local exp_key = {}
@@ -443,10 +415,10 @@ function key_schedule(enc_key)
 		exp_key[i] = enc_key[i]
 	end
 	while #exp_key < b do
-		local t1 = exp_key[#exp_key]
-		local t2 = exp_key[#exp_key-1]
-		local t3 = exp_key[#exp_key-2]
-		local t4 = exp_key[#exp_key-3]
+		local t1 = exp_key[#exp_key-3]
+		local t2 = exp_key[#exp_key-2]
+		local t3 = exp_key[#exp_key-1]
+		local t4 = exp_key[#exp_key]
 		t1, t2, t3, t4 = core(t1, t2, t3, t4, rcon_iter)
 		rcon_iter = rcon_iter+1
 		t1 = bxor(t1, exp_key[#exp_key-(n-1)])
@@ -458,10 +430,10 @@ function key_schedule(enc_key)
 		insert(exp_key, t3)
 		insert(exp_key, t4)
 		for i=1, 3 do
-			t1 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-1)])
-			t2 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-2)])
-			t3 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-3)])
-			t4 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-4)])
+			t1 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-1)])
+			t2 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-2)])
+			t3 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-3)])
+			t4 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-4)])
 			insert(exp_key, t1)
 			insert(exp_key, t2)
 			insert(exp_key, t3)
@@ -471,10 +443,10 @@ function key_schedule(enc_key)
 			-- Take the previous 4 bytes of the expanded key, run them through the sbox,
 			-- then XOR them with the previous n bytes of the expanded key, then output them
 			-- as the next 4 bytes of expanded key.
-			t1 = bxor(sbox[exp_key[#exp_key]], exp_key[#exp_key-(n-1)])
-			t2 = bxor(sbox[exp_key[#exp_key-1]], exp_key[#exp_key-(n-2)])
-			t3 = bxor(sbox[exp_key[#exp_key-2]], exp_key[#exp_key-(n-3)])
-			t4 = bxor(sbox[exp_key[#exp_key-3]], exp_key[#exp_key-(n-4)])
+			t1 = bxor(sbox[exp_key[#exp_key-3]], exp_key[#exp_key-(n-1)])
+			t2 = bxor(sbox[exp_key[#exp_key-2]], exp_key[#exp_key-(n-2)])
+			t3 = bxor(sbox[exp_key[#exp_key-1]], exp_key[#exp_key-(n-3)])
+			t4 = bxor(sbox[exp_key[#exp_key]], exp_key[#exp_key-(n-4)])
 			insert(exp_key, t1)
 			insert(exp_key, t2)
 			insert(exp_key, t3)
@@ -486,10 +458,10 @@ function key_schedule(enc_key)
 				i = 3
 			end
 			for j=1, i do
-				t1 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-1)])
-				t2 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-2)])
-				t3 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-3)])
-				t4 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-4)])
+				t1 = bxor(exp_key[#exp_key-3], exp_key[#exp_key-(n-1)])
+				t2 = bxor(exp_key[#exp_key-2], exp_key[#exp_key-(n-2)])
+				t3 = bxor(exp_key[#exp_key-1], exp_key[#exp_key-(n-3)])
+				t4 = bxor(exp_key[#exp_key], exp_key[#exp_key-(n-4)])
 				insert(exp_key, t1)
 				insert(exp_key, t2)
 				insert(exp_key, t3)
@@ -507,9 +479,9 @@ function encrypt_block(data, key)
 	
 	if #exp_key == 176 then -- Key type 1 (128-bits)
 		nr = 10
-	elseif #exp_key == 208 then -- Key type 2 (192-bits)
+	elseif #exp_key == 216 then -- Key type 2 (192-bits)
 		nr = 12
-	elseif #exp_key == 240 then -- Key type 3 (256-bits)
+	elseif #exp_key == 256 then -- Key type 3 (256-bits)
 		nr = 14
 	else
 		error("encrypt_block: Unknown key size?", 2)
@@ -519,7 +491,7 @@ function encrypt_block(data, key)
 	state = addRoundKey(state, exp_key, 1)
 	
 	-- Repeat (Nr-1) times:
-	for round_num = 2, nr-1 do	
+	for round_num = 2, nr do	
 		state = subBytes(state)
 		state = shiftRows(state)
 		state = mixColumns(state)
@@ -529,7 +501,7 @@ function encrypt_block(data, key)
 	-- Final round (No mixColumns()):
 	state = subBytes(state)
 	state = shiftRows(state)
-	state = addRoundKey(state, exp_key, nr)
+	state = addRoundKey(state, exp_key, nr+1)
 	return state
 end
 
@@ -540,19 +512,19 @@ function decrypt_block(data, key)
 	
 	if #exp_key == 176 then -- Key type 1 (128-bits)
 		nr = 10
-	elseif #exp_key == 208 then -- Key type 2 (192-bits)
+	elseif #exp_key == 216 then -- Key type 2 (192-bits)
 		nr = 12
-	elseif #exp_key == 240 then -- Key type 3 (256-bits)
+	elseif #exp_key == 256 then -- Key type 3 (256-bits)
 		nr = 14
 	else
 		error("decrypt_block: Unknown key size?", 2)
 	end
 	
 	-- Inital round:
-	state = addRoundKey(state, exp_key, nr)
+	state = addRoundKey(state, exp_key, nr+1)
 	
 	-- Repeat (Nr-1) times:
-	for round_num = nr-1, 2, -1 do
+	for round_num = nr, 2, -1 do
 		state = invShiftRows(state)
 		state = subBytes(state, true)
 		state = addRoundKey(state, exp_key, round_num)
