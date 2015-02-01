@@ -12,8 +12,11 @@ local function assert(bBool, sMessage, nLevel)
   return bBool
 end
 
-function put( sFile )
+function put( sFile, sKey )
+  
   assert( type( sFile ) == "string", "String expected, got " .. type( sFile ), 2)
+  assert( type( sKey ) == "string" or type( sKey ) == nil, "String or nil expected, got " .. type( sKey ), 2)
+  sKey = sKey or "0ec2eb25b6166c0c27a394ae118ad829"
   
   local sPath = shell.resolve( sFile )
   assert( not fs.isDir( sPath ), "Cannot upload directories", 2 )
@@ -23,11 +26,10 @@ function put( sFile )
   local handle = fs.open( sPath, "r" )
   local sText = handle.readAll()
   handle.close()
-  local key = "0ec2eb25b6166c0c27a394ae118ad829"
   local response = http.post(
     "http://pastebin.com/api/api_post.php", 
     "api_option=paste&" ..
-    "api_dev_key=" .. key .. "&" ..
+    "api_dev_key=" .. sKey .. "&" ..
     "api_paste_format=lua&" ..
     "api_paste_name=" .. textutils.urlEncode( sPath ) .. "&" ..
     "api_paste_code=" .. textutils.urlEncode( sText )
