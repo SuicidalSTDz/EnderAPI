@@ -649,6 +649,7 @@ function encrypt_bytestream(data, key, init_vector)
 		end
 	end
 	local s = os.clock()
+	table.insert(data, 0x80)
 	for i=1, math.ceil(#data/16) do
 		local block = {}
 		if not blocks[i] then
@@ -664,12 +665,13 @@ function encrypt_bytestream(data, key, init_vector)
 		for j=1, 16 do
 			insert(outputBytestream, block[j])
 		end
-        if os.clock() - s >= 2.5 then
-            os.queueEvent("")
-            os.pullEvent("")
-            s = os.clock()
-        end
+		if os.clock() - s >= 2.5 then
+			os.queueEvent("")
+			os.pullEvent("")
+			s = os.clock()
+		end
 	end
+	table.remove(data)
 	return outputBytestream
 end
 
@@ -726,20 +728,19 @@ function decrypt_bytestream(data, key, init_vector)
 			dec_block[j] = bxor(dec_block[j], blocks[i][j]) -- We use XOR on the plaintext, not the ciphertext
 			table.insert(outputBytestream, dec_block[j])
 		end
-        if os.clock() - s >= 2.5 then
-            os.queueEvent("")
-            os.pullEvent("")
-            s = os.clock()
-        end
+		if os.clock() - s >= 2.5 then
+			os.queueEvent("")
+			os.pullEvent("")
+			s = os.clock()
+		end
 	end
 	-- Remove padding:
 	for i=#outputBytestream, #outputBytestream-15, -1 do
-		if outputBytestream[i] ~= 0 then
-			break
-		else
-			outputBytestream[i] = nil
-		end
+		if outputBytestream[i] ~= 0 then break end
+		outputBytestream[i] = nil
 	end
+	if outputBytestream[#outputBytestream] ~= 0x80 then return nil, "Padding Error" end
+	table.remove(outputBytestream)
 	return outputBytestream
 end
 
